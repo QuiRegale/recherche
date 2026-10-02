@@ -5,17 +5,13 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>QuiRégale ?</title>
 
-
-<!-- LEAFLET -->
-
 <link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 
@@ -47,19 +43,16 @@ body {
     min-height: 100vh;
 
     background:
-
         radial-gradient(
             circle at 10% 10%,
             #29458f 0%,
             transparent 30%
         ),
-
         radial-gradient(
             circle at 90% 80%,
             #7028c9 0%,
             transparent 30%
         ),
-
         linear-gradient(
             135deg,
             #06142e,
@@ -72,7 +65,7 @@ body {
 
 
 /* =====================================================
-   BARRE BLANCHE
+   BARRE DU HAUT
 ===================================================== */
 
 .topbar {
@@ -85,12 +78,8 @@ body {
 
     min-height: 78px;
 
-    background: rgba(
-        255,
-        255,
-        255,
-        0.97
-    );
+    background:
+        rgba(255,255,255,.97);
 
     color: #111827;
 
@@ -98,7 +87,8 @@ body {
 
     align-items: center;
 
-    padding: 14px 35px;
+    padding:
+        14px 35px;
 
     gap: 25px;
 
@@ -106,7 +96,8 @@ body {
         0 5px 25px
         rgba(0,0,0,.20);
 
-    backdrop-filter: blur(12px);
+    backdrop-filter:
+        blur(12px);
 }
 
 
@@ -137,10 +128,7 @@ body {
     margin-left: auto;
 
     width:
-        min(
-            430px,
-            50%
-        );
+        min(430px,50%);
 
     position: relative;
 }
@@ -165,16 +153,17 @@ body {
 
     font-size: 15px;
 
-    background: #f8fafc;
+    background:
+        #f8fafc;
 
-    transition:
-        .25s;
+    transition: .25s;
 }
 
 
 .top-search input:focus {
 
-    background: white;
+    background:
+        white;
 
     border-color:
         #6366f1;
@@ -259,7 +248,7 @@ body {
 
 
 /* =====================================================
-   CATEGORIES
+   CATÉGORIES
 ===================================================== */
 
 .categories {
@@ -271,8 +260,7 @@ body {
     overflow-x: auto;
 
     padding:
-        20px
-        2px;
+        20px 2px;
 
     scrollbar-width:
         none;
@@ -285,9 +273,7 @@ body {
 
 
 .categories::-webkit-scrollbar {
-
-    display:
-        none;
+    display: none;
 }
 
 
@@ -390,7 +376,8 @@ body {
         minmax(0,1fr)
         minmax(420px,45%);
 
-    gap: 28px;
+    gap:
+        28px;
 
     align-items:
         start;
@@ -438,13 +425,12 @@ body {
 
 
 /* =====================================================
-   RESTAURANTS
+   CARTES RESTAURANTS
 ===================================================== */
 
 .restaurant-card {
 
     background:
-
         linear-gradient(
             145deg,
             rgba(
@@ -520,7 +506,6 @@ body {
         translateY(-5px);
 
     background:
-
         linear-gradient(
             145deg,
             rgba(
@@ -549,9 +534,7 @@ body {
 
 
 .restaurant-card.hidden {
-
-    display:
-        none;
+    display: none;
 }
 
 
@@ -729,23 +712,115 @@ body {
 
 
 /* =====================================================
+   MARQUEURS
+===================================================== */
+
+.custom-marker {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-width:
+        42px;
+
+    height:
+        40px;
+
+    padding:
+        0 13px;
+
+    border-radius:
+        14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    color:
+        white;
+
+    font-weight:
+        700;
+
+    font-size:
+        12px;
+
+    white-space:
+        nowrap;
+
+    border:
+        3px solid white;
+
+    box-shadow:
+        0 5px 15px
+        rgba(
+            37,
+            99,
+            235,
+            .45
+        );
+
+    transition:
+        .2s;
+
+    cursor:
+        pointer;
+}
+
+
+.custom-marker:hover {
+
+    transform:
+        scale(1.08);
+
+    box-shadow:
+        0 8px 22px
+        rgba(
+            124,
+            58,
+            237,
+            .55
+        );
+}
+
+
+/* =====================================================
    POPUP
 ===================================================== */
 
 .leaflet-popup-content-wrapper {
 
     border-radius:
-        15px;
+        16px;
+}
+
+
+.leaflet-popup-content {
+
+    margin:
+        16px;
+
+    min-width:
+        200px;
 }
 
 
 .popup-title {
 
     font-size:
-        17px;
+        18px;
 
     font-weight:
-        bold;
+        800;
 
     color:
         #111827;
@@ -758,7 +833,10 @@ body {
         #475569;
 
     margin-top:
-        7px;
+        8px;
+
+    line-height:
+        1.4;
 }
 
 
@@ -771,35 +849,77 @@ body {
         bold;
 
     margin-top:
-        7px;
+        9px;
 }
 
+
+/* BOUTON ITINÉRAIRE */
 
 .popup-button {
 
     display:
-        inline-block;
+        block;
+
+    width:
+        100%;
 
     margin-top:
-        10px;
+        15px;
 
     padding:
-        8px 12px;
+        13px 16px;
 
     border-radius:
-        9px;
+        12px;
 
     color:
         white;
 
+    text-align:
+        center;
+
     text-decoration:
         none;
+
+    font-weight:
+        800;
+
+    font-size:
+        14px;
 
     background:
         linear-gradient(
             135deg,
             #2563eb,
             #7c3aed
+        );
+
+    box-shadow:
+        0 5px 15px
+        rgba(
+            37,
+            99,
+            235,
+            .30
+        );
+
+    transition:
+        .2s;
+}
+
+
+.popup-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(
+            124,
+            58,
+            237,
+            .40
         );
 }
 
@@ -979,6 +1099,15 @@ body {
         min-height:
             400px;
     }
+
+    .custom-marker {
+
+        font-size:
+            11px;
+
+        padding:
+            0 10px;
+    }
 }
 
 </style>
@@ -1040,7 +1169,7 @@ body {
 
 
 <!-- =====================================================
-     CATEGORIES
+     CATÉGORIES
 ===================================================== -->
 
 <div class="categories">
@@ -1105,7 +1234,7 @@ body {
 
 
 <!-- =====================================================
-     RESTAURANTS + CARTE
+     CONTENU
 ===================================================== -->
 
 <div class="layout">
@@ -1485,21 +1614,16 @@ body {
 
 
 
-<!-- =====================================================
-     LEAFLET
-===================================================== -->
-
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
-
 
 
 <script>
 
 
 /* =====================================================
-   DONNEES RESTAURANTS
+   RESTAURANTS
 ===================================================== */
 
 const restaurants = {
@@ -1507,7 +1631,7 @@ const restaurants = {
     castel: {
 
         nom:
-            "🍔 Le Castel",
+            "Le Castel",
 
         adresse:
             "164 Bd de Saint-Marcel",
@@ -1520,14 +1644,13 @@ const restaurants = {
 
         lng:
             5.4754
-
     },
 
 
     pasta: {
 
         nom:
-            "🍝 PASTA TIME",
+            "PASTA TIME",
 
         adresse:
             "183 Bd de Saint-Marcel",
@@ -1540,14 +1663,13 @@ const restaurants = {
 
         lng:
             5.4762
-
     },
 
 
     darko: {
 
         nom:
-            "🍔 Chez Darko",
+            "Chez Darko",
 
         adresse:
             "175 Bd de Saint-Marcel",
@@ -1560,14 +1682,13 @@ const restaurants = {
 
         lng:
             5.4758
-
     },
 
 
     kyodai: {
 
         nom:
-            "🍣 Kyodai Sushi",
+            "Kyodai Sushi",
 
         adresse:
             "114 Bd de Saint-Marcel",
@@ -1580,14 +1701,13 @@ const restaurants = {
 
         lng:
             5.4728
-
     },
 
 
     mplaisir: {
 
         nom:
-            "🥪 M.Plaisir",
+            "M.Plaisir",
 
         adresse:
             "110 Bd de Saint-Marcel",
@@ -1600,14 +1720,13 @@ const restaurants = {
 
         lng:
             5.4725
-
     },
 
 
     nath: {
 
         nom:
-            "🥪 Le petit creux de Nath",
+            "Le petit creux de Nath",
 
         adresse:
             "271 Bd de Saint-Marcel",
@@ -1620,43 +1739,44 @@ const restaurants = {
 
         lng:
             5.4800
-
     }
 
 };
 
 
 /* =====================================================
-   CREATION CARTE
+   CARTE
 ===================================================== */
 
 const map =
-    L.map("map").setView(
-        [
-            43.295,
-            5.475
-        ],
-        15
-    );
+    L.map("map")
+        .setView(
+            [
+                43.295,
+                5.475
+            ],
+            15
+        );
 
 
-/* Fond OpenStreetMap */
+/* Carte claire et sobre */
 
 L.tileLayer(
 
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
 
     {
 
         attribution:
-            '&copy; OpenStreetMap contributors',
+            '&copy; OpenStreetMap &copy; CARTO',
 
         maxZoom:
-            19
+            20
 
     }
 
 ).addTo(map);
+
 
 
 /* =====================================================
@@ -1666,15 +1786,49 @@ L.tileLayer(
 const markers = {};
 
 
-Object.entries(restaurants).forEach(
+Object.entries(
+    restaurants
+).forEach(
     ([id, resto]) => {
 
 
+        const icon =
+            L.divIcon({
+
+                className:
+                    "",
+
+                html:
+                    `
+                    <div class="custom-marker">
+                        ${resto.nom}
+                    </div>
+                    `,
+
+                iconSize:
+                    null,
+
+                iconAnchor:
+                    [0,20],
+
+                popupAnchor:
+                    [0,-20]
+
+            });
+
+
         const marker =
-            L.marker([
-                resto.lat,
-                resto.lng
-            ]).addTo(map);
+            L.marker(
+                [
+                    resto.lat,
+                    resto.lng
+                ],
+                {
+                    icon:
+                        icon
+                }
+            )
+            .addTo(map);
 
 
         marker.bindPopup(`
@@ -1698,7 +1852,7 @@ Object.entries(restaurants).forEach(
                     target="_blank"
                     href="https://www.google.com/maps/dir/?api=1&destination=${resto.lat},${resto.lng}"
                 >
-                    🚶 Itinéraire
+                    🚶 ITINÉRAIRE
                 </a>
 
             </div>
@@ -1718,65 +1872,66 @@ Object.entries(restaurants).forEach(
 ===================================================== */
 
 document
-    .querySelectorAll(".restaurant-card")
-    .forEach(card => {
+    .querySelectorAll(
+        ".restaurant-card"
+    )
+    .forEach(
+        card => {
 
 
-        card.addEventListener(
-            "click",
-            function() {
+            card.addEventListener(
+                "click",
+                function() {
 
 
-                const id =
-                    this.dataset.id;
+                    const id =
+                        this.dataset.id;
 
 
-                const resto =
-                    restaurants[id];
+                    const resto =
+                        restaurants[id];
 
 
-                if (!resto)
-                    return;
+                    if (!resto)
+                        return;
 
 
-                map.flyTo(
+                    map.flyTo(
 
-                    [
-                        resto.lat,
-                        resto.lng
-                    ],
+                        [
+                            resto.lat,
+                            resto.lng
+                        ],
 
-                    17,
+                        17,
 
-                    {
+                        {
+                            duration:
+                                1.2
+                        }
 
-                        duration:
-                            1.2
-
-                    }
-
-                );
+                    );
 
 
-                setTimeout(
-                    () => {
+                    setTimeout(
+                        () => {
 
-                        markers[id]
-                            .openPopup();
+                            markers[id]
+                                .openPopup();
 
-                    },
-                    500
-                );
+                        },
+                        500
+                    );
 
-            }
+                }
+            );
 
-        );
-
-    });
+        }
+    );
 
 
 /* =====================================================
-   FILTRES
+   FILTRAGE
 ===================================================== */
 
 function filtrer(
@@ -1819,12 +1974,13 @@ function filtrer(
 
 
             const categories =
-                card.dataset.categories
+                card
+                    .dataset
+                    .categories
                     .split(" ");
 
 
             const visible =
-
                 categorie === "tout"
                 ||
                 categories.includes(
@@ -1843,10 +1999,6 @@ function filtrer(
                 compteur++;
 
 
-                /*
-                   Relance l'animation
-                */
-
                 card.classList.remove(
                     "show"
                 );
@@ -1856,7 +2008,7 @@ function filtrer(
 
 
                 card.style.animationDelay =
-                    `${index * 0.07}s`;
+                    `${index * .07}s`;
 
 
                 card.classList.add(
@@ -1864,9 +2016,7 @@ function filtrer(
                 );
 
 
-            }
-
-            else {
+            } else {
 
 
                 card.classList.remove(
@@ -1887,9 +2037,7 @@ function filtrer(
     document
         .getElementById("count")
         .textContent =
-
-        compteur
-        +
+        compteur +
         (
             compteur > 1
                 ? " restaurants"
@@ -1897,63 +2045,62 @@ function filtrer(
         );
 
 
-    /*
-       On affiche uniquement
-       les marqueurs correspondants
-    */
+    /* Marqueurs */
 
     Object.entries(
         restaurants
     ).forEach(
-        ([id, resto]) => {
+        ([id]) => {
 
 
             const marker =
                 markers[id];
 
 
-            const afficher =
+            const card =
+                document.querySelector(
+                    `[data-id="${id}"]`
+                );
 
-                categorie === "tout";
+
+            const afficher =
+                categorie === "tout"
+                ||
+                (
+                    card &&
+                    !card.classList.contains(
+                        "hidden"
+                    )
+                );
 
 
             if (afficher) {
 
-                if (!map.hasLayer(marker))
-                    marker.addTo(map);
-
-            }
-
-            else {
-
-                const carte =
-                    document.querySelector(
-                        `[data-id="${id}"]`
-                    );
-
 
                 if (
-                    carte &&
-                    !carte.classList.contains(
-                        "hidden"
+                    !map.hasLayer(
+                        marker
                     )
                 ) {
 
-                    if (
-                        !map.hasLayer(marker)
-                    )
-                        marker.addTo(map);
+                    marker.addTo(
+                        map
+                    );
 
                 }
 
-                else {
+            } else {
 
-                    if (
-                        map.hasLayer(marker)
+
+                if (
+                    map.hasLayer(
+                        marker
                     )
-                        map.removeLayer(
-                            marker
-                        );
+                ) {
+
+                    map.removeLayer(
+                        marker
+                    );
 
                 }
 
@@ -1970,7 +2117,9 @@ function filtrer(
 ===================================================== */
 
 document
-    .getElementById("searchInput")
+    .getElementById(
+        "searchInput"
+    )
     .addEventListener(
         "input",
         function() {
@@ -2001,11 +2150,13 @@ document
                             .toLowerCase();
 
 
-                    if (
+                    const visible =
                         texte.includes(
                             recherche
-                        )
-                    ) {
+                        );
+
+
+                    if (visible) {
 
 
                         card.classList.remove(
@@ -2032,9 +2183,8 @@ document
                             "show"
                         );
 
-                    }
 
-                    else {
+                    } else {
 
 
                         card.classList.remove(
@@ -2053,23 +2203,84 @@ document
 
 
             document
-                .getElementById("count")
+                .getElementById(
+                    "count"
+                )
                 .textContent =
-
-                compteur
-                +
+                compteur +
                 (
                     compteur > 1
                         ? " restaurants"
                         : " restaurant"
                 );
 
+
+            /* Affichage des marqueurs */
+
+            Object.entries(
+                restaurants
+            ).forEach(
+                ([id]) => {
+
+
+                    const marker =
+                        markers[id];
+
+
+                    const card =
+                        document.querySelector(
+                            `[data-id="${id}"]`
+                        );
+
+
+                    const afficher =
+                        card &&
+                        !card.classList.contains(
+                            "hidden"
+                        );
+
+
+                    if (afficher) {
+
+
+                        if (
+                            !map.hasLayer(
+                                marker
+                            )
+                        ) {
+
+                            marker.addTo(
+                                map
+                            );
+
+                        }
+
+                    } else {
+
+
+                        if (
+                            map.hasLayer(
+                                marker
+                            )
+                        ) {
+
+                            map.removeLayer(
+                                marker
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
         }
     );
 
 
 /* =====================================================
-   REDIMENSIONNEMENT CARTE
+   CARTE RESPONSIVE
 ===================================================== */
 
 setTimeout(
