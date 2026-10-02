@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>QuiRégale ?</title>
 
+
+<!-- LEAFLET -->
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+
 <style>
+
+/* =====================================================
+   BASE
+===================================================== */
 
 * {
     box-sizing: border-box;
@@ -17,64 +34,131 @@ html {
 }
 
 body {
+
     margin: 0;
-    font-family: Arial, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     color: white;
+
     min-height: 100vh;
 
     background:
-        radial-gradient(circle at 10% 10%, #263d86 0%, transparent 30%),
-        radial-gradient(circle at 90% 80%, #6d28d9 0%, transparent 30%),
-        linear-gradient(135deg, #06142e, #111d4a, #392080);
+
+        radial-gradient(
+            circle at 10% 10%,
+            #29458f 0%,
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 90% 80%,
+            #7028c9 0%,
+            transparent 30%
+        ),
+
+        linear-gradient(
+            135deg,
+            #06142e,
+            #111d4a,
+            #392080
+        );
 
     background-attachment: fixed;
 }
 
 
-/* =========================
+/* =====================================================
    BARRE BLANCHE
-========================= */
+===================================================== */
 
 .topbar {
+
     position: sticky;
+
     top: 0;
-    z-index: 100;
 
-    height: 78px;
+    z-index: 1000;
 
-    background: rgba(255,255,255,0.97);
+    min-height: 78px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.97
+    );
+
     color: #111827;
 
     display: flex;
+
     align-items: center;
 
-    padding: 0 35px;
+    padding: 14px 35px;
 
-    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    gap: 25px;
+
+    box-shadow:
+        0 5px 25px
+        rgba(0,0,0,.20);
+
+    backdrop-filter: blur(12px);
 }
+
 
 .logo {
+
     font-size: 28px;
+
     font-weight: 800;
 
-    background: linear-gradient(135deg,#2563eb,#7c3aed);
+    white-space: nowrap;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
 
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
+    -webkit-text-fill-color:
+        transparent;
 }
 
+
 .top-search {
+
     margin-left: auto;
-    width: min(420px,45%);
+
+    width:
+        min(
+            430px,
+            50%
+        );
+
     position: relative;
 }
 
+
 .top-search input {
+
     width: 100%;
 
-    padding: 13px 18px 13px 45px;
+    padding:
+        14px
+        20px
+        14px
+        46px;
 
-    border: 1px solid #e5e7eb;
+    border:
+        1px solid #e5e7eb;
+
     border-radius: 30px;
 
     outline: none;
@@ -83,386 +167,665 @@ body {
 
     background: #f8fafc;
 
-    transition: 0.3s;
+    transition:
+        .25s;
 }
+
 
 .top-search input:focus {
+
     background: white;
 
-    border-color: #6366f1;
+    border-color:
+        #6366f1;
 
     box-shadow:
-        0 0 0 4px rgba(99,102,241,0.12);
+        0 0 0 4px
+        rgba(
+            99,
+            102,
+            241,
+            .12
+        );
 }
 
+
 .search-icon {
+
     position: absolute;
 
     left: 17px;
+
     top: 50%;
 
-    transform: translateY(-50%);
+    transform:
+        translateY(-50%);
+
+    color:
+        #64748b;
 }
 
 
-/* =========================
-   PAGE
-========================= */
+/* =====================================================
+   CONTENU
+===================================================== */
 
 .page {
-    max-width: 1450px;
-    margin: auto;
-    padding: 40px 35px;
+
+    max-width:
+        1500px;
+
+    margin:
+        auto;
+
+    padding:
+        40px 35px;
 }
+
 
 .welcome {
-    animation: welcome 0.7s ease;
+
+    animation:
+        welcomeAppear
+        .7s
+        ease;
 }
+
 
 .welcome h1 {
+
     margin: 0;
-    font-size: clamp(30px,4vw,48px);
+
+    font-size:
+        clamp(
+            32px,
+            4vw,
+            50px
+        );
 }
+
 
 .welcome p {
-    color: #cbd5e1;
-    font-size: 17px;
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        17px;
+
+    margin-top:
+        10px;
 }
 
 
-/* =========================
+/* =====================================================
    CATEGORIES
-========================= */
+===================================================== */
 
 .categories {
+
     display: flex;
 
     gap: 12px;
 
     overflow-x: auto;
 
-    padding: 20px 2px;
+    padding:
+        20px
+        2px;
 
-    scrollbar-width: none;
+    scrollbar-width:
+        none;
 
-    animation: categoriesAppear 0.8s ease;
+    animation:
+        categoriesAppear
+        .8s
+        ease;
 }
+
 
 .categories::-webkit-scrollbar {
-    display: none;
+
+    display:
+        none;
 }
+
 
 .category {
+
     flex-shrink: 0;
 
-    border: 1px solid rgba(255,255,255,0.18);
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .18
+        );
 
-    background: rgba(255,255,255,0.10);
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .10
+        );
 
-    color: white;
+    color:
+        white;
 
-    border-radius: 16px;
+    border-radius:
+        16px;
 
-    padding: 14px 20px;
+    padding:
+        14px 20px;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
-    font-size: 15px;
+    font-size:
+        15px;
 
-    backdrop-filter: blur(10px);
+    backdrop-filter:
+        blur(10px);
 
     transition:
-        transform .25s ease,
-        background .25s ease,
-        box-shadow .25s ease;
+        .25s;
 }
+
 
 .category:hover {
-    transform: translateY(-4px) scale(1.03);
 
-    background: rgba(255,255,255,0.20);
+    transform:
+        translateY(-4px)
+        scale(1.03);
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .20
+        );
 
     box-shadow:
-        0 10px 25px rgba(0,0,0,.2);
+        0 10px 25px
+        rgba(0,0,0,.20);
 }
+
 
 .category.active {
-    background:
-        linear-gradient(135deg,#2563eb,#7c3aed);
 
-    border-color: transparent;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    border-color:
+        transparent;
 
     box-shadow:
-        0 8px 25px rgba(99,102,241,.4);
-
-    transform: translateY(-2px);
+        0 8px 25px
+        rgba(
+            99,
+            102,
+            241,
+            .40
+        );
 }
 
 
-/* =========================
+/* =====================================================
    LAYOUT
-========================= */
+===================================================== */
 
 .layout {
+
     display: grid;
 
     grid-template-columns:
         minmax(0,1fr)
-        minmax(350px,42%);
+        minmax(420px,45%);
 
     gap: 28px;
 
-    align-items: start;
+    align-items:
+        start;
 }
+
+
+/* =====================================================
+   TITRE
+===================================================== */
 
 .section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 
-    margin-bottom: 15px;
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-bottom:
+        16px;
 }
+
 
 .section-title h2 {
-    margin: 0;
+
+    margin:
+        0;
+
+    font-size:
+        23px;
 }
+
 
 .count {
-    color: #cbd5e1;
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        14px;
 }
 
 
-/* =========================
+/* =====================================================
    RESTAURANTS
-========================= */
+===================================================== */
 
 .restaurant-card {
+
     background:
+
         linear-gradient(
             145deg,
-            rgba(255,255,255,.15),
-            rgba(255,255,255,.07)
+            rgba(
+                255,
+                255,
+                255,
+                .15
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                .07
+            )
         );
 
-    border: 1px solid rgba(255,255,255,.16);
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .16
+        );
 
-    border-radius: 22px;
+    border-radius:
+        22px;
 
-    padding: 21px;
+    padding:
+        21px;
 
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
 
-    backdrop-filter: blur(12px);
+    backdrop-filter:
+        blur(12px);
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.15);
+        0 10px 35px
+        rgba(
+            0,
+            0,
+            0,
+            .15
+        );
+
+    cursor:
+        pointer;
 
     transition:
-        transform .3s ease,
-        box-shadow .3s ease,
-        background .3s ease;
+        .30s;
 }
 
 
-/* Animation d'apparition */
-
 .restaurant-card.show {
+
     animation:
-        restaurantAppear .45s cubic-bezier(.2,.8,.2,1)
+        restaurantAppear
+        .45s
+        cubic-bezier(
+            .2,
+            .8,
+            .2,
+            1
+        )
         both;
 }
 
 
 .restaurant-card:hover {
-    transform: translateY(-5px);
+
+    transform:
+        translateY(-5px);
 
     background:
+
         linear-gradient(
             145deg,
-            rgba(255,255,255,.21),
-            rgba(255,255,255,.09)
+            rgba(
+                255,
+                255,
+                255,
+                .21
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                .09
+            )
         );
 
     box-shadow:
-        0 18px 45px rgba(0,0,0,.25);
+        0 18px 45px
+        rgba(
+            0,
+            0,
+            0,
+            .25
+        );
 }
 
 
-/* Quand le restaurant est caché */
-
 .restaurant-card.hidden {
-    display: none;
+
+    display:
+        none;
 }
 
 
 .restaurant-top {
-    display: flex;
 
-    justify-content: space-between;
+    display:
+        flex;
 
-    gap: 20px;
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
 }
+
 
 .restaurant-name {
-    font-size: 20px;
-    font-weight: 700;
 
-    margin-bottom: 7px;
+    font-size:
+        20px;
+
+    font-weight:
+        700;
+
+    margin-bottom:
+        7px;
 }
+
 
 .address {
-    color: #cbd5e1;
-    font-size: 14px;
 
-    margin-bottom: 12px;
+    color:
+        #cbd5e1;
+
+    font-size:
+        14px;
+
+    margin-bottom:
+        12px;
 }
+
 
 .tags {
-    display: flex;
-    flex-wrap: wrap;
 
-    gap: 7px;
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        7px;
 }
+
 
 .tag {
-    padding: 6px 9px;
 
-    border-radius: 9px;
+    padding:
+        6px 9px;
 
-    background: rgba(255,255,255,.10);
-
-    color: #ddd6fe;
-
-    font-size: 12px;
-}
-
-.rating {
-    text-align: right;
-    white-space: nowrap;
-}
-
-.rating-number {
-    font-size: 18px;
-    font-weight: bold;
-
-    color: #facc15;
-}
-
-.rating-label {
-    color: #cbd5e1;
-    font-size: 12px;
-}
-
-
-/* =========================
-   CARTE
-========================= */
-
-.map-container {
-    position: sticky;
-
-    top: 100px;
-
-    height: calc(100vh - 125px);
-
-    min-height: 500px;
-
-    border-radius: 25px;
-
-    overflow: hidden;
-
-    border: 1px solid rgba(255,255,255,.18);
+    border-radius:
+        9px;
 
     background:
-        linear-gradient(145deg,#111827,#1e293b);
-
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.25);
-
-    animation: mapAppear .9s ease;
-}
-
-.map {
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            45deg,
-            rgba(255,255,255,.04) 25%,
-            transparent 25%
-        ),
-        linear-gradient(
-            -45deg,
-            rgba(255,255,255,.04) 25%,
-            transparent 25%
+        rgba(
+            255,
+            255,
+            255,
+            .10
         );
 
-    background-size: 70px 70px;
+    color:
+        #ddd6fe;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size:
+        12px;
 }
 
-.map-content {
-    text-align: center;
-    padding: 25px;
+
+.rating {
+
+    text-align:
+        right;
+
+    white-space:
+        nowrap;
 }
 
-.map-icon {
-    font-size: 60px;
 
-    animation:
-        float 3s ease-in-out infinite;
+.rating-number {
+
+    font-size:
+        18px;
+
+    font-weight:
+        bold;
+
+    color:
+        #facc15;
 }
 
-.map-content p {
-    color: #cbd5e1;
-    line-height: 1.5;
+
+.rating-label {
+
+    color:
+        #cbd5e1;
+
+    font-size:
+        12px;
+
+    margin-top:
+        4px;
 }
 
-.map-button {
-    border: none;
 
-    padding: 13px 20px;
+/* =====================================================
+   CARTE
+===================================================== */
 
-    border-radius: 12px;
+.map-container {
 
-    color: white;
+    position:
+        sticky;
 
-    font-weight: 600;
+    top:
+        100px;
 
-    cursor: pointer;
+    height:
+        calc(
+            100vh - 125px
+        );
 
-    background:
-        linear-gradient(135deg,#2563eb,#7c3aed);
+    min-height:
+        550px;
 
-    transition: .25s;
-}
+    border-radius:
+        25px;
 
-.map-button:hover {
-    transform: translateY(-3px) scale(1.03);
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .18
+        );
 
     box-shadow:
-        0 10px 25px rgba(99,102,241,.4);
+        0 15px 50px
+        rgba(
+            0,
+            0,
+            0,
+            .30
+        );
+
+    animation:
+        mapAppear
+        .8s
+        ease;
 }
 
 
-/* =========================
-   ANIMATIONS
-========================= */
+#map {
 
-@keyframes welcome {
+    width:
+        100%;
+
+    height:
+        100%;
+}
+
+
+/* =====================================================
+   POPUP
+===================================================== */
+
+.leaflet-popup-content-wrapper {
+
+    border-radius:
+        15px;
+}
+
+
+.popup-title {
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    color:
+        #111827;
+}
+
+
+.popup-address {
+
+    color:
+        #475569;
+
+    margin-top:
+        7px;
+}
+
+
+.popup-rating {
+
+    color:
+        #eab308;
+
+    font-weight:
+        bold;
+
+    margin-top:
+        7px;
+}
+
+
+.popup-button {
+
+    display:
+        inline-block;
+
+    margin-top:
+        10px;
+
+    padding:
+        8px 12px;
+
+    border-radius:
+        9px;
+
+    color:
+        white;
+
+    text-decoration:
+        none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes welcomeAppear {
 
     from {
-        opacity: 0;
-        transform: translateY(-25px);
+
+        opacity:
+            0;
+
+        transform:
+            translateY(-25px);
     }
 
     to {
-        opacity: 1;
-        transform: translateY(0);
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -470,13 +833,21 @@ body {
 @keyframes categoriesAppear {
 
     from {
-        opacity: 0;
-        transform: translateY(20px);
+
+        opacity:
+            0;
+
+        transform:
+            translateY(20px);
     }
 
     to {
-        opacity: 1;
-        transform: translateY(0);
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
     }
 }
 
@@ -484,13 +855,23 @@ body {
 @keyframes restaurantAppear {
 
     from {
-        opacity: 0;
-        transform: translateY(18px) scale(.98);
+
+        opacity:
+            0;
+
+        transform:
+            translateY(18px)
+            scale(.98);
     }
 
     to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            scale(1);
     }
 }
 
@@ -498,59 +879,53 @@ body {
 @keyframes mapAppear {
 
     from {
-        opacity: 0;
-        transform: translateX(30px);
+
+        opacity:
+            0;
+
+        transform:
+            translateX(30px);
     }
 
     to {
-        opacity: 1;
-        transform: translateX(0);
+
+        opacity:
+            1;
+
+        transform:
+            translateX(0);
     }
 }
 
 
-@keyframes float {
-
-    0%,100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 
-@media(max-width:900px) {
-
-    .topbar {
-        padding: 0 18px;
-    }
-
-    .top-search {
-        width: 50%;
-    }
-
-    .page {
-        padding: 30px 18px;
-    }
+@media(max-width:950px) {
 
     .layout {
-        grid-template-columns: 1fr;
+
+        grid-template-columns:
+            1fr;
     }
 
     .map-container {
-        position: relative;
 
-        top: auto;
+        position:
+            relative;
 
-        height: 400px;
+        top:
+            auto;
 
-        min-height: 400px;
+        height:
+            450px;
+
+        min-height:
+            450px;
+
+        order:
+            2;
     }
 }
 
@@ -558,34 +933,65 @@ body {
 @media(max-width:600px) {
 
     .topbar {
-        height: auto;
 
-        padding: 14px;
+        flex-direction:
+            column;
 
-        flex-direction: column;
+        padding:
+            14px;
 
-        gap: 12px;
+        gap:
+            12px;
     }
 
     .top-search {
-        width: 100%;
+
+        width:
+            100%;
+
+        margin:
+            0;
+    }
+
+    .page {
+
+        padding:
+            30px 18px;
     }
 
     .restaurant-top {
-        flex-direction: column;
+
+        flex-direction:
+            column;
     }
 
     .rating {
-        text-align: left;
+
+        text-align:
+            left;
+    }
+
+    .map-container {
+
+        height:
+            400px;
+
+        min-height:
+            400px;
     }
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
+<!-- =====================================================
+     BARRE DU HAUT
+===================================================== -->
 
 <header class="topbar">
 
@@ -593,9 +999,12 @@ body {
         🍔 QuiRégale ?
     </div>
 
+
     <div class="top-search">
 
-        <span class="search-icon">🔎</span>
+        <span class="search-icon">
+            🔎
+        </span>
 
         <input
             id="searchInput"
@@ -608,8 +1017,13 @@ body {
 </header>
 
 
+
 <main class="page">
 
+
+<!-- =====================================================
+     ACCUEIL
+===================================================== -->
 
 <section class="welcome">
 
@@ -624,50 +1038,81 @@ body {
 </section>
 
 
+
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
+
 <div class="categories">
 
-    <button class="category active"
-        onclick="filtrer('tout',this)">
+    <button
+        class="category active"
+        onclick="filtrer('tout',this)"
+    >
         🍽️ Tout
     </button>
 
-    <button class="category"
-        onclick="filtrer('tacos',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('tacos',this)"
+    >
         🌯 Tacos
     </button>
 
-    <button class="category"
-        onclick="filtrer('burger',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('burger',this)"
+    >
         🍔 Burger
     </button>
 
-    <button class="category"
-        onclick="filtrer('pizza',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('pizza',this)"
+    >
         🍕 Pizza
     </button>
 
-    <button class="category"
-        onclick="filtrer('sushi',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('sushi',this)"
+    >
         🍣 Sushi
     </button>
 
-    <button class="category"
-        onclick="filtrer('equilibre',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('equilibre',this)"
+    >
         🥗 Équilibré
     </button>
 
-    <button class="category"
-        onclick="filtrer('budget',this)">
+
+    <button
+        class="category"
+        onclick="filtrer('budget',this)"
+    >
         💰 Petit budget
     </button>
 
 </div>
 
 
+
+<!-- =====================================================
+     RESTAURANTS + CARTE
+===================================================== -->
+
 <div class="layout">
 
 
 <section>
+
 
 <div class="section-title">
 
@@ -675,18 +1120,24 @@ body {
         🔥 Restaurants
     </h2>
 
-    <span id="count" class="count">
+    <span
+        id="count"
+        class="count"
+    >
         6 restaurants
     </span>
 
 </div>
 
 
-<!-- CASTEL -->
+
+<!-- LE CASTEL -->
 
 <article
     class="restaurant-card show"
-    data-categories="tacos burger budget">
+    data-id="castel"
+    data-categories="tacos burger budget"
+>
 
     <div class="restaurant-top">
 
@@ -718,6 +1169,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -735,11 +1187,14 @@ body {
 </article>
 
 
+
 <!-- PASTA TIME -->
 
 <article
     class="restaurant-card show"
-    data-categories="pizza budget">
+    data-id="pasta"
+    data-categories="pizza budget"
+>
 
     <div class="restaurant-top">
 
@@ -771,6 +1226,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -788,11 +1244,14 @@ body {
 </article>
 
 
+
 <!-- CHEZ DARKO -->
 
 <article
     class="restaurant-card show"
-    data-categories="burger tacos">
+    data-id="darko"
+    data-categories="burger tacos"
+>
 
     <div class="restaurant-top">
 
@@ -820,6 +1279,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -837,11 +1297,14 @@ body {
 </article>
 
 
+
 <!-- KYODAI -->
 
 <article
     class="restaurant-card show"
-    data-categories="sushi equilibre">
+    data-id="kyodai"
+    data-categories="sushi equilibre"
+>
 
     <div class="restaurant-top">
 
@@ -869,6 +1332,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -886,11 +1350,14 @@ body {
 </article>
 
 
+
 <!-- M PLAISIR -->
 
 <article
     class="restaurant-card show"
-    data-categories="tacos burger pizza budget">
+    data-id="mplaisir"
+    data-categories="tacos burger pizza budget"
+>
 
     <div class="restaurant-top">
 
@@ -926,6 +1393,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -943,11 +1411,14 @@ body {
 </article>
 
 
+
 <!-- PETIT CREUX -->
 
 <article
     class="restaurant-card show"
-    data-categories="budget">
+    data-id="nath"
+    data-categories="budget"
+>
 
     <div class="restaurant-top">
 
@@ -975,6 +1446,7 @@ body {
 
         </div>
 
+
         <div class="rating">
 
             <div class="rating-number">
@@ -995,34 +1467,14 @@ body {
 </section>
 
 
-<!-- CARTE -->
+
+<!-- =====================================================
+     CARTE
+===================================================== -->
 
 <aside class="map-container">
 
-    <div class="map">
-
-        <div class="map-content">
-
-            <div class="map-icon">
-                🗺️
-            </div>
-
-            <h2>
-                Carte des restaurants
-            </h2>
-
-            <p>
-                La carte interactive<br>
-                arrivera ici.
-            </p>
-
-            <button class="map-button">
-                📍 Voir la carte
-            </button>
-
-        </div>
-
-    </div>
+    <div id="map"></div>
 
 </aside>
 
@@ -1032,150 +1484,606 @@ body {
 </main>
 
 
-<footer>
 
-    QuiRégale ? · Projet étudiant 🍔
+<!-- =====================================================
+     LEAFLET
+===================================================== -->
 
-</footer>
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 
 <script>
 
 
-function filtrer(categorie,bouton) {
+/* =====================================================
+   DONNEES RESTAURANTS
+===================================================== */
 
-    const restaurants =
-        document.querySelectorAll(".restaurant-card");
+const restaurants = {
+
+    castel: {
+
+        nom:
+            "🍔 Le Castel",
+
+        adresse:
+            "164 Bd de Saint-Marcel",
+
+        note:
+            "4,5",
+
+        lat:
+            43.2954,
+
+        lng:
+            5.4754
+
+    },
+
+
+    pasta: {
+
+        nom:
+            "🍝 PASTA TIME",
+
+        adresse:
+            "183 Bd de Saint-Marcel",
+
+        note:
+            "5,0",
+
+        lat:
+            43.2948,
+
+        lng:
+            5.4762
+
+    },
+
+
+    darko: {
+
+        nom:
+            "🍔 Chez Darko",
+
+        adresse:
+            "175 Bd de Saint-Marcel",
+
+        note:
+            "4,8",
+
+        lat:
+            43.2950,
+
+        lng:
+            5.4758
+
+    },
+
+
+    kyodai: {
+
+        nom:
+            "🍣 Kyodai Sushi",
+
+        adresse:
+            "114 Bd de Saint-Marcel",
+
+        note:
+            "5,0",
+
+        lat:
+            43.2960,
+
+        lng:
+            5.4728
+
+    },
+
+
+    mplaisir: {
+
+        nom:
+            "🥪 M.Plaisir",
+
+        adresse:
+            "110 Bd de Saint-Marcel",
+
+        note:
+            "4,1",
+
+        lat:
+            43.2962,
+
+        lng:
+            5.4725
+
+    },
+
+
+    nath: {
+
+        nom:
+            "🥪 Le petit creux de Nath",
+
+        adresse:
+            "271 Bd de Saint-Marcel",
+
+        note:
+            "4,9",
+
+        lat:
+            43.2936,
+
+        lng:
+            5.4800
+
+    }
+
+};
+
+
+/* =====================================================
+   CREATION CARTE
+===================================================== */
+
+const map =
+    L.map("map").setView(
+        [
+            43.295,
+            5.475
+        ],
+        15
+    );
+
+
+/* Fond OpenStreetMap */
+
+L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+        attribution:
+            '&copy; OpenStreetMap contributors',
+
+        maxZoom:
+            19
+
+    }
+
+).addTo(map);
+
+
+/* =====================================================
+   MARQUEURS
+===================================================== */
+
+const markers = {};
+
+
+Object.entries(restaurants).forEach(
+    ([id, resto]) => {
+
+
+        const marker =
+            L.marker([
+                resto.lat,
+                resto.lng
+            ]).addTo(map);
+
+
+        marker.bindPopup(`
+
+            <div>
+
+                <div class="popup-title">
+                    ${resto.nom}
+                </div>
+
+                <div class="popup-address">
+                    📍 ${resto.adresse}
+                </div>
+
+                <div class="popup-rating">
+                    ⭐ ${resto.note}
+                </div>
+
+                <a
+                    class="popup-button"
+                    target="_blank"
+                    href="https://www.google.com/maps/dir/?api=1&destination=${resto.lat},${resto.lng}"
+                >
+                    🚶 Itinéraire
+                </a>
+
+            </div>
+
+        `);
+
+
+        markers[id] =
+            marker;
+
+    }
+);
+
+
+/* =====================================================
+   CLIQUER SUR UN RESTAURANT
+===================================================== */
+
+document
+    .querySelectorAll(".restaurant-card")
+    .forEach(card => {
+
+
+        card.addEventListener(
+            "click",
+            function() {
+
+
+                const id =
+                    this.dataset.id;
+
+
+                const resto =
+                    restaurants[id];
+
+
+                if (!resto)
+                    return;
+
+
+                map.flyTo(
+
+                    [
+                        resto.lat,
+                        resto.lng
+                    ],
+
+                    17,
+
+                    {
+
+                        duration:
+                            1.2
+
+                    }
+
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        markers[id]
+                            .openPopup();
+
+                    },
+                    500
+                );
+
+            }
+
+        );
+
+    });
+
+
+/* =====================================================
+   FILTRES
+===================================================== */
+
+function filtrer(
+    categorie,
+    bouton
+) {
+
+
+    const cartes =
+        document.querySelectorAll(
+            ".restaurant-card"
+        );
+
 
     const boutons =
-        document.querySelectorAll(".category");
-
-    let compteur = 0;
-
-
-    /* bouton actif */
-
-    boutons.forEach(function(b) {
-
-        b.classList.remove("active");
-
-    });
-
-    bouton.classList.add("active");
+        document.querySelectorAll(
+            ".category"
+        );
 
 
-    /* restaurants */
-
-    restaurants.forEach(function(resto,index) {
-
-        const categories =
-            resto.dataset.categories.split(" ");
-
-        const doitAfficher =
-            categorie === "tout" ||
-            categories.includes(categorie);
+    let compteur =
+        0;
 
 
-        if (doitAfficher) {
+    boutons.forEach(
+        b =>
+            b.classList.remove(
+                "active"
+            )
+    );
 
-            resto.classList.remove("hidden");
 
-            compteur++;
+    bouton.classList.add(
+        "active"
+    );
 
 
-            /*
-            On retire puis remet
-            l'animation pour qu'elle
-            se rejoue à chaque clic.
-            */
+    cartes.forEach(
+        (card,index) => {
 
-            resto.classList.remove("show");
 
-            void resto.offsetWidth;
+            const categories =
+                card.dataset.categories
+                    .split(" ");
 
-            resto.style.animationDelay =
-                (index * 0.07) + "s";
 
-            resto.classList.add("show");
+            const visible =
 
-        } else {
+                categorie === "tout"
+                ||
+                categories.includes(
+                    categorie
+                );
 
-            resto.classList.remove("show");
 
-            resto.classList.add("hidden");
+            if (visible) {
+
+
+                card.classList.remove(
+                    "hidden"
+                );
+
+
+                compteur++;
+
+
+                /*
+                   Relance l'animation
+                */
+
+                card.classList.remove(
+                    "show"
+                );
+
+
+                void card.offsetWidth;
+
+
+                card.style.animationDelay =
+                    `${index * 0.07}s`;
+
+
+                card.classList.add(
+                    "show"
+                );
+
+
+            }
+
+            else {
+
+
+                card.classList.remove(
+                    "show"
+                );
+
+
+                card.classList.add(
+                    "hidden"
+                );
+
+            }
 
         }
+    );
 
-    });
+
+    document
+        .getElementById("count")
+        .textContent =
+
+        compteur
+        +
+        (
+            compteur > 1
+                ? " restaurants"
+                : " restaurant"
+        );
 
 
-    document.getElementById("count").textContent =
-        compteur +
-        (compteur > 1
-            ? " restaurants"
-            : " restaurant");
+    /*
+       On affiche uniquement
+       les marqueurs correspondants
+    */
+
+    Object.entries(
+        restaurants
+    ).forEach(
+        ([id, resto]) => {
+
+
+            const marker =
+                markers[id];
+
+
+            const afficher =
+
+                categorie === "tout";
+
+
+            if (afficher) {
+
+                if (!map.hasLayer(marker))
+                    marker.addTo(map);
+
+            }
+
+            else {
+
+                const carte =
+                    document.querySelector(
+                        `[data-id="${id}"]`
+                    );
+
+
+                if (
+                    carte &&
+                    !carte.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+                    if (
+                        !map.hasLayer(marker)
+                    )
+                        marker.addTo(map);
+
+                }
+
+                else {
+
+                    if (
+                        map.hasLayer(marker)
+                    )
+                        map.removeLayer(
+                            marker
+                        );
+
+                }
+
+            }
+
+        }
+    );
 
 }
 
 
-/* =========================
+/* =====================================================
    RECHERCHE
-========================= */
+===================================================== */
 
 document
     .getElementById("searchInput")
-    .addEventListener("input",function() {
-
-        const recherche =
-            this.value.toLowerCase().trim();
-
-        const restaurants =
-            document.querySelectorAll(".restaurant-card");
-
-        let compteur = 0;
+    .addEventListener(
+        "input",
+        function() {
 
 
-        restaurants.forEach(function(resto,index) {
-
-            const texte =
-                resto.innerText.toLowerCase();
-
-
-            if (texte.includes(recherche)) {
-
-                resto.classList.remove("hidden");
-
-                compteur++;
-
-                resto.classList.remove("show");
-
-                void resto.offsetWidth;
-
-                resto.style.animationDelay =
-                    (index * 0.07) + "s";
-
-                resto.classList.add("show");
-
-            } else {
-
-                resto.classList.remove("show");
-
-                resto.classList.add("hidden");
-
-            }
-
-        });
+            const recherche =
+                this.value
+                    .toLowerCase()
+                    .trim();
 
 
-        document.getElementById("count").textContent =
-            compteur +
-            (compteur > 1
-                ? " restaurants"
-                : " restaurant");
+            const cartes =
+                document.querySelectorAll(
+                    ".restaurant-card"
+                );
 
-    });
+
+            let compteur =
+                0;
+
+
+            cartes.forEach(
+                (card,index) => {
+
+
+                    const texte =
+                        card.innerText
+                            .toLowerCase();
+
+
+                    if (
+                        texte.includes(
+                            recherche
+                        )
+                    ) {
+
+
+                        card.classList.remove(
+                            "hidden"
+                        );
+
+
+                        compteur++;
+
+
+                        card.classList.remove(
+                            "show"
+                        );
+
+
+                        void card.offsetWidth;
+
+
+                        card.style.animationDelay =
+                            `${index * .07}s`;
+
+
+                        card.classList.add(
+                            "show"
+                        );
+
+                    }
+
+                    else {
+
+
+                        card.classList.remove(
+                            "show"
+                        );
+
+
+                        card.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
+                }
+            );
+
+
+            document
+                .getElementById("count")
+                .textContent =
+
+                compteur
+                +
+                (
+                    compteur > 1
+                        ? " restaurants"
+                        : " restaurant"
+                );
+
+        }
+    );
+
+
+/* =====================================================
+   REDIMENSIONNEMENT CARTE
+===================================================== */
+
+setTimeout(
+    () => {
+
+        map.invalidateSize();
+
+    },
+    500
+);
 
 </script>
 
+
 </body>
+
 </html>
