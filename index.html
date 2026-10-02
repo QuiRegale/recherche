@@ -9,11 +9,10 @@
     <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
             background: #fff8f0;
             color: #292524;
@@ -22,18 +21,19 @@
         header {
             background: linear-gradient(135deg, #ff7a00, #ff3d00);
             color: white;
-            padding: 35px 20px 45px;
             text-align: center;
+            padding: 35px 20px;
             border-radius: 0 0 30px 30px;
         }
 
         header h1 {
             font-size: 42px;
-            margin-bottom: 10px;
+            margin: 0 0 10px;
         }
 
         header p {
             font-size: 18px;
+            margin: 0;
         }
 
         .container {
@@ -43,11 +43,11 @@
         }
 
         .search {
-            margin-top: -25px;
             background: white;
             padding: 15px;
             border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+            margin-bottom: 30px;
         }
 
         .search input {
@@ -56,12 +56,10 @@
             border: 2px solid #eee;
             border-radius: 12px;
             font-size: 16px;
-            outline: none;
         }
 
         h2 {
-            margin: 30px 0 15px;
-            font-size: 23px;
+            margin-top: 30px;
         }
 
         .categories {
@@ -76,13 +74,11 @@
             padding: 20px 10px;
             border-radius: 18px;
             font-size: 17px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
-            transition: 0.2s;
         }
 
         .category:hover {
-            transform: translateY(-3px);
             background: #fff1e6;
         }
 
@@ -90,43 +86,48 @@
             background: white;
             padding: 20px;
             border-radius: 18px;
-            margin-bottom: 15px;
+            margin: 15px 0;
             box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         }
 
         .restaurant {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            gap: 15px;
         }
 
         .restaurant h3 {
-            margin-bottom: 7px;
+            margin: 0 0 8px;
         }
 
         .stars {
             color: #f59e0b;
-            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .type {
+            color: #f97316;
+            font-weight: bold;
         }
 
         .map-button {
             display: block;
             width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 15px;
             background: #292524;
             color: white;
-            padding: 18px;
-            border-radius: 15px;
-            border: none;
             font-size: 17px;
-            margin-top: 15px;
             cursor: pointer;
+            margin-top: 20px;
         }
 
         footer {
             text-align: center;
             padding: 30px;
-            color: #78716c;
-            font-size: 14px;
+            color: #777;
         }
     </style>
 </head>
@@ -141,98 +142,102 @@
 <div class="container">
 
     <div class="search">
-        <input
-            type="text"
-            placeholder="🔎 Rechercher un fast-food..."
-        >
+        <input type="text" placeholder="🔎 Rechercher un restaurant...">
     </div>
 
     <h2>🍽️ Qu'est-ce que tu veux manger ?</h2>
 
     <div class="categories">
 
-        <button class="category">
-            🌯<br>
-            Tacos
-        </button>
-
-        <button class="category">
-            🍔<br>
-            Burger
-        </button>
-
-        <button class="category">
-            🌮<br>
-            Kebab
-        </button>
-
-        <button class="category">
-            🍕<br>
-            Pizza
-        </button>
-
-        <button class="category">
-            🥗<br>
-            Équilibré
-        </button>
-
-        <button class="category">
-            💰<br>
-            Petit budget
-        </button>
+        <button class="category">🌯<br>Tacos</button>
+        <button class="category">🍔<br>Burger</button>
+        <button class="category">🍕<br>Pizza</button>
+        <button class="category">🍣<br>Sushi</button>
+        <button class="category">🥗<br>Équilibré</button>
+        <button class="category">💰<br>Petit budget</button>
 
     </div>
 
-    <h2>🏆 Les mieux notés</h2>
+    <h2>🏆 Restaurants autour du lycée</h2>
 
     <div class="card">
-
         <div class="restaurant">
-
             <div>
-                <h3>🍔 Fast-food exemple</h3>
-                <p>À 350 m du lycée</p>
+                <h3>🍔 Le Castel</h3>
+                <p>164 Bd de Saint-Marcel</p>
+                <p class="type">🍔 Fast-food</p>
             </div>
 
-            <div class="stars">
-                ⭐ 4,6
-            </div>
-
+            <div class="stars">⭐ 4,5</div>
         </div>
-
-        <p style="margin-top:12px;">
-            💰 8-12 € · 🍔 Burger
-        </p>
-
     </div>
 
     <div class="card">
-
         <div class="restaurant">
-
             <div>
-                <h3>🌯 Fast-food exemple 2</h3>
-                <p>À 500 m du lycée</p>
+                <h3>🍝 PASTA TIME</h3>
+                <p>183 Bd de Saint-Marcel</p>
+                <p class="type">🍝 Restauration rapide</p>
             </div>
 
-            <div class="stars">
-                ⭐ 4,4
-            </div>
-
+            <div class="stars">⭐ 5,0</div>
         </div>
-
-        <p style="margin-top:12px;">
-            💰 7-10 € · 🌯 Tacos
-        </p>
-
     </div>
 
-    <h2>📍 Où manger ?</h2>
+    <div class="card">
+        <div class="restaurant">
+            <div>
+                <h3>🍔 Chez Darko</h3>
+                <p>175 Bd de Saint-Marcel</p>
+                <p class="type">🍔 Burger / Grill</p>
+            </div>
+
+            <div class="stars">⭐ 4,8</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="restaurant">
+            <div>
+                <h3>🍣 Kyodai Sushi</h3>
+                <p>114 Bd de Saint-Marcel</p>
+                <p class="type">🍣 Japonais</p>
+            </div>
+
+            <div class="stars">⭐ 5,0</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="restaurant">
+            <div>
+                <h3>🥪 M.Plaisir</h3>
+                <p>110 Bd de Saint-Marcel</p>
+                <p class="type">🥪 Sandwich · 🍔 Burger · 🍕 Pizza</p>
+            </div>
+
+            <div class="stars">⭐ 4,1</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="restaurant">
+            <div>
+                <h3>🥪 Le petit creux de Nath</h3>
+                <p>271 Bd de Saint-Marcel</p>
+                <p class="type">🥪 Restaurant</p>
+            </div>
+
+            <div class="stars">⭐ 4,9</div>
+        </div>
+    </div>
+
+    <h2>📍 Carte</h2>
 
     <div class="card">
 
         <p>
-            Découvre les fast-foods autour de ton lycée
+            Retrouve les restaurants autour de ton lycée
             directement sur la carte.
         </p>
 
