@@ -3,63 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>QuiRégale ?</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #fff7ed;
+            background: #fff8f0;
+            color: #292524;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff7a00, #ff3d00);
+            color: white;
+            padding: 35px 20px 45px;
             text-align: center;
-            margin: 0;
-            padding: 30px;
+            border-radius: 0 0 30px 30px;
         }
 
-        h1 {
-            color: #f97316;
-            font-size: 40px;
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
         }
 
-        p {
-            font-size: 20px;
-        }
-
-        .boutons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 350px;
-            margin: 30px auto;
-        }
-
-        button {
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            background-color: white;
+        header p {
             font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 3px 10px #ddd;
         }
 
-        button:hover {
-            background-color: #ffedd5;
+        .container {
+            max-width: 700px;
+            margin: auto;
+            padding: 25px 20px;
+        }
+
+        .search {
+            margin-top: -25px;
+            background: white;
+            padding: 15px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .search input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        h2 {
+            margin: 30px 0 15px;
+            font-size: 23px;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .category {
+            background: white;
+            border: none;
+            padding: 20px 10px;
+            border-radius: 18px;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            transition: 0.2s;
+        }
+
+        .category:hover {
+            transform: translateY(-3px);
+            background: #fff1e6;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .restaurant {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .restaurant h3 {
+            margin-bottom: 7px;
+        }
+
+        .stars {
+            color: #f59e0b;
+            font-size: 18px;
+        }
+
+        .map-button {
+            display: block;
+            width: 100%;
+            background: #292524;
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            border: none;
+            font-size: 17px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #78716c;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
 
+<header>
     <h1>🍔 QuiRégale ?</h1>
+    <p>Trouve où manger autour du lycée !</p>
+</header>
 
-    <p>Tu veux manger quoi aujourd'hui ?</p>
+<div class="container">
 
-    <div class="boutons">
-        <button>🌯 Tacos</button>
-        <button>🍔 Burger</button>
-        <button>🌮 Kebab</button>
-        <button>🍕 Pizza</button>
-        <button>🥗 Manger équilibré</button>
+    <div class="search">
+        <input
+            type="text"
+            placeholder="🔎 Rechercher un fast-food..."
+        >
     </div>
+
+    <h2>🍽️ Qu'est-ce que tu veux manger ?</h2>
+
+    <div class="categories">
+
+        <button class="category">
+            🌯<br>
+            Tacos
+        </button>
+
+        <button class="category">
+            🍔<br>
+            Burger
+        </button>
+
+        <button class="category">
+            🌮<br>
+            Kebab
+        </button>
+
+        <button class="category">
+            🍕<br>
+            Pizza
+        </button>
+
+        <button class="category">
+            🥗<br>
+            Équilibré
+        </button>
+
+        <button class="category">
+            💰<br>
+            Petit budget
+        </button>
+
+    </div>
+
+    <h2>🏆 Les mieux notés</h2>
+
+    <div class="card">
+
+        <div class="restaurant">
+
+            <div>
+                <h3>🍔 Fast-food exemple</h3>
+                <p>À 350 m du lycée</p>
+            </div>
+
+            <div class="stars">
+                ⭐ 4,6
+            </div>
+
+        </div>
+
+        <p style="margin-top:12px;">
+            💰 8-12 € · 🍔 Burger
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <div class="restaurant">
+
+            <div>
+                <h3>🌯 Fast-food exemple 2</h3>
+                <p>À 500 m du lycée</p>
+            </div>
+
+            <div class="stars">
+                ⭐ 4,4
+            </div>
+
+        </div>
+
+        <p style="margin-top:12px;">
+            💰 7-10 € · 🌯 Tacos
+        </p>
+
+    </div>
+
+    <h2>📍 Où manger ?</h2>
+
+    <div class="card">
+
+        <p>
+            Découvre les fast-foods autour de ton lycée
+            directement sur la carte.
+        </p>
+
+        <button class="map-button">
+            🗺️ Voir la carte
+        </button>
+
+    </div>
+
+</div>
+
+<footer>
+    QuiRégale ? — Projet étudiant 🍔
+</footer>
 
 </body>
 </html>
