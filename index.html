@@ -1,2300 +1,1546 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>QuiRégale ?</title>
 
 <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
-
 <style>
-
-/* =====================================================
-   BASE
-===================================================== */
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  min-height: 100vh;
 
-    margin: 0;
+  background:
+    radial-gradient(circle at 10% 10%, #29458f 0%, transparent 30%),
+    radial-gradient(circle at 90% 80%, #7028c9 0%, transparent 30%),
+    linear-gradient(135deg, #06142e, #111d4a, #392080);
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    color: white;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at 10% 10%,
-            #29458f 0%,
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 90% 80%,
-            #7028c9 0%,
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #06142e,
-            #111d4a,
-            #392080
-        );
-
-    background-attachment: fixed;
+  background-attachment: fixed;
 }
 
-
-/* =====================================================
+/* =========================
    BARRE DU HAUT
-===================================================== */
+========================= */
 
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-    position: sticky;
+  min-height: 78px;
 
-    top: 0;
+  background: rgba(255,255,255,.97);
+  color: #111827;
 
-    z-index: 1000;
+  display: flex;
+  align-items: center;
 
-    min-height: 78px;
+  padding: 14px 35px;
+  gap: 25px;
 
-    background:
-        rgba(255,255,255,.97);
-
-    color: #111827;
-
-    display: flex;
-
-    align-items: center;
-
-    padding:
-        14px 35px;
-
-    gap: 25px;
-
-    box-shadow:
-        0 5px 25px
-        rgba(0,0,0,.20);
-
-    backdrop-filter:
-        blur(12px);
+  box-shadow: 0 5px 25px rgba(0,0,0,.20);
 }
-
 
 .logo {
+  font-size: 28px;
+  font-weight: 800;
+  white-space: nowrap;
 
-    font-size: 28px;
-
-    font-weight: 800;
-
-    white-space: nowrap;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    -webkit-background-clip: text;
-
-    -webkit-text-fill-color:
-        transparent;
+  background: linear-gradient(135deg,#2563eb,#7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-
 
 .top-search {
-
-    margin-left: auto;
-
-    width:
-        min(430px,50%);
-
-    position: relative;
+  margin-left: auto;
+  width: min(430px,50%);
+  position: relative;
 }
-
 
 .top-search input {
+  width: 100%;
 
-    width: 100%;
+  padding: 14px 20px 14px 46px;
 
-    padding:
-        14px
-        20px
-        14px
-        46px;
+  border: 1px solid #e5e7eb;
+  border-radius: 30px;
 
-    border:
-        1px solid #e5e7eb;
+  outline: none;
+  font-size: 15px;
 
-    border-radius: 30px;
+  background: #f8fafc;
 
-    outline: none;
-
-    font-size: 15px;
-
-    background:
-        #f8fafc;
-
-    transition: .25s;
+  transition: .25s;
 }
-
 
 .top-search input:focus {
+  background: white;
+  border-color: #6366f1;
 
-    background:
-        white;
-
-    border-color:
-        #6366f1;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(
-            99,
-            102,
-            241,
-            .12
-        );
+  box-shadow:
+    0 0 0 4px rgba(99,102,241,.12);
 }
-
 
 .search-icon {
+  position: absolute;
+  left: 17px;
+  top: 50%;
 
-    position: absolute;
+  transform: translateY(-50%);
 
-    left: 17px;
-
-    top: 50%;
-
-    transform:
-        translateY(-50%);
-
-    color:
-        #64748b;
+  color: #64748b;
 }
 
-
-/* =====================================================
-   CONTENU
-===================================================== */
+/* =========================
+   PAGE
+========================= */
 
 .page {
-
-    max-width:
-        1500px;
-
-    margin:
-        auto;
-
-    padding:
-        40px 35px;
+  max-width: 1500px;
+  margin: auto;
+  padding: 40px 35px;
 }
-
 
 .welcome {
-
-    animation:
-        welcomeAppear
-        .7s
-        ease;
+  animation: welcomeAppear .7s ease;
 }
-
 
 .welcome h1 {
+  margin: 0;
 
-    margin: 0;
-
-    font-size:
-        clamp(
-            32px,
-            4vw,
-            50px
-        );
+  font-size:
+    clamp(32px,4vw,50px);
 }
-
 
 .welcome p {
-
-    color:
-        #cbd5e1;
-
-    font-size:
-        17px;
-
-    margin-top:
-        10px;
+  color: #cbd5e1;
+  font-size: 17px;
+  margin-top: 10px;
 }
 
-
-/* =====================================================
-   CATÉGORIES
-===================================================== */
+/* =========================
+   CATEGORIES
+========================= */
 
 .categories {
+  display: flex;
+  gap: 12px;
 
-    display: flex;
+  overflow-x: auto;
 
-    gap: 12px;
+  padding: 20px 2px;
 
-    overflow-x: auto;
+  scrollbar-width: none;
 
-    padding:
-        20px 2px;
-
-    scrollbar-width:
-        none;
-
-    animation:
-        categoriesAppear
-        .8s
-        ease;
+  animation: categoriesAppear .8s ease;
 }
-
 
 .categories::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
-
 
 .category {
+  flex-shrink: 0;
 
-    flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,.18);
 
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .18
-        );
+  background: rgba(255,255,255,.10);
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            .10
-        );
+  color: white;
 
-    color:
-        white;
+  border-radius: 16px;
 
-    border-radius:
-        16px;
+  padding: 14px 20px;
 
-    padding:
-        14px 20px;
+  cursor: pointer;
 
-    cursor:
-        pointer;
+  font-size: 15px;
 
-    font-size:
-        15px;
+  backdrop-filter: blur(10px);
 
-    backdrop-filter:
-        blur(10px);
-
-    transition:
-        .25s;
+  transition: .25s;
 }
-
 
 .category:hover {
+  transform: translateY(-4px) scale(1.03);
 
-    transform:
-        translateY(-4px)
-        scale(1.03);
+  background: rgba(255,255,255,.20);
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            .20
-        );
-
-    box-shadow:
-        0 10px 25px
-        rgba(0,0,0,.20);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.20);
 }
-
 
 .category.active {
+  background:
+    linear-gradient(135deg,#2563eb,#7c3aed);
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
+  border-color: transparent;
 
-    border-color:
-        transparent;
-
-    box-shadow:
-        0 8px 25px
-        rgba(
-            99,
-            102,
-            241,
-            .40
-        );
+  box-shadow:
+    0 8px 25px rgba(99,102,241,.40);
 }
 
-
-/* =====================================================
+/* =========================
    LAYOUT
-===================================================== */
+========================= */
 
 .layout {
+  display: grid;
 
-    display: grid;
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(420px,45%);
 
-    grid-template-columns:
-        minmax(0,1fr)
-        minmax(420px,45%);
+  gap: 28px;
 
-    gap:
-        28px;
-
-    align-items:
-        start;
+  align-items: start;
 }
-
-
-/* =====================================================
-   TITRE
-===================================================== */
 
 .section-title {
+  display: flex;
 
-    display:
-        flex;
+  justify-content: space-between;
+  align-items: center;
 
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    margin-bottom:
-        16px;
+  margin-bottom: 16px;
 }
-
 
 .section-title h2 {
-
-    margin:
-        0;
-
-    font-size:
-        23px;
+  margin: 0;
+  font-size: 23px;
 }
-
 
 .count {
-
-    color:
-        #cbd5e1;
-
-    font-size:
-        14px;
+  color: #cbd5e1;
+  font-size: 14px;
 }
 
-
-/* =====================================================
-   CARTES RESTAURANTS
-===================================================== */
+/* =========================
+   RESTAURANTS
+========================= */
 
 .restaurant-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.15),
+      rgba(255,255,255,.07)
+    );
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(
-                255,
-                255,
-                255,
-                .15
-            ),
-            rgba(
-                255,
-                255,
-                255,
-                .07
-            )
-        );
+  border:
+    1px solid rgba(255,255,255,.16);
 
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .16
-        );
+  border-radius: 22px;
 
-    border-radius:
-        22px;
+  padding: 21px;
 
-    padding:
-        21px;
+  margin-bottom: 15px;
 
-    margin-bottom:
-        15px;
+  backdrop-filter: blur(12px);
 
-    backdrop-filter:
-        blur(12px);
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.15);
 
-    box-shadow:
-        0 10px 35px
-        rgba(
-            0,
-            0,
-            0,
-            .15
-        );
+  cursor: pointer;
 
-    cursor:
-        pointer;
-
-    transition:
-        .30s;
+  transition: .30s;
 }
-
 
 .restaurant-card.show {
-
-    animation:
-        restaurantAppear
-        .45s
-        cubic-bezier(
-            .2,
-            .8,
-            .2,
-            1
-        )
-        both;
+  animation:
+    restaurantAppear
+    .45s
+    cubic-bezier(.2,.8,.2,1)
+    both;
 }
-
 
 .restaurant-card:hover {
+  transform: translateY(-5px);
 
-    transform:
-        translateY(-5px);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.21),
+      rgba(255,255,255,.09)
+    );
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(
-                255,
-                255,
-                255,
-                .21
-            ),
-            rgba(
-                255,
-                255,
-                255,
-                .09
-            )
-        );
-
-    box-shadow:
-        0 18px 45px
-        rgba(
-            0,
-            0,
-            0,
-            .25
-        );
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.25);
 }
-
 
 .restaurant-card.hidden {
-    display: none;
+  display: none;
 }
-
 
 .restaurant-top {
+  display: flex;
 
-    display:
-        flex;
+  justify-content: space-between;
 
-    justify-content:
-        space-between;
-
-    gap:
-        20px;
+  gap: 20px;
 }
-
 
 .restaurant-name {
+  font-size: 20px;
+  font-weight: 700;
 
-    font-size:
-        20px;
-
-    font-weight:
-        700;
-
-    margin-bottom:
-        7px;
+  margin-bottom: 7px;
 }
-
 
 .address {
+  color: #cbd5e1;
+  font-size: 14px;
 
-    color:
-        #cbd5e1;
-
-    font-size:
-        14px;
-
-    margin-bottom:
-        12px;
+  margin-bottom: 12px;
 }
-
 
 .tags {
+  display: flex;
+  flex-wrap: wrap;
 
-    display:
-        flex;
-
-    flex-wrap:
-        wrap;
-
-    gap:
-        7px;
+  gap: 7px;
 }
-
 
 .tag {
+  padding: 6px 9px;
 
-    padding:
-        6px 9px;
+  border-radius: 9px;
 
-    border-radius:
-        9px;
+  background: rgba(255,255,255,.10);
 
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            .10
-        );
+  color: #ddd6fe;
 
-    color:
-        #ddd6fe;
-
-    font-size:
-        12px;
+  font-size: 12px;
 }
-
 
 .rating {
-
-    text-align:
-        right;
-
-    white-space:
-        nowrap;
+  text-align: right;
+  white-space: nowrap;
 }
-
 
 .rating-number {
-
-    font-size:
-        18px;
-
-    font-weight:
-        bold;
-
-    color:
-        #facc15;
+  font-size: 18px;
+  font-weight: bold;
+  color: #facc15;
 }
-
 
 .rating-label {
-
-    color:
-        #cbd5e1;
-
-    font-size:
-        12px;
-
-    margin-top:
-        4px;
+  color: #cbd5e1;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
-
-/* =====================================================
+/* =========================
    CARTE
-===================================================== */
+========================= */
 
 .map-container {
+  position: sticky;
+  top: 100px;
 
-    position:
-        sticky;
+  height: calc(100vh - 125px);
 
-    top:
-        100px;
+  min-height: 550px;
 
-    height:
-        calc(
-            100vh - 125px
-        );
+  border-radius: 25px;
 
-    min-height:
-        550px;
+  overflow: hidden;
 
-    border-radius:
-        25px;
+  border:
+    1px solid rgba(255,255,255,.18);
 
-    overflow:
-        hidden;
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.30);
 
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .18
-        );
+  animation: mapAppear .8s ease;
 
-    box-shadow:
-        0 15px 50px
-        rgba(
-            0,
-            0,
-            0,
-            .30
-        );
-
-    animation:
-        mapAppear
-        .8s
-        ease;
+  background: #e5e7eb;
 }
-
 
 #map {
-
-    width:
-        100%;
-
-    height:
-        100%;
+  width: 100%;
+  height: 100%;
 }
 
-
-/* =====================================================
+/* =========================
    MARQUEURS
-===================================================== */
+========================= */
 
 .custom-marker {
+  display: flex;
 
-    display:
-        flex;
+  align-items: center;
+  justify-content: center;
 
-    align-items:
-        center;
+  min-width: 42px;
+  height: 40px;
 
-    justify-content:
-        center;
+  padding: 0 13px;
 
-    min-width:
-        42px;
+  border-radius: 14px;
 
-    height:
-        40px;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
 
-    padding:
-        0 13px;
+  color: white;
 
-    border-radius:
-        14px;
+  font-weight: 700;
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
+  font-size: 12px;
 
-    color:
-        white;
+  white-space: nowrap;
 
-    font-weight:
-        700;
+  border: 3px solid white;
 
-    font-size:
-        12px;
+  box-shadow:
+    0 5px 15px rgba(37,99,235,.45);
 
-    white-space:
-        nowrap;
+  transition: .2s;
 
-    border:
-        3px solid white;
-
-    box-shadow:
-        0 5px 15px
-        rgba(
-            37,
-            99,
-            235,
-            .45
-        );
-
-    transition:
-        .2s;
-
-    cursor:
-        pointer;
+  cursor: pointer;
 }
-
 
 .custom-marker:hover {
+  transform: scale(1.08);
 
-    transform:
-        scale(1.08);
-
-    box-shadow:
-        0 8px 22px
-        rgba(
-            124,
-            58,
-            237,
-            .55
-        );
+  box-shadow:
+    0 8px 22px rgba(124,58,237,.55);
 }
 
-
-/* =====================================================
+/* =========================
    POPUP
-===================================================== */
+========================= */
 
 .leaflet-popup-content-wrapper {
-
-    border-radius:
-        16px;
+  border-radius: 16px;
 }
-
 
 .leaflet-popup-content {
-
-    margin:
-        16px;
-
-    min-width:
-        200px;
+  margin: 16px;
+  min-width: 210px;
 }
-
 
 .popup-title {
-
-    font-size:
-        18px;
-
-    font-weight:
-        800;
-
-    color:
-        #111827;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
 }
-
 
 .popup-address {
-
-    color:
-        #475569;
-
-    margin-top:
-        8px;
-
-    line-height:
-        1.4;
+  color: #475569;
+  margin-top: 8px;
+  line-height: 1.4;
 }
-
 
 .popup-rating {
-
-    color:
-        #eab308;
-
-    font-weight:
-        bold;
-
-    margin-top:
-        9px;
+  color: #eab308;
+  font-weight: bold;
+  margin-top: 9px;
 }
-
-
-/* BOUTON ITINÉRAIRE */
 
 .popup-button {
+  display: block;
 
-    display:
-        block;
+  width: 100%;
 
-    width:
-        100%;
+  margin-top: 15px;
 
-    margin-top:
-        15px;
+  padding: 13px 16px;
 
-    padding:
-        13px 16px;
+  border-radius: 12px;
 
-    border-radius:
-        12px;
+  color: white;
 
-    color:
-        white;
+  text-align: center;
 
-    text-align:
-        center;
+  text-decoration: none;
 
-    text-decoration:
-        none;
+  font-weight: 800;
 
-    font-weight:
-        800;
+  font-size: 14px;
 
-    font-size:
-        14px;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
+  box-shadow:
+    0 5px 15px rgba(37,99,235,.30);
 
-    box-shadow:
-        0 5px 15px
-        rgba(
-            37,
-            99,
-            235,
-            .30
-        );
-
-    transition:
-        .2s;
+  transition: .2s;
 }
-
 
 .popup-button:hover {
+  transform: translateY(-2px);
 
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 8px 20px
-        rgba(
-            124,
-            58,
-            237,
-            .40
-        );
+  box-shadow:
+    0 8px 20px rgba(124,58,237,.40);
 }
 
-
-/* =====================================================
+/* =========================
    ANIMATIONS
-===================================================== */
+========================= */
 
 @keyframes welcomeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
 
-    from {
-
-        opacity:
-            0;
-
-        transform:
-            translateY(-25px);
-    }
-
-    to {
-
-        opacity:
-            1;
-
-        transform:
-            translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 @keyframes categoriesAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    from {
-
-        opacity:
-            0;
-
-        transform:
-            translateY(20px);
-    }
-
-    to {
-
-        opacity:
-            1;
-
-        transform:
-            translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 @keyframes restaurantAppear {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.98);
+  }
 
-    from {
-
-        opacity:
-            0;
-
-        transform:
-            translateY(18px)
-            scale(.98);
-    }
-
-    to {
-
-        opacity:
-            1;
-
-        transform:
-            translateY(0)
-            scale(1);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-
 
 @keyframes mapAppear {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
 
-    from {
-
-        opacity:
-            0;
-
-        transform:
-            translateX(30px);
-    }
-
-    to {
-
-        opacity:
-            1;
-
-        transform:
-            translateX(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-
-/* =====================================================
+/* =========================
    MOBILE
-===================================================== */
+========================= */
 
 @media(max-width:950px) {
 
-    .layout {
+  .layout {
+    grid-template-columns: 1fr;
+  }
 
-        grid-template-columns:
-            1fr;
-    }
+  .map-container {
+    position: relative;
 
-    .map-container {
+    top: auto;
 
-        position:
-            relative;
+    height: 450px;
+    min-height: 450px;
 
-        top:
-            auto;
-
-        height:
-            450px;
-
-        min-height:
-            450px;
-
-        order:
-            2;
-    }
+    order: 2;
+  }
 }
-
 
 @media(max-width:600px) {
 
-    .topbar {
+  .topbar {
+    flex-direction: column;
 
-        flex-direction:
-            column;
+    padding: 14px;
 
-        padding:
-            14px;
+    gap: 12px;
+  }
 
-        gap:
-            12px;
-    }
+  .top-search {
+    width: 100%;
+    margin: 0;
+  }
 
-    .top-search {
+  .page {
+    padding: 30px 18px;
+  }
 
-        width:
-            100%;
+  .restaurant-top {
+    flex-direction: column;
+  }
 
-        margin:
-            0;
-    }
+  .rating {
+    text-align: left;
+  }
 
-    .page {
+  .map-container {
+    height: 400px;
+    min-height: 400px;
+  }
 
-        padding:
-            30px 18px;
-    }
-
-    .restaurant-top {
-
-        flex-direction:
-            column;
-    }
-
-    .rating {
-
-        text-align:
-            left;
-    }
-
-    .map-container {
-
-        height:
-            400px;
-
-        min-height:
-            400px;
-    }
-
-    .custom-marker {
-
-        font-size:
-            11px;
-
-        padding:
-            0 10px;
-    }
+  .custom-marker {
+    font-size: 11px;
+    padding: 0 10px;
+  }
 }
-
 </style>
-
 </head>
 
 
 <body>
 
-
-<!-- =====================================================
-     BARRE DU HAUT
-===================================================== -->
-
 <header class="topbar">
 
-    <div class="logo">
-        🍔 QuiRégale ?
-    </div>
+  <div class="logo">
+    🍔 QuiRégale ?
+  </div>
 
+  <div class="top-search">
 
-    <div class="top-search">
+    <span class="search-icon">
+      🔎
+    </span>
 
-        <span class="search-icon">
-            🔎
-        </span>
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Rechercher un restaurant..."
+    >
 
-        <input
-            id="searchInput"
-            type="text"
-            placeholder="Rechercher un restaurant..."
-        >
-
-    </div>
+  </div>
 
 </header>
 
 
-
 <main class="page">
-
-
-<!-- =====================================================
-     ACCUEIL
-===================================================== -->
 
 <section class="welcome">
 
-    <h1>
-        Où est-ce qu'on mange ? 👀
-    </h1>
+  <h1>
+    Où est-ce qu'on mange ? 👀
+  </h1>
 
-    <p>
-        Trouve ton prochain repas autour du lycée.
-    </p>
+  <p>
+    Trouve ton prochain repas autour du lycée.
+  </p>
 
 </section>
 
-
-
-<!-- =====================================================
-     CATÉGORIES
-===================================================== -->
 
 <div class="categories">
 
-    <button
-        class="category active"
-        onclick="filtrer('tout',this)"
-    >
-        🍽️ Tout
-    </button>
+  <button
+    class="category active"
+    onclick="filtrer('tout',this)"
+  >
+    🍽️ Tout
+  </button>
 
+  <button
+    class="category"
+    onclick="filtrer('tacos',this)"
+  >
+    🌯 Tacos
+  </button>
 
-    <button
-        class="category"
-        onclick="filtrer('tacos',this)"
-    >
-        🌯 Tacos
-    </button>
+  <button
+    class="category"
+    onclick="filtrer('burger',this)"
+  >
+    🍔 Burger
+  </button>
 
+  <button
+    class="category"
+    onclick="filtrer('pizza',this)"
+  >
+    🍕 Pizza
+  </button>
 
-    <button
-        class="category"
-        onclick="filtrer('burger',this)"
-    >
-        🍔 Burger
-    </button>
+  <button
+    class="category"
+    onclick="filtrer('sushi',this)"
+  >
+    🍣 Sushi
+  </button>
 
+  <button
+    class="category"
+    onclick="filtrer('equilibre',this)"
+  >
+    🥗 Équilibré
+  </button>
 
-    <button
-        class="category"
-        onclick="filtrer('pizza',this)"
-    >
-        🍕 Pizza
-    </button>
-
-
-    <button
-        class="category"
-        onclick="filtrer('sushi',this)"
-    >
-        🍣 Sushi
-    </button>
-
-
-    <button
-        class="category"
-        onclick="filtrer('equilibre',this)"
-    >
-        🥗 Équilibré
-    </button>
-
-
-    <button
-        class="category"
-        onclick="filtrer('budget',this)"
-    >
-        💰 Petit budget
-    </button>
+  <button
+    class="category"
+    onclick="filtrer('budget',this)"
+  >
+    💰 Petit budget
+  </button>
 
 </div>
 
-
-
-<!-- =====================================================
-     CONTENU
-===================================================== -->
 
 <div class="layout">
 
-
 <section>
-
 
 <div class="section-title">
 
-    <h2>
-        🔥 Restaurants
-    </h2>
+  <h2>
+    🔥 Restaurants
+  </h2>
 
-    <span
-        id="count"
-        class="count"
-    >
-        6 restaurants
-    </span>
+  <span
+    id="count"
+    class="count"
+  >
+    6 restaurants
+  </span>
 
 </div>
 
 
-
-<!-- LE CASTEL -->
-
 <article
-    class="restaurant-card show"
-    data-id="castel"
-    data-categories="tacos burger budget"
+  class="restaurant-card show"
+  data-id="castel"
+  data-categories="tacos burger budget"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🍔 Le Castel
-            </div>
+      <div class="restaurant-name">
+        🍔 Le Castel
+      </div>
 
-            <div class="address">
-                📍 164 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 164 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🌯 Tacos
-                </span>
+        <span class="tag">
+          🌯 Tacos
+        </span>
 
-                <span class="tag">
-                    🍔 Burger
-                </span>
+        <span class="tag">
+          🍔 Burger
+        </span>
 
-                <span class="tag">
-                    💰 Petit budget
-                </span>
+        <span class="tag">
+          💰 Petit budget
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 4,5
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
+
+    <div class="rating">
+
+      <div class="rating-number">
+        ⭐ 4,5
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
 
 </article>
 
 
-
-<!-- PASTA TIME -->
-
 <article
-    class="restaurant-card show"
-    data-id="pasta"
-    data-categories="pizza budget"
+  class="restaurant-card show"
+  data-id="pasta"
+  data-categories="pizza budget"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🍝 PASTA TIME
-            </div>
+      <div class="restaurant-name">
+        🍝 PASTA TIME
+      </div>
 
-            <div class="address">
-                📍 183 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 183 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🍝 Pâtes
-                </span>
+        <span class="tag">
+          🍝 Pâtes
+        </span>
 
-                <span class="tag">
-                    🍕 Pizza
-                </span>
+        <span class="tag">
+          🍕 Pizza
+        </span>
 
-                <span class="tag">
-                    💰 Petit budget
-                </span>
+        <span class="tag">
+          💰 Petit budget
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 5,0
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
+
+    <div class="rating">
+
+      <div class="rating-number">
+        ⭐ 5,0
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
 
 </article>
 
 
-
-<!-- CHEZ DARKO -->
-
 <article
-    class="restaurant-card show"
-    data-id="darko"
-    data-categories="burger tacos"
+  class="restaurant-card show"
+  data-id="darko"
+  data-categories="burger tacos"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🍔 Chez Darko
-            </div>
+      <div class="restaurant-name">
+        🍔 Chez Darko
+      </div>
 
-            <div class="address">
-                📍 175 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 175 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🍔 Burger
-                </span>
+        <span class="tag">
+          🍔 Burger
+        </span>
 
-                <span class="tag">
-                    🌯 Tacos
-                </span>
+        <span class="tag">
+          🌯 Tacos
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 4,8
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
+
+    <div class="rating">
+
+      <div class="rating-number">
+        ⭐ 4,8
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
 
 </article>
 
 
-
-<!-- KYODAI -->
-
 <article
-    class="restaurant-card show"
-    data-id="kyodai"
-    data-categories="sushi equilibre"
+  class="restaurant-card show"
+  data-id="kyodai"
+  data-categories="sushi equilibre"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🍣 Kyodai Sushi
-            </div>
+      <div class="restaurant-name">
+        🍣 Kyodai Sushi
+      </div>
 
-            <div class="address">
-                📍 114 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 114 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🍣 Sushi
-                </span>
+        <span class="tag">
+          🍣 Sushi
+        </span>
 
-                <span class="tag">
-                    🥗 Équilibré
-                </span>
+        <span class="tag">
+          🥗 Équilibré
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 5,0
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
+
+    <div class="rating">
+
+      <div class="rating-number">
+        ⭐ 5,0
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
 
 </article>
 
 
-
-<!-- M PLAISIR -->
-
 <article
-    class="restaurant-card show"
-    data-id="mplaisir"
-    data-categories="tacos burger pizza budget"
+  class="restaurant-card show"
+  data-id="mplaisir"
+  data-categories="tacos burger pizza budget"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🥪 M.Plaisir
-            </div>
+      <div class="restaurant-name">
+        🥪 M.Plaisir
+      </div>
 
-            <div class="address">
-                📍 110 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 110 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🌯 Tacos
-                </span>
+        <span class="tag">
+          🌯 Tacos
+        </span>
 
-                <span class="tag">
-                    🍔 Burger
-                </span>
+        <span class="tag">
+          🍔 Burger
+        </span>
 
-                <span class="tag">
-                    🍕 Pizza
-                </span>
+        <span class="tag">
+          🍕 Pizza
+        </span>
 
-                <span class="tag">
-                    💰 Petit budget
-                </span>
+        <span class="tag">
+          💰 Petit budget
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 4,1
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
+
+    <div class="rating">
+
+      <div class="rating-number">
+        ⭐ 4,1
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
 
 </article>
 
 
-
-<!-- PETIT CREUX -->
-
 <article
-    class="restaurant-card show"
-    data-id="nath"
-    data-categories="budget"
+  class="restaurant-card show"
+  data-id="nath"
+  data-categories="budget"
 >
 
-    <div class="restaurant-top">
+  <div class="restaurant-top">
 
-        <div>
+    <div>
 
-            <div class="restaurant-name">
-                🥪 Le petit creux de Nath
-            </div>
+      <div class="restaurant-name">
+        🥪 Le petit creux de Nath
+      </div>
 
-            <div class="address">
-                📍 271 Bd de Saint-Marcel
-            </div>
+      <div class="address">
+        📍 271 Bd de Saint-Marcel
+      </div>
 
-            <div class="tags">
+      <div class="tags">
 
-                <span class="tag">
-                    🥪 Restauration rapide
-                </span>
+        <span class="tag">
+          🥪 Restauration rapide
+        </span>
 
-                <span class="tag">
-                    💰 Petit budget
-                </span>
+        <span class="tag">
+          💰 Petit budget
+        </span>
 
-            </div>
-
-        </div>
-
-
-        <div class="rating">
-
-            <div class="rating-number">
-                ⭐ 4,9
-            </div>
-
-            <div class="rating-label">
-                Note actuelle
-            </div>
-
-        </div>
+      </div>
 
     </div>
 
-</article>
+    <div class="rating">
 
+      <div class="rating-number">
+        ⭐ 4,9
+      </div>
+
+      <div class="rating-label">
+        Note actuelle
+      </div>
+
+    </div>
+
+  </div>
+
+</article>
 
 </section>
 
 
-
-<!-- =====================================================
-     CARTE
-===================================================== -->
-
 <aside class="map-container">
 
-    <div id="map"></div>
+  <div id="map"></div>
 
 </aside>
-
 
 </div>
 
 </main>
 
 
-
 <script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
 
 
 <script>
 
-
-/* =====================================================
-   RESTAURANTS
-===================================================== */
+/* =========================
+   DONNÉES
+========================= */
 
 const restaurants = {
 
-    castel: {
+  castel: {
+    nom: "Le Castel",
+    adresse: "164 Bd de Saint-Marcel",
+    note: "4,5",
+    lat: 43.2954,
+    lng: 5.4754
+  },
 
-        nom:
-            "Le Castel",
+  pasta: {
+    nom: "PASTA TIME",
+    adresse: "183 Bd de Saint-Marcel",
+    note: "5,0",
+    lat: 43.2948,
+    lng: 5.4762
+  },
 
-        adresse:
-            "164 Bd de Saint-Marcel",
+  darko: {
+    nom: "Chez Darko",
+    adresse: "175 Bd de Saint-Marcel",
+    note: "4,8",
+    lat: 43.2950,
+    lng: 5.4758
+  },
 
-        note:
-            "4,5",
+  kyodai: {
+    nom: "Kyodai Sushi",
+    adresse: "114 Bd de Saint-Marcel",
+    note: "5,0",
+    lat: 43.2960,
+    lng: 5.4728
+  },
 
-        lat:
-            43.2954,
+  mplaisir: {
+    nom: "M.Plaisir",
+    adresse: "110 Bd de Saint-Marcel",
+    note: "4,1",
+    lat: 43.2962,
+    lng: 5.4725
+  },
 
-        lng:
-            5.4754
-    },
-
-
-    pasta: {
-
-        nom:
-            "PASTA TIME",
-
-        adresse:
-            "183 Bd de Saint-Marcel",
-
-        note:
-            "5,0",
-
-        lat:
-            43.2948,
-
-        lng:
-            5.4762
-    },
-
-
-    darko: {
-
-        nom:
-            "Chez Darko",
-
-        adresse:
-            "175 Bd de Saint-Marcel",
-
-        note:
-            "4,8",
-
-        lat:
-            43.2950,
-
-        lng:
-            5.4758
-    },
-
-
-    kyodai: {
-
-        nom:
-            "Kyodai Sushi",
-
-        adresse:
-            "114 Bd de Saint-Marcel",
-
-        note:
-            "5,0",
-
-        lat:
-            43.2960,
-
-        lng:
-            5.4728
-    },
-
-
-    mplaisir: {
-
-        nom:
-            "M.Plaisir",
-
-        adresse:
-            "110 Bd de Saint-Marcel",
-
-        note:
-            "4,1",
-
-        lat:
-            43.2962,
-
-        lng:
-            5.4725
-    },
-
-
-    nath: {
-
-        nom:
-            "Le petit creux de Nath",
-
-        adresse:
-            "271 Bd de Saint-Marcel",
-
-        note:
-            "4,9",
-
-        lat:
-            43.2936,
-
-        lng:
-            5.4800
-    }
+  nath: {
+    nom: "Le petit creux de Nath",
+    adresse: "271 Bd de Saint-Marcel",
+    note: "4,9",
+    lat: 43.2936,
+    lng: 5.4800
+  }
 
 };
 
 
-/* =====================================================
+/* =========================
    CARTE
-===================================================== */
+========================= */
 
-const map =
-    L.map("map")
-        .setView(
-            [
-                43.295,
-                5.475
-            ],
-            15
-        );
-
-
-/* Carte claire et sobre */
-
-L.tileLayer(
-
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-
-    {
-
-        attribution:
-            '&copy; OpenStreetMap &copy; CARTO',
-
-        maxZoom:
-            20
-
-    }
-
-).addTo(map);
-
-
-
-/* =====================================================
-   MARQUEURS
-===================================================== */
-
-const markers = {};
-
-
-Object.entries(
-    restaurants
-).forEach(
-    ([id, resto]) => {
-
-
-        const icon =
-            L.divIcon({
-
-                className:
-                    "",
-
-                html:
-                    `
-                    <div class="custom-marker">
-                        ${resto.nom}
-                    </div>
-                    `,
-
-                iconSize:
-                    null,
-
-                iconAnchor:
-                    [0,20],
-
-                popupAnchor:
-                    [0,-20]
-
-            });
-
-
-        const marker =
-            L.marker(
-                [
-                    resto.lat,
-                    resto.lng
-                ],
-                {
-                    icon:
-                        icon
-                }
-            )
-            .addTo(map);
-
-
-        marker.bindPopup(`
-
-            <div>
-
-                <div class="popup-title">
-                    ${resto.nom}
-                </div>
-
-                <div class="popup-address">
-                    📍 ${resto.adresse}
-                </div>
-
-                <div class="popup-rating">
-                    ⭐ ${resto.note}
-                </div>
-
-                <a
-                    class="popup-button"
-                    target="_blank"
-                    href="https://www.google.com/maps/dir/?api=1&destination=${resto.lat},${resto.lng}"
-                >
-                    🚶 ITINÉRAIRE
-                </a>
-
-            </div>
-
-        `);
-
-
-        markers[id] =
-            marker;
-
-    }
+const map = L.map("map", {
+  zoomControl: true
+}).setView(
+  [43.295, 5.475],
+  15
 );
 
 
-/* =====================================================
-   CLIQUER SUR UN RESTAURANT
-===================================================== */
+/* FOND OPENSTREETMAP */
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    attribution:
+      "&copy; OpenStreetMap contributors",
+
+    maxZoom: 19
+  }
+).addTo(map);
+
+
+/* =========================
+   MARQUEURS
+========================= */
+
+const markers = {};
+
+Object.entries(restaurants).forEach(
+  ([id, resto]) => {
+
+    const icon = L.divIcon({
+
+      className: "",
+
+      html: `
+        <div class="custom-marker">
+          ${resto.nom}
+        </div>
+      `,
+
+      iconSize: null,
+
+      iconAnchor: [0,20],
+
+      popupAnchor: [0,-20]
+
+    });
+
+
+    const marker = L.marker(
+      [
+        resto.lat,
+        resto.lng
+      ],
+      {
+        icon: icon
+      }
+    ).addTo(map);
+
+
+    marker.bindPopup(`
+
+      <div>
+
+        <div class="popup-title">
+          ${resto.nom}
+        </div>
+
+        <div class="popup-address">
+          📍 ${resto.adresse}
+        </div>
+
+        <div class="popup-rating">
+          ⭐ ${resto.note}
+        </div>
+
+        <a
+          class="popup-button"
+          target="_blank"
+          href="https://www.google.com/maps/dir/?api=1&destination=${resto.lat},${resto.lng}"
+        >
+          🚶 ITINÉRAIRE
+        </a>
+
+      </div>
+
+    `);
+
+
+    markers[id] = marker;
+
+  }
+);
+
+
+/* =========================
+   CLIC RESTAURANT
+========================= */
 
 document
-    .querySelectorAll(
-        ".restaurant-card"
-    )
-    .forEach(
-        card => {
+.querySelectorAll(".restaurant-card")
+.forEach(card => {
 
+  card.addEventListener(
+    "click",
+    function() {
 
-            card.addEventListener(
-                "click",
-                function() {
+      const id =
+        this.dataset.id;
 
+      const resto =
+        restaurants[id];
 
-                    const id =
-                        this.dataset.id;
+      if (!resto)
+        return;
 
-
-                    const resto =
-                        restaurants[id];
-
-
-                    if (!resto)
-                        return;
-
-
-                    map.flyTo(
-
-                        [
-                            resto.lat,
-                            resto.lng
-                        ],
-
-                        17,
-
-                        {
-                            duration:
-                                1.2
-                        }
-
-                    );
-
-
-                    setTimeout(
-                        () => {
-
-                            markers[id]
-                                .openPopup();
-
-                        },
-                        500
-                    );
-
-                }
-            );
-
+      map.flyTo(
+        [
+          resto.lat,
+          resto.lng
+        ],
+        17,
+        {
+          duration: 1.2
         }
-    );
+      );
+
+      setTimeout(() => {
+
+        markers[id].openPopup();
+
+      }, 500);
+
+    }
+  );
+
+});
 
 
-/* =====================================================
-   FILTRAGE
-===================================================== */
+/* =========================
+   FILTRE
+========================= */
 
 function filtrer(
-    categorie,
-    bouton
+  categorie,
+  bouton
 ) {
 
+  const cartes =
+    document.querySelectorAll(
+      ".restaurant-card"
+    );
 
-    const cartes =
-        document.querySelectorAll(
-            ".restaurant-card"
+  const boutons =
+    document.querySelectorAll(
+      ".category"
+    );
+
+  let compteur = 0;
+
+
+  boutons.forEach(
+    b =>
+      b.classList.remove("active")
+  );
+
+
+  bouton.classList.add("active");
+
+
+  cartes.forEach(
+    (card,index) => {
+
+      const categories =
+        card.dataset
+        .categories
+        .split(" ");
+
+
+      const visible =
+        categorie === "tout" ||
+        categories.includes(categorie);
+
+
+      if (visible) {
+
+        card.classList.remove(
+          "hidden"
         );
 
+        compteur++;
 
-    const boutons =
-        document.querySelectorAll(
-            ".category"
+
+        card.classList.remove(
+          "show"
         );
 
+        void card.offsetWidth;
 
-    let compteur =
-        0;
+        card.style.animationDelay =
+          `${index * .07}s`;
 
-
-    boutons.forEach(
-        b =>
-            b.classList.remove(
-                "active"
-            )
-    );
-
-
-    bouton.classList.add(
-        "active"
-    );
-
-
-    cartes.forEach(
-        (card,index) => {
-
-
-            const categories =
-                card
-                    .dataset
-                    .categories
-                    .split(" ");
-
-
-            const visible =
-                categorie === "tout"
-                ||
-                categories.includes(
-                    categorie
-                );
-
-
-            if (visible) {
-
-
-                card.classList.remove(
-                    "hidden"
-                );
-
-
-                compteur++;
-
-
-                card.classList.remove(
-                    "show"
-                );
-
-
-                void card.offsetWidth;
-
-
-                card.style.animationDelay =
-                    `${index * .07}s`;
-
-
-                card.classList.add(
-                    "show"
-                );
-
-
-            } else {
-
-
-                card.classList.remove(
-                    "show"
-                );
-
-
-                card.classList.add(
-                    "hidden"
-                );
-
-            }
-
-        }
-    );
-
-
-    document
-        .getElementById("count")
-        .textContent =
-        compteur +
-        (
-            compteur > 1
-                ? " restaurants"
-                : " restaurant"
+        card.classList.add(
+          "show"
         );
 
+      } else {
 
-    /* Marqueurs */
+        card.classList.remove(
+          "show"
+        );
 
-    Object.entries(
-        restaurants
-    ).forEach(
-        ([id]) => {
+        card.classList.add(
+          "hidden"
+        );
 
+      }
 
-            const marker =
-                markers[id];
-
-
-            const card =
-                document.querySelector(
-                    `[data-id="${id}"]`
-                );
+    }
+  );
 
 
-            const afficher =
-                categorie === "tout"
-                ||
-                (
-                    card &&
-                    !card.classList.contains(
-                        "hidden"
-                    )
-                );
-
-
-            if (afficher) {
-
-
-                if (
-                    !map.hasLayer(
-                        marker
-                    )
-                ) {
-
-                    marker.addTo(
-                        map
-                    );
-
-                }
-
-            } else {
-
-
-                if (
-                    map.hasLayer(
-                        marker
-                    )
-                ) {
-
-                    map.removeLayer(
-                        marker
-                    );
-
-                }
-
-            }
-
-        }
+  document
+  .getElementById("count")
+  .textContent =
+    compteur +
+    (
+      compteur > 1
+      ? " restaurants"
+      : " restaurant"
     );
+
+
+  /* Marqueurs */
+
+  Object.entries(restaurants)
+  .forEach(([id]) => {
+
+    const marker =
+      markers[id];
+
+    const card =
+      document.querySelector(
+        `[data-id="${id}"]`
+      );
+
+    const afficher =
+      categorie === "tout" ||
+      (
+        card &&
+        !card.classList.contains(
+          "hidden"
+        )
+      );
+
+
+    if (afficher) {
+
+      if (!map.hasLayer(marker)) {
+        marker.addTo(map);
+      }
+
+    } else {
+
+      if (map.hasLayer(marker)) {
+        map.removeLayer(marker);
+      }
+
+    }
+
+  });
 
 }
 
 
-/* =====================================================
+/* =========================
    RECHERCHE
-===================================================== */
+========================= */
 
 document
-    .getElementById(
-        "searchInput"
-    )
-    .addEventListener(
-        "input",
-        function() {
+.getElementById("searchInput")
+.addEventListener(
+  "input",
+  function() {
+
+    const recherche =
+      this.value
+      .toLowerCase()
+      .trim();
 
 
-            const recherche =
-                this.value
-                    .toLowerCase()
-                    .trim();
+    const cartes =
+      document.querySelectorAll(
+        ".restaurant-card"
+      );
 
 
-            const cartes =
-                document.querySelectorAll(
-                    ".restaurant-card"
-                );
+    let compteur = 0;
 
 
-            let compteur =
-                0;
+    cartes.forEach(
+      (card,index) => {
+
+        const texte =
+          card.innerText
+          .toLowerCase();
 
 
-            cartes.forEach(
-                (card,index) => {
+        const visible =
+          texte.includes(
+            recherche
+          );
 
 
-                    const texte =
-                        card.innerText
-                            .toLowerCase();
+        if (visible) {
+
+          card.classList.remove(
+            "hidden"
+          );
+
+          compteur++;
 
 
-                    const visible =
-                        texte.includes(
-                            recherche
-                        );
+          card.classList.remove(
+            "show"
+          );
 
+          void card.offsetWidth;
 
-                    if (visible) {
+          card.style.animationDelay =
+            `${index * .07}s`;
 
+          card.classList.add(
+            "show"
+          );
 
-                        card.classList.remove(
-                            "hidden"
-                        );
+        } else {
 
+          card.classList.remove(
+            "show"
+          );
 
-                        compteur++;
-
-
-                        card.classList.remove(
-                            "show"
-                        );
-
-
-                        void card.offsetWidth;
-
-
-                        card.style.animationDelay =
-                            `${index * .07}s`;
-
-
-                        card.classList.add(
-                            "show"
-                        );
-
-
-                    } else {
-
-
-                        card.classList.remove(
-                            "show"
-                        );
-
-
-                        card.classList.add(
-                            "hidden"
-                        );
-
-                    }
-
-                }
-            );
-
-
-            document
-                .getElementById(
-                    "count"
-                )
-                .textContent =
-                compteur +
-                (
-                    compteur > 1
-                        ? " restaurants"
-                        : " restaurant"
-                );
-
-
-            /* Affichage des marqueurs */
-
-            Object.entries(
-                restaurants
-            ).forEach(
-                ([id]) => {
-
-
-                    const marker =
-                        markers[id];
-
-
-                    const card =
-                        document.querySelector(
-                            `[data-id="${id}"]`
-                        );
-
-
-                    const afficher =
-                        card &&
-                        !card.classList.contains(
-                            "hidden"
-                        );
-
-
-                    if (afficher) {
-
-
-                        if (
-                            !map.hasLayer(
-                                marker
-                            )
-                        ) {
-
-                            marker.addTo(
-                                map
-                            );
-
-                        }
-
-                    } else {
-
-
-                        if (
-                            map.hasLayer(
-                                marker
-                            )
-                        ) {
-
-                            map.removeLayer(
-                                marker
-                            );
-
-                        }
-
-                    }
-
-                }
-            );
+          card.classList.add(
+            "hidden"
+          );
 
         }
+
+      }
     );
 
 
-/* =====================================================
-   CARTE RESPONSIVE
-===================================================== */
+    document
+    .getElementById("count")
+    .textContent =
+      compteur +
+      (
+        compteur > 1
+        ? " restaurants"
+        : " restaurant"
+      );
 
-setTimeout(
-    () => {
 
+    Object.entries(restaurants)
+    .forEach(([id]) => {
+
+      const marker =
+        markers[id];
+
+      const card =
+        document.querySelector(
+          `[data-id="${id}"]`
+        );
+
+
+      const afficher =
+        card &&
+        !card.classList.contains(
+          "hidden"
+        );
+
+
+      if (afficher) {
+
+        if (!map.hasLayer(marker)) {
+          marker.addTo(map);
+        }
+
+      } else {
+
+        if (map.hasLayer(marker)) {
+          map.removeLayer(marker);
+        }
+
+      }
+
+    });
+
+  }
+);
+
+
+/* =========================
+   FORCER LA CARTE À SE
+   REDESSINER
+========================= */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    setTimeout(
+      () => {
         map.invalidateSize();
+      },
+      500
+    );
 
-    },
-    500
+  }
 );
 
 </script>
 
-
 </body>
-
 </html>
