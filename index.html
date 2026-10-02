@@ -14,53 +14,69 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #fff8f0;
-            color: #292524;
+            color: white;
+            min-height: 100vh;
+
+            background: linear-gradient(
+                135deg,
+                #071a3d,
+                #101f5c,
+                #352080,
+                #6d28d9
+            );
+
+            background-attachment: fixed;
         }
 
         header {
-            background: linear-gradient(135deg, #ff7a00, #ff3d00);
-            color: white;
             text-align: center;
-            padding: 35px 20px;
-            border-radius: 0 0 30px 30px;
+            padding: 45px 20px 35px;
         }
 
         header h1 {
-            font-size: 42px;
+            font-size: 46px;
             margin: 0 0 10px;
         }
 
         header p {
-            font-size: 18px;
-            margin: 0;
+            font-size: 19px;
+            opacity: 0.9;
         }
 
         .container {
-            max-width: 700px;
+            max-width: 750px;
             margin: auto;
-            padding: 25px 20px;
+            padding: 20px;
         }
 
+        /* RECHERCHE */
+
         .search {
-            background: white;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
             padding: 15px;
-            border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.10);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
             margin-bottom: 30px;
         }
 
         .search input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #eee;
-            border-radius: 12px;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
             font-size: 16px;
+            outline: none;
         }
 
+        /* TITRES */
+
         h2 {
-            margin-top: 30px;
+            margin-top: 35px;
+            margin-bottom: 18px;
         }
+
+        /* CATEGORIES */
 
         .categories {
             display: grid;
@@ -69,25 +85,49 @@
         }
 
         .category {
-            background: white;
-            border: none;
-            padding: 20px 10px;
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 18px;
+            padding: 20px 10px;
             font-size: 17px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            color: white;
             cursor: pointer;
+
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+
+            transition: 0.2s;
         }
 
         .category:hover {
-            background: #fff1e6;
+            transform: translateY(-4px);
+            background: rgba(255,255,255,0.22);
         }
 
+        .category.active {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            border-color: white;
+        }
+
+        /* RESTAURANTS */
+
         .card {
-            background: white;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255,255,255,0.2);
+
             padding: 20px;
-            border-radius: 18px;
+            border-radius: 20px;
             margin: 15px 0;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.17);
         }
 
         .restaurant {
@@ -100,144 +140,329 @@
             margin: 0 0 8px;
         }
 
+        .restaurant p {
+            margin: 6px 0;
+            opacity: 0.9;
+        }
+
         .stars {
-            color: #f59e0b;
+            color: #facc15;
             font-weight: bold;
             white-space: nowrap;
         }
 
         .type {
-            color: #f97316;
+            color: #c4b5fd;
             font-weight: bold;
         }
 
+        /* CARTE */
+
         .map-button {
-            display: block;
             width: 100%;
             padding: 17px;
+
             border: none;
             border-radius: 15px;
-            background: #292524;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
             color: white;
             font-size: 17px;
             cursor: pointer;
-            margin-top: 20px;
+
+            transition: 0.2s;
         }
+
+        .map-button:hover {
+            transform: scale(1.02);
+        }
+
+        /* FOOTER */
 
         footer {
             text-align: center;
-            padding: 30px;
-            color: #777;
+            padding: 35px;
+            opacity: 0.7;
         }
+
+        /* MOBILE */
+
+        @media (max-width: 500px) {
+
+            header h1 {
+                font-size: 38px;
+            }
+
+            .restaurant {
+                flex-direction: column;
+            }
+
+            .stars {
+                margin-top: 5px;
+            }
+        }
+
+        /* RESTAURANT CACHE */
+
+        .hidden {
+            display: none;
+        }
+
     </style>
 </head>
 
 <body>
 
 <header>
+
     <h1>🍔 QuiRégale ?</h1>
-    <p>Trouve où manger autour du lycée !</p>
+
+    <p>
+        Trouve où manger autour du lycée !
+    </p>
+
 </header>
+
 
 <div class="container">
 
+
+    <!-- RECHERCHE -->
+
     <div class="search">
-        <input type="text" placeholder="🔎 Rechercher un restaurant...">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="🔎 Rechercher un restaurant..."
+        >
+
     </div>
+
+
+    <!-- CATEGORIES -->
 
     <h2>🍽️ Qu'est-ce que tu veux manger ?</h2>
 
     <div class="categories">
 
-        <button class="category">🌯<br>Tacos</button>
-        <button class="category">🍔<br>Burger</button>
-        <button class="category">🍕<br>Pizza</button>
-        <button class="category">🍣<br>Sushi</button>
-        <button class="category">🥗<br>Équilibré</button>
-        <button class="category">💰<br>Petit budget</button>
+        <button class="category active" onclick="filtrer('tout', this)">
+            🍽️<br>
+            Tout
+        </button>
+
+        <button class="category" onclick="filtrer('tacos', this)">
+            🌯<br>
+            Tacos
+        </button>
+
+        <button class="category" onclick="filtrer('burger', this)">
+            🍔<br>
+            Burger
+        </button>
+
+        <button class="category" onclick="filtrer('pizza', this)">
+            🍕<br>
+            Pizza
+        </button>
+
+        <button class="category" onclick="filtrer('sushi', this)">
+            🍣<br>
+            Sushi
+        </button>
+
+        <button class="category" onclick="filtrer('equilibre', this)">
+            🥗<br>
+            Équilibré
+        </button>
+
+        <button class="category" onclick="filtrer('budget', this)">
+            💰<br>
+            Petit budget
+        </button>
 
     </div>
+
+
+    <!-- RESTAURANTS -->
 
     <h2>🏆 Restaurants autour du lycée</h2>
 
-    <div class="card">
+
+    <div class="card restaurant-card"
+         data-categories="burger budget">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🍔 Le Castel</h3>
-                <p>164 Bd de Saint-Marcel</p>
-                <p class="type">🍔 Fast-food</p>
+
+                <p>📍 164 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🍔 Burger · 💰 Petit budget
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 4,5</div>
+            <div class="stars">
+                ⭐ 4,5
+            </div>
+
         </div>
+
     </div>
 
-    <div class="card">
+
+
+    <div class="card restaurant-card"
+         data-categories="pizza budget">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🍝 PASTA TIME</h3>
-                <p>183 Bd de Saint-Marcel</p>
-                <p class="type">🍝 Restauration rapide</p>
+
+                <p>📍 183 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🍝 Pâtes · 🍕 Pizza
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 5,0</div>
+            <div class="stars">
+                ⭐ 5,0
+            </div>
+
         </div>
+
     </div>
 
-    <div class="card">
+
+
+    <div class="card restaurant-card"
+         data-categories="burger">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🍔 Chez Darko</h3>
-                <p>175 Bd de Saint-Marcel</p>
-                <p class="type">🍔 Burger / Grill</p>
+
+                <p>📍 175 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🍔 Burger / Grill
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 4,8</div>
+            <div class="stars">
+                ⭐ 4,8
+            </div>
+
         </div>
+
     </div>
 
-    <div class="card">
+
+
+    <div class="card restaurant-card"
+         data-categories="sushi equilibre">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🍣 Kyodai Sushi</h3>
-                <p>114 Bd de Saint-Marcel</p>
-                <p class="type">🍣 Japonais</p>
+
+                <p>📍 114 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🍣 Sushi
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 5,0</div>
+            <div class="stars">
+                ⭐ 5,0
+            </div>
+
         </div>
+
     </div>
 
-    <div class="card">
+
+
+    <div class="card restaurant-card"
+         data-categories="burger pizza budget">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🥪 M.Plaisir</h3>
-                <p>110 Bd de Saint-Marcel</p>
-                <p class="type">🥪 Sandwich · 🍔 Burger · 🍕 Pizza</p>
+
+                <p>📍 110 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🥪 Sandwich · 🍔 Burger · 🍕 Pizza
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 4,1</div>
+            <div class="stars">
+                ⭐ 4,1
+            </div>
+
         </div>
+
     </div>
 
-    <div class="card">
+
+
+    <div class="card restaurant-card"
+         data-categories="budget">
+
         <div class="restaurant">
+
             <div>
+
                 <h3>🥪 Le petit creux de Nath</h3>
-                <p>271 Bd de Saint-Marcel</p>
-                <p class="type">🥪 Restaurant</p>
+
+                <p>📍 271 Bd de Saint-Marcel</p>
+
+                <p class="type">
+                    🥪 Restauration rapide
+                </p>
+
             </div>
 
-            <div class="stars">⭐ 4,9</div>
+            <div class="stars">
+                ⭐ 4,9
+            </div>
+
         </div>
+
     </div>
+
+
+    <!-- CARTE -->
 
     <h2>📍 Carte</h2>
 
     <div class="card">
 
         <p>
-            Retrouve les restaurants autour de ton lycée
+            Découvre les restaurants autour de ton lycée
             directement sur la carte.
         </p>
 
@@ -247,11 +472,91 @@
 
     </div>
 
+
 </div>
 
+
 <footer>
+
     QuiRégale ? — Projet étudiant 🍔
+
 </footer>
+
+
+<script>
+
+    function filtrer(categorie, bouton) {
+
+        const restaurants =
+            document.querySelectorAll(".restaurant-card");
+
+        const boutons =
+            document.querySelectorAll(".category");
+
+
+        boutons.forEach(function(b) {
+            b.classList.remove("active");
+        });
+
+        bouton.classList.add("active");
+
+
+        restaurants.forEach(function(resto) {
+
+            const categories =
+                resto.dataset.categories;
+
+            if (
+                categorie === "tout" ||
+                categories.includes(categorie)
+            ) {
+
+                resto.classList.remove("hidden");
+
+            } else {
+
+                resto.classList.add("hidden");
+
+            }
+
+        });
+
+    }
+
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+
+    searchInput.addEventListener("input", function() {
+
+        const recherche =
+            searchInput.value.toLowerCase();
+
+        const restaurants =
+            document.querySelectorAll(".restaurant-card");
+
+
+        restaurants.forEach(function(resto) {
+
+            const texte =
+                resto.innerText.toLowerCase();
+
+            if (texte.includes(recherche)) {
+
+                resto.classList.remove("hidden");
+
+            } else {
+
+                resto.classList.add("hidden");
+
+            }
+
+        });
+
+    });
+
+</script>
 
 </body>
 </html>
