@@ -1,1 +1,855 @@
+<!DOCTYPE html>
 
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mes notes — QuiRégale ?</title>
+
+<style>
+
+:root{
+    --black:#070910;
+    --navy:#111a35;
+    --gold:#e8ad4a;
+    --gold-light:#f5cf82;
+    --gold-dark:#b87922;
+    --cream:#f5f0e6;
+    --gray:#cbd0d8;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:var(--cream);
+
+    background:
+        radial-gradient(
+            circle at 10% 5%,
+            rgba(232,173,74,.11),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(37,54,105,.30),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            135deg,
+            var(--black),
+            var(--navy)
+        );
+
+    animation:
+        pageEnter .45s ease;
+}
+
+@keyframes pageEnter{
+
+    from{
+        opacity:0;
+        transform:translateX(100%);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+.topbar{
+
+    min-height:100px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:
+        10px 35px;
+
+    background:
+        rgba(7,9,16,.96);
+
+    border-bottom:
+        1px solid
+        rgba(232,173,74,.18);
+
+    box-shadow:
+        0 7px 30px
+        rgba(0,0,0,.40);
+}
+
+.logo img{
+
+    display:block;
+
+    width:230px;
+
+    height:82px;
+
+    object-fit:contain;
+}
+
+.back-button{
+
+    margin-left:auto;
+
+    padding:
+        13px 20px;
+
+    border-radius:14px;
+
+    border:
+        1px solid
+        rgba(232,173,74,.35);
+
+    background:
+        rgba(232,173,74,.08);
+
+    color:
+        var(--gold-light);
+
+    text-decoration:none;
+
+    font-weight:800;
+
+    transition:.25s;
+}
+
+.back-button:hover{
+
+    background:
+        var(--gold);
+
+    color:#090a0d;
+
+    transform:
+        translateY(-2px);
+}
+
+.page{
+
+    width:
+        min(1100px,100%);
+
+    margin:auto;
+
+    padding:
+        45px 25px;
+}
+
+.title{
+
+    text-align:center;
+
+    margin-bottom:35px;
+}
+
+.title h1{
+
+    margin:0;
+
+    font-size:
+        clamp(
+            35px,
+            6vw,
+            55px
+        );
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--cream),
+            var(--gold),
+            var(--gold-dark)
+        );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.title p{
+
+    color:
+        var(--gray);
+
+    font-size:17px;
+}
+
+/* CARTES */
+
+.notes-list{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                280px,
+                1fr
+            )
+        );
+
+    gap:18px;
+}
+
+.restaurant{
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.085),
+            rgba(255,255,255,.035)
+        );
+
+    border:
+        1px solid
+        rgba(232,173,74,.15);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.30);
+
+    transition:.25s;
+}
+
+.restaurant:hover{
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(232,173,74,.40);
+}
+
+.restaurant h2{
+
+    margin:
+        0 0 7px;
+
+    font-size:20px;
+}
+
+.restaurant p{
+
+    margin:
+        0 0 18px;
+
+    color:
+        var(--gray);
+
+    font-size:14px;
+}
+
+/* ÉTOILES */
+
+.stars{
+
+    display:flex;
+
+    gap:5px;
+
+    margin-bottom:15px;
+}
+
+.star{
+
+    border:0;
+
+    background:none;
+
+    color:#4b4f59;
+
+    font-size:30px;
+
+    cursor:pointer;
+
+    padding:0;
+
+    transition:
+        .15s;
+}
+
+.star:hover{
+
+    transform:
+        scale(1.15);
+}
+
+.star.active{
+
+    color:
+        var(--gold);
+}
+
+.note-text{
+
+    width:100%;
+
+    min-height:75px;
+
+    resize:vertical;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    border:
+        1px solid
+        rgba(232,173,74,.18);
+
+    outline:none;
+
+    background:
+        rgba(0,0,0,.22);
+
+    color:
+        var(--cream);
+
+    font-family:inherit;
+}
+
+.note-text::placeholder{
+
+    color:
+        #777f91;
+}
+
+.save{
+
+    width:100%;
+
+    margin-top:12px;
+
+    padding:12px;
+
+    border:0;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold),
+            var(--gold-dark)
+        );
+
+    color:#090a0d;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.save:hover{
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(232,173,74,.25);
+}
+
+.saved{
+
+    margin-top:10px;
+
+    color:
+        #8ee28e;
+
+    font-size:13px;
+
+    display:none;
+}
+
+@media(max-width:600px){
+
+    .topbar{
+
+        padding:
+            8px 15px;
+    }
+
+    .logo img{
+
+        width:
+            180px;
+
+        height:
+            68px;
+    }
+
+    .back-button{
+
+        padding:
+            10px 13px;
+
+        font-size:
+            13px;
+    }
+
+    .page{
+
+        padding:
+            30px 18px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+```
+<a
+    href="index.html"
+    class="logo"
+    id="logoHome"
+>
+
+    <img
+        src="Logo QuiRégale gourmand et élégant.png"
+        alt="QuiRégale"
+    >
+
+</a>
+
+
+<a
+    href="index.html"
+    class="back-button"
+    id="backButton"
+>
+    ← Accueil
+</a>
+```
+
+</header>
+
+<main class="page">
+
+```
+<section class="title">
+
+    <h1>
+        ⭐ Mes notes
+    </h1>
+
+    <p>
+        Note les restaurants et garde ton avis pour savoir où retourner.
+    </p>
+
+</section>
+
+
+<section
+    class="notes-list"
+    id="notesList"
+></section>
+```
+
+</main>
+
+<script>
+
+const restaurants = [
+
+    "Le Castel",
+    "Chez Darko",
+    "PASTA TIME",
+    "Kyodai Sushi",
+    "M.Plaisir",
+    "Le petit creux de Nath",
+    "Snack McKaren",
+    "O poulet carre Marseille",
+    "Tacos Avenue - La Valentine",
+    "Snack Factory La Valentine",
+    "Little Supreme Tacos",
+    "Doy Doy Kebab",
+    "Carthaji - La Valentine",
+    "Ô İstanbul Kebab",
+    "Tasty Crousty",
+    "Planet Burger",
+    "Planet Food",
+    "KFC Marseille La Valentine",
+    "Burger King - Grand V",
+    "Burger King - La Valentine",
+    "McDonald's La Valentine",
+    "Quick - La Valentine",
+    "Pitaya Thaï Street Food",
+    "Waffle Factory",
+    "Café Chaud",
+    "La Croissanterie",
+    "Storia Pizza",
+    "L'Intemporel Pizzeria Restaurant",
+    "L'Everest Pizza",
+    "Snack de la Pomme",
+    "Fit Bar",
+    "2J Sushi",
+    "L'Envie du Burger"
+
+];
+
+
+const notesList=
+    document.getElementById(
+        "notesList"
+    );
+
+
+function afficherNotes(){
+
+    notesList.innerHTML="";
+
+    restaurants.forEach(
+        (nom,index)=>{
+
+            const ancienneNote=
+                localStorage.getItem(
+                    "note_"+index
+                );
+
+            const ancienCommentaire=
+                localStorage.getItem(
+                    "commentaire_"+index
+                );
+
+
+            const card=
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className=
+                "restaurant";
+
+
+            card.innerHTML=`
+
+                <h2>
+                    🍽️ ${nom}
+                </h2>
+
+                <p>
+                    Quelle note tu donnes à ce restaurant ?
+                </p>
+
+                <div
+                    class="stars"
+                    data-index="${index}"
+                >
+
+                    ${[1,2,3,4,5].map(
+                        note=>`
+
+                        <button
+                            class="star ${
+                                ancienneNote &&
+                                note<=Number(ancienneNote)
+                                ? "active"
+                                : ""
+                            }"
+                            data-note="${note}"
+                        >
+                            ★
+                        </button>
+
+                        `
+                    ).join("")}
+
+                </div>
+
+
+                <textarea
+                    class="note-text"
+                    placeholder="Ton avis sur ce restaurant..."
+                >${ancienCommentaire||""}</textarea>
+
+```
+            <button
+                class="save"
+                data-index="${index}"
+            >
+                💾 Enregistrer ma note
+            </button>
+
+
+            <div class="saved">
+                ✓ Note enregistrée !
+            </div>
+
+        `;
+
+
+        notesList.appendChild(
+            card
+        );
+
+    }
+);
+
+
+activerEtoiles();
+
+activerSauvegarde();
+```
+
+}
+
+function activerEtoiles(){
+
+```
+document
+    .querySelectorAll(".stars")
+    .forEach(
+        stars=>{
+
+            stars
+                .querySelectorAll(".star")
+                .forEach(
+                    star=>{
+
+                        star.addEventListener(
+                            "click",
+                            ()=>{
+
+                                const note=
+                                    Number(
+                                        star.dataset.note
+                                    );
+
+
+                                stars
+                                    .querySelectorAll(".star")
+                                    .forEach(
+                                        autre=>{
+
+                                            autre.classList.toggle(
+                                                "active",
+                                                Number(
+                                                    autre.dataset.note
+                                                )<=note
+                                            );
+
+                                        }
+                                    );
+
+                                stars.dataset.note=
+                                    note;
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+    );
+```
+
+}
+
+function activerSauvegarde(){
+
+```
+document
+    .querySelectorAll(".save")
+    .forEach(
+        bouton=>{
+
+            bouton.addEventListener(
+                "click",
+                ()=>{
+
+                    const index=
+                        bouton.dataset.index;
+
+                    const card=
+                        bouton.closest(
+                            ".restaurant"
+                        );
+
+                    const stars=
+                        card.querySelector(
+                            ".stars"
+                        );
+
+                    const commentaire=
+                        card.querySelector(
+                            ".note-text"
+                        );
+
+
+                    const note=
+                        stars.dataset.note;
+
+
+                    if(!note){
+
+                        alert(
+                            "Choisis d'abord une note ⭐"
+                        );
+
+                        return;
+                    }
+
+
+                    localStorage.setItem(
+                        "note_"+index,
+                        note
+                    );
+
+
+                    localStorage.setItem(
+                        "commentaire_"+index,
+                        commentaire.value
+                    );
+
+
+                    const message=
+                        card.querySelector(
+                            ".saved"
+                        );
+
+
+                    message.style.display=
+                        "block";
+
+
+                    setTimeout(
+                        ()=>{
+                            message.style.display=
+                                "none";
+                        },
+                        2500
+                    );
+
+                }
+            );
+
+        }
+    );
+```
+
+}
+
+/* TRANSITION RETOUR */
+
+document
+.getElementById("backButton")
+.addEventListener(
+"click",
+function(event){
+
+```
+        event.preventDefault();
+
+        const destination=
+            this.href;
+
+        document.body.classList.add(
+            "page-leaving"
+        );
+
+        setTimeout(
+            ()=>{
+                window.location.href=
+                    destination;
+            },
+            400
+        );
+
+    }
+);
+```
+
+document
+.getElementById("logoHome")
+.addEventListener(
+"click",
+function(event){
+
+```
+        event.preventDefault();
+
+        const destination=
+            this.href;
+
+        document.body.classList.add(
+            "page-leaving"
+        );
+
+        setTimeout(
+            ()=>{
+                window.location.href=
+                    destination;
+            },
+            400
+        );
+
+    }
+);
+```
+
+afficherNotes();
+
+</script>
+
+<style>
+
+body.page-leaving{
+
+    animation:
+        pageSwipeOut
+        .4s
+        ease
+        forwards;
+}
+
+@keyframes pageSwipeOut{
+
+    to{
+
+        opacity:0;
+
+        transform:
+            translateX(-100%);
+    }
+}
+
+</style>
+
+</body>
+</html>
