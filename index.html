@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -10,11 +11,40 @@
 <title>QuiRégale ?</title>
 
 <link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
 <style>
+
+/* =========================================================
+   QUIRÉGALE — IDENTITÉ VISUELLE
+========================================================= */
+
+:root {
+
+    --black: #070910;
+    --black-soft: #0b0e18;
+
+    --navy: #111a35;
+    --navy-light: #1a2545;
+
+    --gold: #e8ad4a;
+    --gold-light: #f5cf82;
+    --gold-dark: #b87922;
+
+    --cream: #f5f0e6;
+
+    --gray: #cbd0d8;
+    --gray-dark: #8d95a5;
+
+    --glass:
+        rgba(255,255,255,.065);
+
+    --border:
+        rgba(232,173,74,.18);
+}
+
 
 /* =========================================================
    RESET
@@ -24,46 +54,53 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     box-sizing: border-box;
 }
 
+
 html {
     scroll-behavior: smooth;
 }
 
+
 body {
+
     margin: 0;
+
+    min-height: 100vh;
 
     font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-    color: white;
-
-    min-height: 100vh;
+    color:
+        var(--cream);
 
     background:
+
         radial-gradient(
-            circle at 10% 10%,
-            #29458f 0%,
-            transparent 30%
+            circle at 10% 5%,
+            rgba(232,173,74,.11),
+            transparent 28%
         ),
+
         radial-gradient(
-            circle at 90% 80%,
-            #7028c9 0%,
-            transparent 30%
+            circle at 90% 90%,
+            rgba(37,54,105,.30),
+            transparent 35%
         ),
+
         linear-gradient(
             135deg,
-            #06142e,
-            #111d4a,
-            #392080
+            var(--black),
+            var(--navy)
         );
 
-    background-attachment: fixed;
+    background-attachment:
+        fixed;
 }
 
 
 /* =========================================================
-   BARRE BLANCHE
+   BARRE DU HAUT
 ========================================================= */
 
 .topbar {
@@ -74,61 +111,77 @@ body {
 
     z-index: 1000;
 
-    min-height: 78px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    color: #111827;
+    min-height: 86px;
 
     display: flex;
 
     align-items: center;
 
-    padding:
-        14px 35px;
-
     gap: 25px;
 
+    padding:
+        12px 35px;
+
+    background:
+        rgba(7,9,16,.96);
+
+    border-bottom:
+        1px solid
+        rgba(232,173,74,.18);
+
     box-shadow:
-        0 5px 25px
-        rgba(0,0,0,.20);
+        0 7px 30px
+        rgba(0,0,0,.40);
 
     backdrop-filter:
-        blur(12px);
+        blur(15px);
 }
 
+
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo {
 
-    font-size: 28px;
+    display: flex;
 
-    font-weight: 900;
+    align-items: center;
 
-    white-space: nowrap;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    -webkit-background-clip: text;
-
-    -webkit-text-fill-color:
-        transparent;
+    flex-shrink: 0;
 }
 
 
-.top-search {
+.logo img {
 
-    margin-left: auto;
+    display: block;
 
     width:
-        min(450px,50%);
+        175px;
+
+    height:
+        62px;
+
+    object-fit:
+        contain;
+
+    object-position:
+        center;
+}
+
+
+/* =========================================================
+   RECHERCHE
+========================================================= */
+
+.top-search {
 
     position: relative;
+
+    width:
+        min(480px, 50%);
+
+    margin-left: auto;
 }
 
 
@@ -140,40 +193,49 @@ body {
         14px
         20px
         14px
-        46px;
+        47px;
 
     border:
-        1px solid #e5e7eb;
+        1px solid
+        rgba(232,173,74,.18);
 
     border-radius:
         30px;
 
     outline: none;
 
-    font-size: 15px;
+    font-size:
+        15px;
+
+    color:
+        var(--cream);
 
     background:
-        #f8fafc;
+        rgba(255,255,255,.065);
 
-    transition: .25s;
+    transition:
+        .25s;
+}
+
+
+.top-search input::placeholder {
+
+    color:
+        var(--gray-dark);
 }
 
 
 .top-search input:focus {
 
-    background: white;
+    background:
+        rgba(255,255,255,.10);
 
     border-color:
-        #6366f1;
+        var(--gold);
 
     box-shadow:
         0 0 0 4px
-        rgba(
-            99,
-            102,
-            241,
-            .12
-        );
+        rgba(232,173,74,.09);
 }
 
 
@@ -189,7 +251,10 @@ body {
         translateY(-50%);
 
     color:
-        #64748b;
+        var(--gold);
+
+    font-size:
+        17px;
 }
 
 
@@ -199,16 +264,20 @@ body {
 
 .page {
 
-    max-width:
-        1550px;
+    width:
+        min(1550px,100%);
 
     margin:
         auto;
 
     padding:
-        40px 35px;
+        42px 35px;
 }
 
+
+/* =========================================================
+   ACCUEIL
+========================================================= */
 
 .welcome {
 
@@ -230,19 +299,36 @@ body {
             4vw,
             50px
         );
+
+    letter-spacing:
+        -1.5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--cream),
+            var(--gold),
+            var(--gold-dark)
+        );
+
+    -webkit-background-clip:
+        text;
+
+    -webkit-text-fill-color:
+        transparent;
 }
 
 
 .welcome p {
 
+    margin-top:
+        10px;
+
     color:
-        #cbd5e1;
+        var(--gray);
 
     font-size:
         17px;
-
-    margin-top:
-        10px;
 }
 
 
@@ -262,7 +348,7 @@ body {
         auto;
 
     padding:
-        20px 2px;
+        21px 2px;
 
     scrollbar-width:
         none;
@@ -284,31 +370,21 @@ body {
     flex-shrink:
         0;
 
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .18
-        );
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            .10
-        );
-
-    color:
-        white;
+    padding:
+        14px 20px;
 
     border-radius:
         16px;
 
-    padding:
-        14px 20px;
+    border:
+        1px solid
+        rgba(232,173,74,.18);
+
+    background:
+        rgba(255,255,255,.055);
+
+    color:
+        var(--cream);
 
     cursor:
         pointer;
@@ -327,26 +403,31 @@ body {
 .category:hover {
 
     transform:
-        translateY(-4px)
-        scale(1.03);
+        translateY(-3px)
+        scale(1.02);
 
     background:
-        rgba(
-            255,
-            255,
-            255,
-            .20
-        );
+        rgba(232,173,74,.10);
+
+    border-color:
+        rgba(232,173,74,.42);
+
+    box-shadow:
+        0 8px 25px
+        rgba(0,0,0,.25);
 }
 
 
 .category.active {
 
+    color:
+        #0b0b0c;
+
     background:
         linear-gradient(
             135deg,
-            #2563eb,
-            #7c3aed
+            var(--gold),
+            var(--gold-dark)
         );
 
     border-color:
@@ -354,12 +435,7 @@ body {
 
     box-shadow:
         0 8px 25px
-        rgba(
-            99,
-            102,
-            241,
-            .40
-        );
+        rgba(232,173,74,.24);
 }
 
 
@@ -385,7 +461,7 @@ body {
 
 
 /* =========================================================
-   TITRE
+   TITRE SECTION
 ========================================================= */
 
 .section-title {
@@ -393,11 +469,11 @@ body {
     display:
         flex;
 
-    justify-content:
-        space-between;
-
     align-items:
         center;
+
+    justify-content:
+        space-between;
 
     margin-bottom:
         16px;
@@ -411,13 +487,16 @@ body {
 
     font-size:
         23px;
+
+    color:
+        var(--cream);
 }
 
 
 .count {
 
     color:
-        #cbd5e1;
+        var(--gray);
 
     font-size:
         14px;
@@ -425,57 +504,37 @@ body {
 
 
 /* =========================================================
-   CARTE RESTAURANT
+   CARTES RESTAURANTS
 ========================================================= */
 
 .restaurant-card {
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(
-                255,
-                255,
-                255,
-                .15
-            ),
-            rgba(
-                255,
-                255,
-                255,
-                .07
-            )
-        );
-
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .16
-        );
-
-    border-radius:
-        22px;
+    margin-bottom:
+        15px;
 
     padding:
         21px;
 
-    margin-bottom:
-        15px;
+    border-radius:
+        22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.085),
+            rgba(255,255,255,.035)
+        );
+
+    border:
+        1px solid
+        rgba(232,173,74,.15);
 
     backdrop-filter:
         blur(12px);
 
     box-shadow:
         0 10px 35px
-        rgba(
-            0,
-            0,
-            0,
-            .15
-        );
+        rgba(0,0,0,.30);
 
     cursor:
         pointer;
@@ -493,33 +552,23 @@ body {
     background:
         linear-gradient(
             145deg,
-            rgba(
-                255,
-                255,
-                255,
-                .21
-            ),
-            rgba(
-                255,
-                255,
-                255,
-                .09
-            )
+            rgba(232,173,74,.10),
+            rgba(255,255,255,.045)
         );
+
+    border-color:
+        rgba(232,173,74,.35);
 
     box-shadow:
         0 18px 45px
-        rgba(
-            0,
-            0,
-            0,
-            .25
-        );
+        rgba(0,0,0,.40);
 }
 
 
 .restaurant-card.hidden {
-    display: none;
+
+    display:
+        none;
 }
 
 
@@ -553,27 +602,30 @@ body {
 
 .restaurant-name {
 
+    margin-bottom:
+        7px;
+
     font-size:
         20px;
 
     font-weight:
         800;
 
-    margin-bottom:
-        7px;
+    color:
+        var(--cream);
 }
 
 
 .address {
 
+    margin-bottom:
+        12px;
+
     color:
-        #cbd5e1;
+        var(--gray);
 
     font-size:
         14px;
-
-    margin-bottom:
-        12px;
 }
 
 
@@ -599,15 +651,14 @@ body {
         9px;
 
     background:
-        rgba(
-            255,
-            255,
-            255,
-            .10
-        );
+        rgba(232,173,74,.08);
+
+    border:
+        1px solid
+        rgba(232,173,74,.11);
 
     color:
-        #ddd6fe;
+        var(--gold-light);
 
     font-size:
         12px;
@@ -626,27 +677,27 @@ body {
 
 .rating-number {
 
+    color:
+        var(--gold);
+
     font-size:
         18px;
 
     font-weight:
         bold;
-
-    color:
-        #facc15;
 }
 
 
 .rating-label {
 
+    margin-top:
+        4px;
+
     color:
-        #cbd5e1;
+        var(--gray);
 
     font-size:
         12px;
-
-    margin-top:
-        4px;
 }
 
 
@@ -660,42 +711,32 @@ body {
         sticky;
 
     top:
-        100px;
+        105px;
 
     height:
         calc(
-            100vh - 125px
+            100vh - 130px
         );
 
     min-height:
         550px;
 
-    border-radius:
-        25px;
-
     overflow:
         hidden;
 
+    border-radius:
+        25px;
+
     border:
         1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .18
-        );
+        rgba(232,173,74,.18);
 
     box-shadow:
         0 15px 50px
-        rgba(
-            0,
-            0,
-            0,
-            .30
-        );
+        rgba(0,0,0,.40);
 
     background:
-        #e5e7eb;
+        #10131c;
 }
 
 
@@ -739,15 +780,15 @@ body {
     background:
         linear-gradient(
             135deg,
-            #2563eb,
-            #7c3aed
+            var(--gold),
+            var(--gold-dark)
         );
 
     color:
-        white;
+        #090a0d;
 
     font-weight:
-        800;
+        900;
 
     font-size:
         11px;
@@ -756,16 +797,12 @@ body {
         nowrap;
 
     border:
-        3px solid white;
+        3px solid
+        var(--cream);
 
     box-shadow:
-        0 5px 15px
-        rgba(
-            37,
-            99,
-            235,
-            .45
-        );
+        0 5px 18px
+        rgba(232,173,74,.40);
 
     transition:
         .2s;
@@ -787,39 +824,56 @@ body {
 
     border-radius:
         16px;
+
+    background:
+        var(--black);
+
+    color:
+        var(--cream);
+
+    border:
+        1px solid
+        rgba(232,173,74,.25);
+}
+
+
+.leaflet-popup-tip {
+
+    background:
+        var(--black);
 }
 
 
 .leaflet-popup-content {
 
-    margin:
-        16px;
-
     min-width:
         220px;
+
+    margin:
+        16px;
 }
 
 
 .popup-title {
+
+    color:
+        var(--cream);
 
     font-size:
         18px;
 
     font-weight:
         900;
-
-    color:
-        #111827;
 }
 
 
 .popup-address {
 
-    color:
-        #475569;
-
     margin-top:
         8px;
+
+    color:
+        var(--gray);
 
     line-height:
         1.4;
@@ -828,14 +882,14 @@ body {
 
 .popup-rating {
 
+    margin-top:
+        9px;
+
     color:
-        #eab308;
+        var(--gold);
 
     font-weight:
         bold;
-
-    margin-top:
-        9px;
 }
 
 
@@ -856,8 +910,15 @@ body {
     border-radius:
         12px;
 
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold),
+            var(--gold-dark)
+        );
+
     color:
-        white;
+        #090a0d;
 
     text-align:
         center;
@@ -871,12 +932,9 @@ body {
     font-size:
         14px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
+    box-shadow:
+        0 6px 18px
+        rgba(232,173,74,.20);
 
     transition:
         .2s;
@@ -887,11 +945,15 @@ body {
 
     transform:
         translateY(-2px);
+
+    box-shadow:
+        0 10px 25px
+        rgba(232,173,74,.35);
 }
 
 
 /* =========================================================
-   MESSAGE CHARGEMENT
+   CHARGEMENT
 ========================================================= */
 
 .loading {
@@ -903,7 +965,7 @@ body {
         center;
 
     color:
-        #cbd5e1;
+        var(--gray);
 }
 
 
@@ -914,13 +976,17 @@ body {
 @keyframes welcomeAppear {
 
     from {
+
         opacity: 0;
+
         transform:
             translateY(-25px);
     }
 
     to {
+
         opacity: 1;
+
         transform:
             translateY(0);
     }
@@ -930,13 +996,17 @@ body {
 @keyframes categoriesAppear {
 
     from {
+
         opacity: 0;
+
         transform:
             translateY(20px);
     }
 
     to {
+
         opacity: 1;
+
         transform:
             translateY(0);
     }
@@ -946,14 +1016,18 @@ body {
 @keyframes restaurantAppear {
 
     from {
+
         opacity: 0;
+
         transform:
             translateY(18px)
             scale(.98);
     }
 
     to {
+
         opacity: 1;
+
         transform:
             translateY(0)
             scale(1);
@@ -973,6 +1047,7 @@ body {
             1fr;
     }
 
+
     .map-container {
 
         position:
@@ -981,14 +1056,14 @@ body {
         top:
             auto;
 
+        order:
+            2;
+
         height:
             450px;
 
         min-height:
             450px;
-
-        order:
-            2;
     }
 }
 
@@ -997,15 +1072,39 @@ body {
 
     .topbar {
 
+        min-height:
+            auto;
+
         flex-direction:
             column;
 
+        align-items:
+            stretch;
+
         padding:
-            14px;
+            10px 15px;
 
         gap:
-            12px;
+            10px;
     }
+
+
+    .logo {
+
+        justify-content:
+            center;
+    }
+
+
+    .logo img {
+
+        width:
+            155px;
+
+        height:
+            58px;
+    }
+
 
     .top-search {
 
@@ -1016,11 +1115,13 @@ body {
             0;
     }
 
+
     .page {
 
         padding:
             30px 18px;
     }
+
 
     .restaurant-top {
 
@@ -1028,11 +1129,13 @@ body {
             column;
     }
 
+
     .rating {
 
         text-align:
             left;
     }
+
 
     .map-container {
 
@@ -1052,11 +1155,25 @@ body {
 <body>
 
 
+<!-- =======================================================
+     BARRE DU HAUT
+======================================================= -->
+
 <header class="topbar">
 
-    <div class="logo">
-        🍔 QuiRégale ?
-    </div>
+    <a
+        href="#"
+        class="logo"
+        aria-label="QuiRégale - Accueil"
+    >
+
+        <img
+            src="logo-quiregale.png"
+            alt="QuiRégale"
+        >
+
+    </a>
+
 
     <div class="top-search">
 
@@ -1075,153 +1192,162 @@ body {
 </header>
 
 
+
+<!-- =======================================================
+     CONTENU
+======================================================= -->
+
 <main class="page">
 
 
-<section class="welcome">
+    <section class="welcome">
 
-    <h1>
-        Où est-ce qu'on mange ? 👀
-    </h1>
+        <h1>
+            Où est-ce qu'on mange ? 👀
+        </h1>
 
-    <p>
-        Trouve ton prochain repas autour du lycée.
-    </p>
+        <p>
+            Trouve ton prochain repas autour du lycée.
+        </p>
 
-</section>
-
-
-<div class="categories">
-
-    <button
-        class="category active"
-        onclick="filtrer('tout',this)"
-    >
-        🍽️ Tout
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('tacos',this)"
-    >
-        🌯 Tacos
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('burger',this)"
-    >
-        🍔 Burger
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('pizza',this)"
-    >
-        🍕 Pizza
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('sushi',this)"
-    >
-        🍣 Sushi
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('kebab',this)"
-    >
-        🥙 Kebab
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('poulet',this)"
-    >
-        🍗 Poulet
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('equilibre',this)"
-    >
-        🥗 Équilibré
-    </button>
-
-    <button
-        class="category"
-        onclick="filtrer('budget',this)"
-    >
-        💰 Petit budget
-    </button>
-
-</div>
+    </section>
 
 
-<div class="layout">
 
+    <!-- ===================================================
+         CATÉGORIES
+    =================================================== -->
 
-<section>
+    <div class="categories">
 
-    <div class="section-title">
-
-        <h2>
-            🔥 Restaurants
-        </h2>
-
-        <span
-            id="count"
-            class="count"
+        <button
+            class="category active"
+            onclick="filtrer('tout',this)"
         >
-            Chargement...
-        </span>
+            🍽️ Tout
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('tacos',this)"
+        >
+            🌯 Tacos
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('burger',this)"
+        >
+            🍔 Burger
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('pizza',this)"
+        >
+            🍕 Pizza
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('sushi',this)"
+        >
+            🍣 Sushi
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('kebab',this)"
+        >
+            🥙 Kebab
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('poulet',this)"
+        >
+            🍗 Poulet
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('equilibre',this)"
+        >
+            🥗 Équilibré
+        </button>
+
+        <button
+            class="category"
+            onclick="filtrer('budget',this)"
+        >
+            💰 Petit budget
+        </button>
 
     </div>
 
 
-    <div id="restaurantsList">
 
-        <div class="loading">
-            Chargement des restaurants...
-        </div>
+    <!-- ===================================================
+         RESTAURANTS + CARTE
+    =================================================== -->
+
+    <div class="layout">
+
+
+        <section>
+
+            <div class="section-title">
+
+                <h2>
+                    🔥 Restaurants
+                </h2>
+
+                <span
+                    id="count"
+                    class="count"
+                >
+                    Chargement...
+                </span>
+
+            </div>
+
+
+            <div id="restaurantsList">
+
+                <div class="loading">
+                    Chargement des restaurants...
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <aside class="map-container">
+
+            <div id="map"></div>
+
+        </aside>
+
 
     </div>
-
-</section>
-
-
-<aside class="map-container">
-
-    <div id="map"></div>
-
-</aside>
-
-
-</div>
 
 </main>
 
 
+
 <script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
+
 
 
 <script>
 
 /* =========================================================
    RESTAURANTS
-=========================================================
-
-   Les adresses sont utilisées par OpenStreetMap
-   pour récupérer les coordonnées géographiques.
-
-   Les notes QuiRégale restent vides pour les nouveaux
-   restaurants : elles seront ajoutées lorsque vous aurez
-   vos propres votes.
 ========================================================= */
-
 
 const restaurants = [
 
@@ -1474,18 +1600,16 @@ let searchText = "";
    CARTE
 ========================================================= */
 
-const map = L.map(
-    "map"
-).setView(
-    [
-        43.295,
-        5.475
-    ],
-    14
-);
+const map =
+    L.map("map")
+        .setView(
+            [
+                43.295,
+                5.475
+            ],
+            14
+        );
 
-
-/* OpenStreetMap */
 
 L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -1502,7 +1626,7 @@ L.tileLayer(
 
 
 /* =========================================================
-   CRÉATION DES CARTES RESTAURANTS
+   AFFICHER LES RESTAURANTS
 ========================================================= */
 
 function afficherRestaurants() {
@@ -1533,10 +1657,6 @@ function afficherRestaurants() {
                 resto.id;
 
 
-            card.dataset.categories =
-                resto.categories.join(" ");
-
-
             card.innerHTML = `
 
                 <div class="restaurant-top">
@@ -1556,12 +1676,12 @@ function afficherRestaurants() {
                             ${resto.categories
                                 .map(
                                     categorie =>
-                                        `
-                                        <span class="tag">
-                                            ${emojiCategorie(categorie)}
-                                            ${nomCategorie(categorie)}
-                                        </span>
-                                        `
+                                    `
+                                    <span class="tag">
+                                        ${emojiCategorie(categorie)}
+                                        ${nomCategorie(categorie)}
+                                    </span>
+                                    `
                                 )
                                 .join("")
                             }
@@ -1618,7 +1738,7 @@ function afficherRestaurants() {
 
 
 /* =========================================================
-   NOMS DES CATÉGORIES
+   CATÉGORIES
 ========================================================= */
 
 function nomCategorie(
@@ -1627,29 +1747,14 @@ function nomCategorie(
 
     const noms = {
 
-        tacos:
-            "Tacos",
-
-        burger:
-            "Burger",
-
-        pizza:
-            "Pizza",
-
-        sushi:
-            "Sushi",
-
-        kebab:
-            "Kebab",
-
-        poulet:
-            "Poulet",
-
-        equilibre:
-            "Équilibré",
-
-        budget:
-            "Petit budget"
+        tacos: "Tacos",
+        burger: "Burger",
+        pizza: "Pizza",
+        sushi: "Sushi",
+        kebab: "Kebab",
+        poulet: "Poulet",
+        equilibre: "Équilibré",
+        budget: "Petit budget"
 
     };
 
@@ -1667,19 +1772,12 @@ function emojiCategorie(
     const emojis = {
 
         tacos: "🌯",
-
         burger: "🍔",
-
         pizza: "🍕",
-
         sushi: "🍣",
-
         kebab: "🥙",
-
         poulet: "🍗",
-
         equilibre: "🥗",
-
         budget: "💰"
 
     };
@@ -1693,13 +1791,6 @@ function emojiCategorie(
 
 /* =========================================================
    GÉOCODAGE
-=========================================================
-
-   On demande à OpenStreetMap les coordonnées correspondant
-   aux adresses.
-
-   Les requêtes sont faites une par une pour éviter de
-   surcharger le service.
 ========================================================= */
 
 async function geocoderRestaurants() {
@@ -1712,6 +1803,7 @@ async function geocoderRestaurants() {
 
             const url =
                 "https://nominatim.openstreetmap.org/search?" +
+
                 new URLSearchParams({
 
                     q:
@@ -1768,10 +1860,6 @@ async function geocoderRestaurants() {
             }
 
 
-            /*
-             Petite pause entre les requêtes.
-             */
-
             await attendre(
                 1100
             );
@@ -1790,11 +1878,6 @@ async function geocoderRestaurants() {
 
     }
 
-
-    /*
-    Une fois les positions récupérées,
-    on ajuste la carte.
-    */
 
     ajusterCarte();
 
@@ -1931,19 +2014,19 @@ function ajusterCarte() {
 
     const positions =
         restaurants
-        .filter(
-            resto =>
-                Number.isFinite(
-                    resto.lat
-                )
-        )
-        .map(
-            resto =>
-                [
-                    resto.lat,
-                    resto.lng
-                ]
-        );
+            .filter(
+                resto =>
+                    Number.isFinite(
+                        resto.lat
+                    )
+            )
+            .map(
+                resto =>
+                    [
+                        resto.lat,
+                        resto.lng
+                    ]
+            );
 
 
     if (
@@ -1973,7 +2056,7 @@ function ajusterCarte() {
 
 
 /* =========================================================
-   ALLER À UN RESTAURANT
+   ALLER AU RESTAURANT
 ========================================================= */
 
 function allerAuRestaurant(
@@ -1991,11 +2074,6 @@ function allerAuRestaurant(
         return;
     }
 
-
-    /*
-    Si le restaurant n'est pas encore
-    géocodé, on ne fait rien.
-    */
 
     if (
         !Number.isFinite(
@@ -2045,7 +2123,7 @@ function allerAuRestaurant(
 
 
 /* =========================================================
-   FILTRES
+   FILTRER
 ========================================================= */
 
 function filtrer(
@@ -2081,7 +2159,7 @@ function filtrer(
 
 
 /* =========================================================
-   FILTRES + RECHERCHE
+   FILTRES
 ========================================================= */
 
 function mettreAJourFiltres() {
@@ -2126,19 +2204,17 @@ function mettreAJourFiltres() {
             const correspondRecherche =
                 searchText === ""
                 ||
-                (
-                    resto.nom
+                resto.nom
                     .toLowerCase()
                     .includes(
                         searchText
                     )
-                    ||
-                    resto.adresse
+                ||
+                resto.adresse
                     .toLowerCase()
                     .includes(
                         searchText
-                    )
-                );
+                    );
 
 
             const visible =
@@ -2227,8 +2303,8 @@ document
 
             searchText =
                 this.value
-                .toLowerCase()
-                .trim();
+                    .toLowerCase()
+                    .trim();
 
 
             mettreAJourFiltres();
@@ -2242,7 +2318,6 @@ document
 ========================================================= */
 
 afficherRestaurants();
-
 
 geocoderRestaurants();
 
@@ -2269,7 +2344,7 @@ window.addEventListener(
 
 </script>
 
-
 </body>
 
 </html>
+```
