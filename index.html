@@ -4,641 +4,1220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090b12">
+<meta name="theme-color" content="#0a0d16">
 <title>QuiRégale ?</title>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 :root {
-  --bg:#090b12;
-  --panel:#151925;
-  --gold:#e8ad4a;
-  --gold2:#f5cf82;
-  --cream:#f5f0e6;
-  --muted:#b9bfcd;
-  --line:rgba(232,173,74,.2);
+    --bg:#090c14;
+    --panel:#141a27;
+    --panel2:#1b2231;
+    --gold:#e9b65e;
+    --gold-light:#ffdc99;
+    --gold-dark:#b7802e;
+    --text:#fff9ed;
+    --muted:#b8c0cf;
+    --border:rgba(233,182,94,.23);
+    --green:#77d6a0;
+    --red:#ff9898;
 }
-* {box-sizing:border-box}
-html {scroll-behavior:smooth}
+
+* { box-sizing:border-box; }
+
+html { scroll-behavior:smooth; }
+
 body {
-  margin:0;
-  color:var(--cream);
-  font-family:Arial,Helvetica,sans-serif;
-  background:radial-gradient(circle at 10% 0%,#252039,transparent 40%),linear-gradient(135deg,#090b12,#111a35);
-  min-height:100vh;
+    margin:0;
+    min-height:100vh;
+    overflow-x:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(ellipse at 5% 0%,rgba(233,182,94,.12),transparent 35%),
+        radial-gradient(ellipse at 100% 100%,rgba(45,67,119,.25),transparent 40%),
+        var(--bg);
 }
-button,input,textarea {font:inherit}
-button {cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible {
-  outline:2px solid var(--gold);
-  outline-offset:3px;
-}
+
+button,input,select { font:inherit; }
+button { -webkit-tap-highlight-color:transparent; }
+
+/* BARRE ET LOGO */
+
 .topbar {
-  position:sticky;top:0;z-index:1000;
-  display:flex;align-items:center;gap:18px;
-  padding:12px 4%;
-  background:rgba(9,11,18,.96);
-  border-bottom:1px solid var(--line);
-  backdrop-filter:blur(15px);
+    position:sticky;
+    top:0;
+    z-index:1000;
+    min-height:112px;
+    padding:10px 30px;
+    display:flex;
+    align-items:center;
+    gap:25px;
+    background:rgba(9,12,20,.96);
+    border-bottom:1px solid var(--border);
+    box-shadow:0 8px 28px #0005;
+    backdrop-filter:blur(16px);
 }
+
 .logo {
-  color:var(--gold);
-  font-size:25px;font-weight:900;
-  white-space:nowrap;cursor:pointer;
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+    cursor:pointer;
 }
-.search {flex:1;max-width:520px;margin-left:auto}
-.search input {
-  width:100%;padding:13px 17px;
-  border-radius:25px;border:1px solid var(--line);
-  background:#171b27;color:white;
+
+.logo img {
+    display:block;
+    width:260px;
+    height:94px;
+    object-fit:contain;
 }
-.gold-btn,.secondary-btn {
-  padding:12px 16px;border-radius:12px;
-  font-weight:800;border:1px solid var(--line);
+
+.top-search {
+    position:relative;
+    width:min(460px,42%);
+    margin-left:auto;
 }
-.gold-btn {
-  background:linear-gradient(135deg,var(--gold2),var(--gold));
-  color:#17120a;border:0;
+
+.top-search input {
+    width:100%;
+    padding:15px 18px 15px 45px;
+    border:1px solid var(--border);
+    border-radius:30px;
+    outline:none;
+    color:var(--text);
+    background:#ffffff09;
+    transition:.2s;
 }
-.secondary-btn {background:#202536;color:var(--cream)}
-.container {max-width:1450px;margin:auto;padding:30px 4% 60px}
-h1 {font-size:clamp(29px,4vw,47px);margin:0}
-h2 {font-size:22px}
-.muted {color:var(--muted);line-height:1.5}
+
+.top-search input:focus {
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px #e9b65e20;
+}
+
+.top-search input::placeholder { color:#9ca6b8; }
+
+.search-icon {
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.notes-button,.primary-button {
+    border:1px solid var(--gold);
+    border-radius:13px;
+    padding:13px 18px;
+    font-weight:800;
+    cursor:pointer;
+    color:#171108;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold-dark));
+    transition:transform .2s,box-shadow .2s;
+}
+
+.notes-button:hover,.primary-button:hover {
+    transform:translateY(-2px);
+    box-shadow:0 6px 22px #e9b65e30;
+}
+
+/* PAGES */
+
+.page {
+    width:min(1550px,100%);
+    margin:auto;
+    padding:38px 30px;
+}
+
+.page[hidden] { display:none !important; }
+
+.welcome h1 {
+    margin:0;
+    font-size:clamp(31px,4vw,49px);
+    letter-spacing:-1.3px;
+    line-height:1.15;
+    background:linear-gradient(90deg,#fff9ed,var(--gold-light),var(--gold));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.welcome p,.muted { color:var(--muted); }
+.welcome p { font-size:17px; margin-top:12px; }
+
+/* CATÉGORIES */
+
 .categories {
-  display:flex;gap:9px;overflow-x:auto;
-  padding:20px 0;scrollbar-width:none;
+    display:flex;
+    gap:11px;
+    overflow-x:auto;
+    padding:22px 2px;
+    scrollbar-width:none;
 }
-.categories::-webkit-scrollbar {display:none}
+
+.categories::-webkit-scrollbar { display:none; }
+
 .category {
-  flex-shrink:0;padding:12px 16px;border-radius:14px;
-  background:#191e2d;color:var(--cream);
-  border:1px solid var(--line);
+    flex-shrink:0;
+    padding:12px 17px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#ffffff07;
+    color:var(--text);
+    cursor:pointer;
+    transition:.2s;
 }
-.category.active {background:var(--gold);color:#17120a;font-weight:900}
+
+.category:hover { background:#e9b65e15; }
+
+.category.active {
+    background:linear-gradient(135deg,var(--gold-light),var(--gold-dark));
+    border-color:transparent;
+    color:#171108;
+    font-weight:800;
+}
+
+/* LISTE ET CARTE */
+
 .layout {
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(350px,43%);
-  gap:25px;align-items:start;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(390px,44%);
+    gap:25px;
+    align-items:start;
 }
-.section-heading {
-  display:flex;justify-content:space-between;align-items:center;
-  gap:12px;margin:8px 0 15px;
+
+.section-title {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:16px;
 }
+
+.section-title h2 { margin:0; font-size:23px; }
+.count { font-size:13px; color:var(--muted); }
+
 .restaurant-card {
-  display:flex;gap:15px;align-items:center;
-  padding:17px;margin-bottom:12px;
-  background:linear-gradient(145deg,#1a2030,#121622);
-  border:1px solid var(--line);border-radius:18px;
-  cursor:pointer;transition:.2s;
+    padding:20px;
+    margin-bottom:14px;
+    border:1px solid var(--border);
+    border-radius:19px;
+    background:linear-gradient(145deg,#ffffff0d,#ffffff04);
+    box-shadow:0 8px 24px #0002;
+    cursor:pointer;
+    transition:transform .2s,border-color .2s,background .2s;
 }
-.restaurant-card:hover {transform:translateY(-2px);border-color:var(--gold)}
-.restaurant-card.hidden {display:none}
-.food-icon {
-  width:64px;height:64px;flex-shrink:0;
-  display:grid;place-items:center;border-radius:16px;
-  background:linear-gradient(135deg,#342c27,#191c29);
-  font-size:30px;border:1px solid var(--line);
+
+.restaurant-card:hover {
+    transform:translateY(-3px);
+    border-color:#e9b65e80;
+    background:#ffffff0c;
 }
-.card-main {min-width:0;flex:1}
-.restaurant-name {font-size:18px;font-weight:800;margin-bottom:6px}
-.address {font-size:13px;color:var(--muted);line-height:1.4}
-.tags {display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.tag {font-size:11px;color:var(--gold2);background:#282333;padding:5px 8px;border-radius:8px}
-.card-rating {text-align:right;white-space:nowrap;font-size:13px}
-.gold {color:var(--gold)}
+
+.restaurant-card.hidden { display:none; }
+
+.restaurant-top {
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.restaurant-name {
+    font-size:19px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.address {
+    font-size:13px;
+    line-height:1.5;
+    color:var(--muted);
+    margin-bottom:12px;
+}
+
+.tags { display:flex; flex-wrap:wrap; gap:6px; }
+
+.tag {
+    padding:6px 9px;
+    border-radius:8px;
+    background:#e9b65e0d;
+    border:1px solid #e9b65e18;
+    color:var(--gold-light);
+    font-size:11px;
+}
+
+.rating {
+    flex-shrink:0;
+    text-align:right;
+    min-width:80px;
+}
+
+.rating-number { color:var(--gold-light); font-weight:800; }
+.rating-label { margin-top:5px; font-size:11px; color:var(--muted); }
+
+.card-actions {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:15px;
+}
+
+.small-button {
+    border:1px solid var(--border);
+    background:#ffffff08;
+    color:var(--text);
+    border-radius:10px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.small-button:hover { background:#e9b65e16; }
+
 .map-container {
-  position:sticky;top:90px;height:calc(100vh - 115px);
-  min-height:420px;overflow:hidden;border-radius:20px;
-  border:1px solid var(--line);
+    position:sticky;
+    top:126px;
+    height:calc(100vh - 150px);
+    min-height:500px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:#e7e7e7;
+    box-shadow:0 14px 38px #0004;
 }
-#map {width:100%;height:100%;background:#d7dce4}
+
+#map { width:100%; height:100%; }
+
+.map-status {
+    position:absolute;
+    z-index:500;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    padding:11px 13px;
+    border-radius:12px;
+    background:#0a0d16ed;
+    color:var(--text);
+    font-size:12px;
+    line-height:1.45;
+    pointer-events:none;
+}
+
 .custom-marker {
-  background:var(--gold);color:#15100a;border:2px solid white;
-  padding:8px 10px;border-radius:12px;font-size:11px;
-  font-weight:900;white-space:nowrap;box-shadow:0 4px 12px #0005;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:35px;
+    max-width:160px;
+    padding:0 10px;
+    border:2px solid #fff9ed;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold-dark));
+    color:#171108;
+    font-size:11px;
+    font-weight:900;
+    white-space:nowrap;
+    box-shadow:0 3px 12px #0005;
 }
-.leaflet-popup-content-wrapper {border-radius:12px}
-.leaflet-popup-content {color:#161616;line-height:1.5}
 
-/* Fiche restaurant */
-.detail-page {display:none;animation:appear .25s ease}
-.detail-page.visible {display:block}
-.home-page.hidden-page {display:none}
-.back-row {margin-bottom:22px}
-.detail-hero {
-  padding:clamp(20px,4vw,36px);
-  border:1px solid var(--line);border-radius:24px;
-  background:linear-gradient(135deg,#232033,#141a28);
+.leaflet-popup-content-wrapper { border-radius:13px; }
+.leaflet-popup-content { line-height:1.6; min-width:180px; }
+.leaflet-popup-content a { color:#785017; font-weight:800; }
+
+/* PAGE MES NOTES */
+
+.notes-header {
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:25px;
 }
-.detail-identity {display:flex;gap:20px;align-items:center}
-.detail-logo {
-  width:100px;height:100px;flex-shrink:0;
-  display:grid;place-items:center;border-radius:24px;
-  font-size:49px;background:#302a2b;border:1px solid var(--line);
+
+.back-button {
+    padding:11px 15px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#ffffff09;
+    color:var(--text);
+    cursor:pointer;
 }
-.detail-identity h1 {font-size:clamp(27px,4vw,40px)}
-.detail-actions {display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.info-grid {
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;margin:18px 0;
+
+.notes-header h1 {
+    margin:0;
+    font-size:clamp(29px,4vw,43px);
 }
-.info-box {
-  padding:18px;background:var(--panel);
-  border:1px solid var(--line);border-radius:16px;
+
+.notes-subtitle { color:var(--muted); margin-top:8px; }
+
+.notes-layout {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(280px,.7fr);
+    gap:22px;
+    align-items:start;
 }
-.info-box strong {display:block;font-size:20px;margin-bottom:7px}
-.info-box span {font-size:12px;color:var(--muted)}
-.detail-section {
-  margin-top:20px;padding:23px;
-  background:var(--panel);border:1px solid var(--line);border-radius:20px;
+
+.panel {
+    padding:23px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:linear-gradient(145deg,#ffffff0d,#ffffff04);
 }
-.detail-section h2 {margin:0 0 15px}
-.review-form {display:grid;gap:13px}
-.review-form label {font-size:13px;color:var(--muted)}
-.review-form input,.review-form textarea,.review-form select {
-  display:block;width:100%;margin-top:6px;
-  padding:12px;border-radius:10px;
-  background:#0d111c;color:white;border:1px solid #34394a;
+
+.panel h2 { margin:0 0 10px; color:var(--gold-light); }
+
+.field-label {
+    display:block;
+    margin:18px 0 8px;
+    font-weight:700;
+    font-size:14px;
 }
-.review-form textarea {min-height:100px;resize:vertical}
-.criteria-form {
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+
+.select-input,.comment-input {
+    width:100%;
+    padding:13px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    outline:none;
+    background:#101522;
+    color:var(--text);
 }
-.star-picker {display:flex;gap:5px;margin-top:7px}
+
+.comment-input { resize:vertical; min-height:85px; }
+
+.criteria-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:20px;
+}
+
+.criteria-card {
+    padding:15px;
+    border:1px solid #ffffff10;
+    border-radius:13px;
+    background:#00000015;
+}
+
+.criteria-card h3 { margin:0; font-size:15px; }
+
+.criteria-card p {
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+    min-height:34px;
+}
+
+.stars { display:flex; gap:5px; }
+
 .star {
-  border:0;background:none;color:#555b69;
-  font-size:28px;padding:0 2px;
+    padding:0;
+    border:0;
+    background:none;
+    color:#555d6b;
+    font-size:28px;
+    cursor:pointer;
+    transition:transform .15s,color .15s;
 }
-.star.selected {color:var(--gold)}
-.review-card {
-  border-top:1px solid var(--line);padding:16px 0;
-}
-.review-card:first-child {border-top:0}
-.review-top {display:flex;justify-content:space-between;gap:10px}
-.review-title {font-weight:800}
-.review-text {line-height:1.55;overflow-wrap:anywhere}
-.empty {padding:18px 0;color:var(--muted)}
-.notice {font-size:12px;color:var(--muted);line-height:1.5;margin-top:15px}
-footer {text-align:center;color:var(--muted);font-size:12px;padding:20px}
 
-/* Téléphone */
-@keyframes appear {from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:900px) {
-  .layout {grid-template-columns:1fr}
-  .map-container {position:relative;top:auto;height:350px;min-height:350px}
-  .info-grid {grid-template-columns:repeat(3,minmax(0,1fr))}
+.star:hover { transform:scale(1.15); }
+.star.active { color:var(--gold); }
+
+.form-actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
 }
+
+.secondary-button {
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#ffffff08;
+    color:var(--text);
+    padding:12px 15px;
+    cursor:pointer;
+}
+
+.notice { color:var(--muted); font-size:12px; line-height:1.6; }
+.status-message { margin-top:13px; font-size:13px; color:var(--green); }
+
+.saved-item {
+    padding:14px 0;
+    border-bottom:1px solid #ffffff12;
+}
+
+.saved-item:last-child { border-bottom:0; }
+.saved-item strong { display:block; margin-bottom:5px; }
+.saved-item .muted { font-size:12px; }
+.saved-actions { display:flex; gap:7px; margin-top:10px; flex-wrap:wrap; }
+
+/* RESPONSIVE */
+
+@media(max-width:1000px) {
+    .layout { grid-template-columns:1fr; }
+    .map-container {
+        position:relative;
+        top:auto;
+        height:430px;
+        min-height:430px;
+    }
+    .notes-layout { grid-template-columns:1fr; }
+}
+
 @media(max-width:600px) {
-  .topbar {
-    display:grid;grid-template-columns:1fr auto;
-    gap:10px;padding:10px 14px;
-  }
-  .logo {font-size:22px}
-  .search {grid-column:1/-1;grid-row:2;max-width:none;width:100%}
-  #notesTopButton {font-size:12px;padding:10px}
-  .container {padding:23px 14px 35px}
-  .welcome p {font-size:14px}
-  .categories {padding:16px 0;gap:8px}
-  .category {padding:11px 13px;font-size:13px}
-  .restaurant-card {padding:13px;gap:11px;border-radius:15px}
-  .food-icon {width:51px;height:51px;font-size:25px;border-radius:13px}
-  .restaurant-name {font-size:15px}
-  .address {font-size:12px}
-  .card-rating {font-size:12px}
-  .map-container {height:300px;min-height:300px}
-  .detail-identity {align-items:flex-start;gap:14px}
-  .detail-logo {width:72px;height:72px;font-size:35px;border-radius:18px}
-  .detail-identity h1 {font-size:25px}
-  .detail-hero {padding:18px}
-  .info-grid {gap:7px}
-  .info-box {padding:12px 8px}
-  .info-box strong {font-size:16px}
-  .info-box span {font-size:10px}
-  .detail-section {padding:17px}
-  .criteria-form {grid-template-columns:1fr}
-  .detail-actions {display:grid;grid-template-columns:1fr}
-  .detail-actions button,.detail-actions a {width:100%;text-align:center}
-  .notes-header h1 {font-size:28px}
+    .topbar {
+        min-height:0;
+        padding:7px 14px 13px;
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:7px 10px;
+    }
+
+    .logo { justify-content:flex-start; }
+    .logo img { width:220px; height:78px; }
+
+    .notes-button { padding:11px 12px; font-size:12px; }
+
+    .top-search {
+        grid-column:1 / -1;
+        width:100%;
+        margin:0;
+    }
+
+    .page { padding:28px 16px; }
+    .welcome h1 { letter-spacing:-.8px; }
+
+    .restaurant-top { gap:10px; }
+    .restaurant-name { font-size:17px; }
+    .rating { min-width:68px; }
+    .rating-number { font-size:14px; }
+
+    .map-container { height:380px; min-height:380px; }
+
+    .notes-header { align-items:flex-start; flex-direction:column; }
+    .criteria-grid { grid-template-columns:1fr; }
+    .criteria-card p { min-height:0; }
+    .panel { padding:17px; }
 }
+
 @media(prefers-reduced-motion:reduce) {
-  *,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    *,*::before,*::after {
+        scroll-behavior:auto !important;
+        transition:none !important;
+    }
 }
 </style>
 </head>
+
 <body>
 
 <header class="topbar">
-  <div class="logo" onclick="showHome()">🍔 QuiRégale ?</div>
-  <button id="notesTopButton" class="secondary-btn" onclick="showHome(true)">⭐ Mes notes</button>
-  <div class="search">
-    <input id="searchInput" type="search" placeholder="Rechercher un restaurant..." aria-label="Rechercher un restaurant">
-  </div>
+    <div class="logo" onclick="showPage('home')" title="Retour à l'accueil">
+        <img
+            src="Logo QuiRégale gourmand et élégant.png"
+            alt="QuiRégale"
+            onerror="this.style.display='none';this.nextElementSibling.hidden=false"
+        >
+        <strong hidden style="font-size:26px;color:#e9b65e">QuiRégale ?</strong>
+    </div>
+
+    <div class="top-search">
+        <span class="search-icon">🔎</span>
+        <input id="searchInput" type="search" placeholder="Rechercher un restaurant..." autocomplete="off">
+    </div>
+
+    <button class="notes-button" onclick="showPage('notes')">⭐ Mes notes</button>
 </header>
 
-<main class="container">
-<section id="homePage" class="home-page">
-  <div class="welcome">
-    <h1>Où est-ce qu'on mange ?</h1>
-    <p class="muted">Les bonnes adresses autour de Saint-Marcel et La Valentine.</p>
-  </div>
-
-  <nav class="categories" aria-label="Catégories">
-    <button class="category active" data-category="tout">🍽️ Tout</button>
-    <button class="category" data-category="tacos">🌯 Tacos</button>
-    <button class="category" data-category="burger">🍔 Burger</button>
-    <button class="category" data-category="pizza">🍕 Pizza</button>
-    <button class="category" data-category="sushi">🍣 Sushi</button>
-    <button class="category" data-category="kebab">🥙 Kebab</button>
-    <button class="category" data-category="poulet">🍗 Poulet</button>
-    <button class="category" data-category="equilibre">🥗 Équilibré</button>
-    <button class="category" data-category="budget">💰 Petit budget</button>
-  </nav>
-
-  <div class="layout">
-    <section>
-      <div class="section-heading">
-        <h2>🔥 Restaurants</h2>
-        <span id="count" class="muted">31 adresses</span>
-      </div>
-      <div id="restaurantsList"></div>
+<main id="homePage" class="page">
+    <section class="welcome">
+        <h1>Où est-ce qu'on mange ?</h1>
+        <p>Trouve ton prochain repas autour du lycée.</p>
     </section>
-    <aside class="map-container"><div id="map"></div></aside>
-  </div>
-</section>
 
-<section id="detailPage" class="detail-page">
-  <div class="back-row">
-    <button class="secondary-btn" onclick="showHome()">← Retour aux restaurants</button>
-  </div>
+    <nav class="categories" aria-label="Catégories de restaurants">
+        <button class="category active" data-category="tout">🍽️ Tout</button>
+        <button class="category" data-category="tacos">🌯 Tacos</button>
+        <button class="category" data-category="burger">🍔 Burger</button>
+        <button class="category" data-category="pizza">🍕 Pizza</button>
+        <button class="category" data-category="sushi">🍣 Sushi</button>
+        <button class="category" data-category="kebab">🥙 Kebab</button>
+        <button class="category" data-category="poulet">🍗 Poulet</button>
+        <button class="category" data-category="equilibre">🥗 Équilibré</button>
+        <button class="category" data-category="budget">💰 Petit budget</button>
+    </nav>
 
-  <div class="detail-hero">
-    <div class="detail-identity">
-      <div class="detail-logo" id="detailLogo">🍔</div>
-      <div>
-        <h1 id="detailName">Restaurant</h1>
-        <div id="detailTags" class="tags"></div>
-        <p id="detailAddress" class="muted"></p>
-      </div>
+    <div class="layout">
+        <section>
+            <div class="section-title">
+                <h2>🔥 Restaurants</h2>
+                <span id="count" class="count">31 restaurants</span>
+            </div>
+            <div id="restaurantsList"></div>
+        </section>
+
+        <aside class="map-container">
+            <div id="map"></div>
+            <div id="mapStatus" class="map-status">
+                Préparation de la carte…
+            </div>
+        </aside>
     </div>
-    <div class="detail-actions">
-      <a id="routeButton" class="gold-btn" target="_blank" rel="noopener">🗺️ Voir l'itinéraire</a>
-      <button id="mapButton" class="secondary-btn">📍 Voir sur la carte</button>
-    </div>
-  </div>
-
-  <div class="info-grid">
-    <div class="info-box"><strong id="walkTime">—</strong><span>🚶 Trajet estimé à pied</span></div>
-    <div class="info-box"><strong id="distance">—</strong><span>📍 Distance estimée</span></div>
-    <div class="info-box"><strong id="averageRating">—</strong><span>⭐ Moyenne des avis</span></div>
-  </div>
-
-  <section class="detail-section">
-    <h2>⭐ Notes de la communauté</h2>
-    <p class="muted">Les évaluations reposent sur les avis publiés sur cette version du site.</p>
-    <div id="criteriaSummary"></div>
-  </section>
-
-  <section class="detail-section">
-    <h2>💬 Les commentaires</h2>
-    <div id="reviewsList"></div>
-  </section>
-
-  <section class="detail-section">
-    <h2>✍️ Donner mon avis</h2>
-    <form id="reviewForm" class="review-form">
-      <label>Ton pseudo
-        <input id="reviewName" maxlength="30" placeholder="Ex. FoodLover" required>
-      </label>
-      <div class="criteria-form" id="criteriaInputs"></div>
-      <label>Ton commentaire
-        <textarea id="reviewComment" maxlength="800" placeholder="Parle du goût, du prix, de l'accueil..." required></textarea>
-      </label>
-      <button class="gold-btn" type="submit">Publier mon avis</button>
-    </form>
-    <p class="notice">Respecte les autres : pas d'insultes ni d'informations personnelles. Pour le moment, les avis sont enregistrés uniquement dans le navigateur de cet appareil. Ils ne sont pas encore partagés avec les autres élèves.</p>
-  </section>
-</section>
 </main>
 
-<footer>QuiRégale ? · Les avis sont ceux des utilisateurs, pas des notes officielles.</footer>
+<main id="notesPage" class="page" hidden>
+    <div class="notes-header">
+        <button class="back-button" onclick="showPage('home')">← Retour</button>
+        <div>
+            <h1>⭐ Mes notes</h1>
+            <div class="notes-subtitle">Note chaque restaurant selon les mêmes critères.</div>
+        </div>
+    </div>
+
+    <div class="notes-layout">
+        <section class="panel">
+            <h2>Évaluer un restaurant</h2>
+            <p class="notice">Choisis un restaurant, attribue de 1 à 5 étoiles à chaque critère, puis enregistre ton évaluation.</p>
+
+            <label class="field-label" for="restaurantSelect">Restaurant</label>
+            <select class="select-input" id="restaurantSelect"></select>
+
+            <div class="criteria-grid" id="criteriaGrid"></div>
+
+            <label class="field-label" for="reviewComment">Commentaire (facultatif)</label>
+            <textarea id="reviewComment" class="comment-input" maxlength="500" placeholder="Ton avis sur ce restaurant…"></textarea>
+
+            <div class="form-actions">
+                <button class="primary-button" id="saveReview">💾 Enregistrer la note</button>
+                <button class="secondary-button" id="clearReview">Effacer les étoiles</button>
+            </div>
+            <div id="saveStatus" class="status-message" role="status"></div>
+
+            <p class="notice">Les notes sont conservées sur cet appareil. Pour partager les notes entre plusieurs élèves ou téléphones, il faudra ajouter une base de données en ligne.</p>
+        </section>
+
+        <aside class="panel">
+            <h2>📊 Évaluations enregistrées</h2>
+            <p class="notice">Les moyennes affichées ici sont calculées à partir de tes propres évaluations, pas des notes Google.</p>
+            <div id="savedReviews"></div>
+        </aside>
+    </div>
+</main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 "use strict";
 
-/* Point de départ approximatif :
-   secteur du boulevard de Saint-Marcel, Marseille 11e.
-   À remplacer par les coordonnées réelles du lycée si besoin. */
-const LYCEE = {lat:43.295, lng:5.475};
+/* RESTAURANTS */
 
 const restaurants = [
-{id:"castel",nom:"Le Castel",adresse:"164 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","budget"]},
-{id:"darko",nom:"Chez Darko",adresse:"175 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger"]},
-{id:"pasta-time",nom:"PASTA TIME",adresse:"183 Bd de Saint-Marcel, 13011 Marseille",categories:["pizza","budget"]},
-{id:"kyodai",nom:"Kyodai Sushi",adresse:"114 Bd de Saint-Marcel, 13011 Marseille",categories:["sushi","equilibre"]},
-{id:"mplaisir",nom:"M.Plaisir",adresse:"110 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","pizza","budget"]},
-{id:"nath",nom:"Le petit creux de Nath",adresse:"271 Bd de Saint-Marcel, 13011 Marseille",categories:["budget"]},
-{id:"mckaren",nom:"Snack McKaren",adresse:"68 Bd de Saint-Marcel, 13011 Marseille",categories:["burger","tacos","kebab","budget"]},
-{id:"poulet-carre",nom:"O poulet carre Marseille",adresse:"73 Bd de Saint-Marcel, 13011 Marseille",categories:["poulet","budget"]},
-{id:"tacos-avenue",nom:"Tacos Avenue - La Valentine",adresse:"55 Rue de l'Audience, 13011 Marseille",categories:["tacos","budget"]},
-{id:"snack-factory",nom:"Snack Factory La Valentine",adresse:"106 Rue de l'Audience, 13011 Marseille",categories:["tacos","burger","budget"]},
-{id:"little-supreme",nom:"Little Supreme Tacos",adresse:"33 Bd de la Barasse, 13011 Marseille",categories:["tacos","budget"]},
-{id:"doy-doy",nom:"Doy Doy Kebab",adresse:"95 Bd de la Barasse, 13011 Marseille",categories:["kebab","budget"]},
-{id:"carthaji",nom:"Carthaji - La Valentine",adresse:"87 Bd de la Barasse, 13011 Marseille",categories:["tacos","burger"]},
-{id:"istanbul",nom:"Ô İstanbul Kebab",adresse:"148 Bd de la Valbarelle, 13011 Marseille",categories:["kebab","budget"]},
-{id:"tasty-crousty",nom:"Tasty Crousty",adresse:"546 Bd Mireille Lauze, 13011 Marseille",categories:["poulet","budget"]},
-{id:"planet-burger",nom:"Planet Burger",adresse:"546 Bd Mireille Lauze, 13011 Marseille",categories:["burger"]},
-{id:"planet-food",nom:"Planet Food",adresse:"49 Bd de Saint-Loup, 13010 Marseille",categories:["burger","tacos","kebab"]},
-{id:"kfc",nom:"KFC Marseille La Valentine",adresse:"54 Av. des Peintres Roux, 13011 Marseille",categories:["poulet","budget"]},
-{id:"burger-king-1",nom:"Burger King - Grand V",adresse:"Centre Commercial Grand V, Av. des Peintres Roux, 13011 Marseille",categories:["burger","budget"]},
-{id:"burger-king-2",nom:"Burger King - La Valentine",adresse:"10 Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
-{id:"mcdonalds",nom:"McDonald's La Valentine",adresse:"ZAC de La Valentine, Av. François Chardigny, 13011 Marseille",categories:["burger","poulet","budget"]},
-{id:"quick",nom:"Quick - La Valentine",adresse:"Centre Commercial La Valentine, Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
-{id:"pitaya",nom:"Pitaya Thaï Street Food",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["equilibre"]},
-{id:"waffle",nom:"Waffle Factory",adresse:"La Galerie - Géant, Route de la Sablière, 13011 Marseille",categories:["budget"]},
-{id:"storia",nom:"Storia Pizza",adresse:"9 Route d'Allauch, 13011 Marseille",categories:["pizza"]},
-{id:"intemporel",nom:"L'Intemporel Pizzeria Restaurant",adresse:"1 Av. de Vienne, 13011 Marseille",categories:["pizza"]},
-{id:"everest",nom:"L'Everest Pizza",adresse:"33 Av. de la Gare, 13011 Marseille",categories:["pizza","budget"]},
-{id:"snack-pomme",nom:"Snack de la Pomme",adresse:"63 Av. Emmanuel Allard, 13011 Marseille",categories:["burger","tacos","kebab"]},
-{id:"fit-bar",nom:"Fit Bar",adresse:"133 Route des Camoins, 13011 Marseille",categories:["equilibre"]},
-{id:"2j-sushi",nom:"2J Sushi",adresse:"5 Route des Trois Lucs à la Valentine, 13012 Marseille",categories:["sushi","equilibre"]},
-{id:"envie-burger",nom:"L'Envie du Burger",adresse:"1 Av. Jean Lombard, 13011 Marseille",categories:["burger"]}
+    {id:"castel",nom:"Le Castel",adresse:"164 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","budget"]},
+    {id:"darko",nom:"Chez Darko",adresse:"175 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger"]},
+    {id:"pasta-time",nom:"PASTA TIME",adresse:"183 Bd de Saint-Marcel, 13011 Marseille",categories:["pizza","budget"]},
+    {id:"kyodai",nom:"Kyodai Sushi",adresse:"114 Bd de Saint-Marcel, 13011 Marseille",categories:["sushi","equilibre"]},
+    {id:"mplaisir",nom:"M.Plaisir",adresse:"110 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","pizza","budget"]},
+    {id:"nath",nom:"Le petit creux de Nath",adresse:"271 Bd de Saint-Marcel, 13011 Marseille",categories:["budget"]},
+    {id:"mckaren",nom:"Snack McKaren",adresse:"68 Bd de Saint-Marcel, 13011 Marseille",categories:["burger","tacos","kebab","budget"]},
+    {id:"poulet-carre",nom:"O poulet carre Marseille",adresse:"73 Bd de Saint-Marcel, 13011 Marseille",categories:["poulet","budget"]},
+    {id:"tacos-avenue",nom:"Tacos Avenue - La Valentine",adresse:"55 Rue de l'Audience, 13011 Marseille",categories:["tacos","budget"]},
+    {id:"snack-factory",nom:"Snack Factory La Valentine",adresse:"106 Rue de l'Audience, 13011 Marseille",categories:["tacos","burger","budget"]},
+    {id:"little-supreme",nom:"Little Supreme Tacos",adresse:"33 Bd de la Barasse, 13011 Marseille",categories:["tacos","budget"]},
+    {id:"doy-doy",nom:"Doy Doy Kebab",adresse:"95 Bd de la Barasse, 13011 Marseille",categories:["kebab","budget"]},
+    {id:"carthaji",nom:"Carthaji - La Valentine",adresse:"87 Bd de la Barasse, 13011 Marseille",categories:["tacos","burger"]},
+    {id:"istanbul",nom:"Ô İstanbul Kebab",adresse:"148 Bd de la Valbarelle, 13011 Marseille",categories:["kebab","budget"]},
+    {id:"tasty-crousty",nom:"Tasty Crousty",adresse:"546 Bd Mireille Lauze, 13011 Marseille",categories:["poulet","budget"]},
+    {id:"planet-burger",nom:"Planet Burger",adresse:"546 Bd Mireille Lauze, 13011 Marseille",categories:["burger"]},
+    {id:"planet-food",nom:"Planet Food",adresse:"49 Bd de Saint-Loup, 13010 Marseille",categories:["burger","tacos","kebab"]},
+    {id:"kfc",nom:"KFC Marseille La Valentine",adresse:"54 Av. des Peintres Roux, 13011 Marseille",categories:["poulet","budget"]},
+    {id:"burger-king-1",nom:"Burger King - Grand V",adresse:"Centre Commercial Grand V, Av. des Peintres Roux, 13011 Marseille",categories:["burger","budget"]},
+    {id:"burger-king-2",nom:"Burger King - La Valentine",adresse:"10 Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
+    {id:"mcdonalds",nom:"McDonald's La Valentine",adresse:"ZAC de La Valentine, Av. François Chardigny, 13011 Marseille",categories:["burger","poulet","budget"]},
+    {id:"quick",nom:"Quick - La Valentine",adresse:"Centre Commercial La Valentine, Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
+    {id:"pitaya",nom:"Pitaya Thaï Street Food",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["equilibre"]},
+    {id:"waffle",nom:"Waffle Factory",adresse:"La Galerie - Géant, Route de la Sablière, 13011 Marseille",categories:["budget"]},
+    {id:"storia",nom:"Storia Pizza",adresse:"9 Route d'Allauch, 13011 Marseille",categories:["pizza"]},
+    {id:"intemporel",nom:"L'Intemporel Pizzeria Restaurant",adresse:"1 Av. de Vienne, 13011 Marseille",categories:["pizza"]},
+    {id:"everest",nom:"L'Everest Pizza",adresse:"33 Av. de la Gare, 13011 Marseille",categories:["pizza","budget"]},
+    {id:"snack-pomme",nom:"Snack de la Pomme",adresse:"63 Av. Emmanuel Allard, 13011 Marseille",categories:["burger","tacos","kebab"]},
+    {id:"fit-bar",nom:"Fit Bar",adresse:"133 Route des Camoins, 13011 Marseille",categories:["equilibre"]},
+    {id:"2j-sushi",nom:"2J Sushi",adresse:"5 Route des Trois Lucs à la Valentine, 13012 Marseille",categories:["sushi","equilibre"]},
+    {id:"envie-burger",nom:"L'Envie du Burger",adresse:"1 Av. Jean Lombard, 13011 Marseille",categories:["burger"]}
 ];
 
 const categoryNames = {
-tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",
-kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget"
+    tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",
+    kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget"
 };
-const categoryEmojis = {
-tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",
-kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰"
+
+const categoryIcons = {
+    tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",
+    kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰"
 };
+
 const criteria = [
-["gout","Goût"],["prix","Prix"],["quantite","Quantité"],
-["rapidite","Rapidité"],["accueil","Accueil"],["proprete","Propreté"]
+    {id:"gout",name:"Goût",icon:"🍔",description:"Saveur et qualité du repas."},
+    {id:"prix",name:"Prix",icon:"💰",description:"Rapport qualité-prix."},
+    {id:"quantite",name:"Quantité",icon:"🍽️",description:"Portion et satiété."},
+    {id:"rapidite",name:"Rapidité",icon:"⚡",description:"Temps d'attente."},
+    {id:"accueil",name:"Accueil",icon:"😊",description:"Amabilité du personnel."},
+    {id:"proprete",name:"Propreté",icon:"🧼",description:"Propreté des lieux."}
 ];
-const markers = {};
+
+const STORAGE_REVIEWS = "quiregale-reviews-v2";
+const STORAGE_COORDS = "quiregale-coordinates-v1";
+
 let activeCategory = "tout";
 let searchText = "";
-let selectedRestaurant = null;
-let selectedRatings = {};
-let geocodeCache = {};
+let markers = {};
+let selectedScores = {};
+let map = null;
+let geocodingStarted = false;
+let geocodingFinished = false;
 
-try { geocodeCache = JSON.parse(localStorage.getItem("qr-geocodes") || "{}"); } catch {}
-function escapeHTML(s) {
- return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function emojiFor(r) {
- if(r.categories.includes("pizza")) return "🍕";
- if(r.categories.includes("sushi")) return "🍣";
- if(r.categories.includes("tacos")) return "🌯";
- if(r.categories.includes("kebab")) return "🥙";
- if(r.categories.includes("poulet")) return "🍗";
- return "🍔";
-}
-function reviewsFor(id) {
- try {
-  const all = JSON.parse(localStorage.getItem("qr-reviews") || "{}");
-  return Array.isArray(all[id]) ? all[id] : [];
- } catch { return []; }
-}
-function average(reviews) {
- if(!reviews.length) return null;
- const total = reviews.reduce((sum,r)=>sum+r.ratings.reduce((a,b)=>a+b,0)/r.ratings.length,0);
- return total/reviews.length;
-}
-function categoryHTML(r) {
- return r.categories.map(c=>`<span class="tag">${categoryEmojis[c]} ${categoryNames[c]}</span>`).join("");
+/* STOCKAGE LOCAL ROBUSTE */
+
+function readStorage(key,fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+    } catch (error) {
+        console.warn("Lecture du stockage impossible",error);
+        return fallback;
+    }
 }
 
-/* Carte */
-const map = L.map("map").setView([LYCEE.lat,LYCEE.lng],13);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
- attribution:'&copy; OpenStreetMap contributors',maxZoom:19
-}).addTo(map);
-L.marker([LYCEE.lat,LYCEE.lng]).addTo(map).bindPopup("📍 Point de départ approximatif du lycée");
+function writeStorage(key,value) {
+    try {
+        localStorage.setItem(key,JSON.stringify(value));
+        return true;
+    } catch (error) {
+        console.error("Enregistrement impossible",error);
+        return false;
+    }
+}
 
-function renderRestaurants() {
- const container = document.getElementById("restaurantsList");
- container.innerHTML = restaurants.map(r=>{
-  const avg=average(reviewsFor(r.id));
-  return `<article class="restaurant-card" data-id="${r.id}" tabindex="0" role="button" aria-label="Voir la fiche de ${escapeHTML(r.nom)}">
-   <div class="food-icon">${emojiFor(r)}</div>
-   <div class="card-main">
-    <div class="restaurant-name">${escapeHTML(r.nom)}</div>
-    <div class="address">📍 ${escapeHTML(r.adresse)}</div>
-    <div class="tags">${categoryHTML(r)}</div>
-   </div>
-   <div class="card-rating"><strong class="gold">${avg===null?"—":"★ "+avg.toFixed(1)}</strong><br><span class="muted">${reviewsFor(r.id).length} avis</span></div>
-  </article>`;
- }).join("");
- container.querySelectorAll(".restaurant-card").forEach(card=>{
-  const open=()=>showRestaurant(card.dataset.id);
-  card.addEventListener("click",open);
-  card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}});
- });
- applyFilters();
+function getReviews() {
+    const value = readStorage(STORAGE_REVIEWS,{});
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
 }
-function applyFilters() {
- let count=0;
- document.querySelectorAll(".restaurant-card").forEach(card=>{
-  const r=restaurants.find(x=>x.id===card.dataset.id);
-  const visible=(activeCategory==="tout"||r.categories.includes(activeCategory)) &&
-    (r.nom+" "+r.adresse).toLowerCase().includes(searchText);
-  card.classList.toggle("hidden",!visible);
-  if(visible) count++;
-  if(markers[r.id]) {
-   if(visible) markers[r.id].addTo(map);
-   else map.removeLayer(markers[r.id]);
-  }
- });
- document.getElementById("count").textContent=count+" restaurant"+(count>1?"s":"");
+
+function getRestaurantReviews(id) {
+    const reviews = getReviews();
+    return Array.isArray(reviews[id]) ? reviews[id] : [];
 }
-document.querySelectorAll(".category").forEach(btn=>btn.addEventListener("click",()=>{
- activeCategory=btn.dataset.category;
- document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b===btn));
- applyFilters();
-}));
-document.getElementById("searchInput").addEventListener("input",e=>{
- searchText=e.target.value.trim().toLowerCase();
- applyFilters();
+
+function averageReview(review) {
+    const values = criteria
+        .map(c => Number(review.scores?.[c.id]))
+        .filter(n => Number.isFinite(n) && n >= 1 && n <= 5);
+
+    if (!values.length) return null;
+    return values.reduce((sum,n) => sum+n,0)/values.length;
+}
+
+function averageRestaurant(id) {
+    const reviews = getRestaurantReviews(id);
+    const values = reviews.map(averageReview).filter(n => n !== null);
+
+    if (!values.length) return null;
+    return values.reduce((sum,n) => sum+n,0)/values.length;
+}
+
+function reviewCount(id) {
+    return getRestaurantReviews(id).length;
+}
+
+/* CARTE */
+
+function initMap() {
+    map = L.map("map").setView([43.295,5.475],13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+        maxZoom:19,
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+}
+
+function setMapStatus(message) {
+    document.getElementById("mapStatus").textContent = message;
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g,char => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[char]);
+}
+
+function makeTags(categories) {
+    return categories.map(c => `
+        <span class="tag">${categoryIcons[c] || "🍽️"} ${categoryNames[c] || c}</span>
+    `).join("");
+}
+
+function renderRestaurantList() {
+    const container = document.getElementById("restaurantsList");
+
+    container.innerHTML = restaurants.map(resto => {
+        const average = averageRestaurant(resto.id);
+        const count = reviewCount(resto.id);
+
+        return `
+            <article class="restaurant-card" data-id="${resto.id}">
+                <div class="restaurant-top">
+                    <div>
+                        <div class="restaurant-name">${escapeHTML(resto.nom)}</div>
+                        <div class="address">📍 ${escapeHTML(resto.adresse)}</div>
+                        <div class="tags">${makeTags(resto.categories)}</div>
+                    </div>
+                    <div class="rating">
+                        <div class="rating-number">${average === null ? "⭐ —" : "⭐ "+average.toFixed(1)+"/5"}</div>
+                        <div class="rating-label">${count ? count+" avis perso." : "Pas encore noté"}</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="small-button" data-action="review" data-id="${resto.id}">⭐ Noter</button>
+                    <button class="small-button" data-action="route" data-id="${resto.id}">📍 Itinéraire</button>
+                </div>
+            </article>
+        `;
+    }).join("");
+
+    updateFilters();
+}
+
+function updateRestaurantRatings() {
+    document.querySelectorAll(".restaurant-card").forEach(card => {
+        const id = card.dataset.id;
+        const average = averageRestaurant(id);
+        const count = reviewCount(id);
+        const number = card.querySelector(".rating-number");
+        const label = card.querySelector(".rating-label");
+
+        if (number) number.textContent = average === null ? "⭐ —" : `⭐ ${average.toFixed(1)}/5`;
+        if (label) label.textContent = count ? `${count} avis perso.` : "Pas encore noté";
+    });
+}
+
+/* FILTRES ET RECHERCHE */
+
+function updateFilters() {
+    let count = 0;
+
+    document.querySelectorAll(".restaurant-card").forEach(card => {
+        const resto = restaurants.find(r => r.id === card.dataset.id);
+        if (!resto) return;
+
+        const categoryOK = activeCategory === "tout" || resto.categories.includes(activeCategory);
+        const text = `${resto.nom} ${resto.adresse} ${resto.categories.join(" ")}`.toLocaleLowerCase("fr");
+        const searchOK = text.includes(searchText);
+        const visible = categoryOK && searchOK;
+
+        card.classList.toggle("hidden",!visible);
+        if (visible) count++;
+
+        const marker = markers[resto.id];
+        if (marker && map) {
+            if (visible && !map.hasLayer(marker)) marker.addTo(map);
+            if (!visible && map.hasLayer(marker)) map.removeLayer(marker);
+        }
+    });
+
+    document.getElementById("count").textContent =
+        `${count} restaurant${count > 1 ? "s" : ""}`;
+
+    if (map) updateMapBounds();
+}
+
+document.querySelector(".categories").addEventListener("click",event => {
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
+
+    activeCategory = button.dataset.category;
+    document.querySelectorAll(".category").forEach(b => {
+        b.classList.toggle("active",b === button);
+    });
+    updateFilters();
 });
 
-/* Coordonnées : recherche d'adresse, mise en cache */
-function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
-async function geocodeRestaurants() {
- for(const r of restaurants) {
-  if(geocodeCache[r.id]) {
-   r.lat=geocodeCache[r.id].lat;r.lng=geocodeCache[r.id].lng;
-   addMarker(r);continue;
-  }
-  try {
-   const url="https://nominatim.openstreetmap.org/search?"+new URLSearchParams({
-    q:r.adresse,format:"json",limit:"1",countrycodes:"fr"
-   });
-   const response=await fetch(url,{headers:{Accept:"application/json"}});
-   if(!response.ok) throw new Error("Géocodage indisponible");
-   const data=await response.json();
-   if(data.length) {
-    r.lat=Number(data[0].lat);r.lng=Number(data[0].lon);
-    geocodeCache[r.id]={lat:r.lat,lng:r.lng};
-    addMarker(r);
-   }
-  } catch(err) {console.warn("Position indisponible :",r.nom);}
-  await wait(1100);
- }
- try{localStorage.setItem("qr-geocodes",JSON.stringify(geocodeCache));}catch{}
- fitMap();
-}
-function addMarker(r) {
- if(!Number.isFinite(r.lat)||!Number.isFinite(r.lng)) return;
- const icon=L.divIcon({className:"",html:`<div class="custom-marker">${escapeHTML(r.nom)}</div>`,iconSize:null,iconAnchor:[0,18]});
- const marker=L.marker([r.lat,r.lng],{icon}).bindPopup(`<strong>${escapeHTML(r.nom)}</strong><br>${escapeHTML(r.adresse)}<br><br><a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}">Calculer l'itinéraire</a>`);
- marker.on("click",()=>{});
- markers[r.id]=marker;
- if(!document.querySelector(`[data-id="${r.id}"]`)?.classList.contains("hidden")) marker.addTo(map);
-}
-function fitMap() {
- const points=restaurants.filter(r=>Number.isFinite(r.lat)).map(r=>[r.lat,r.lng]);
- if(points.length) map.fitBounds(L.latLngBounds(points),{padding:[30,30]});
-}
-
-/* Distance et estimation */
-function distanceKm(a,b) {
- const rad=x=>x*Math.PI/180;
- const dLat=rad(b.lat-a.lat),dLng=rad(b.lng-a.lng);
- const h=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLng/2)**2;
- return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
-}
-function travelInfo(r) {
- if(!Number.isFinite(r.lat)||!Number.isFinite(r.lng)) return {km:null,minutes:null};
- const direct=distanceKm(LYCEE,{lat:r.lat,lng:r.lng});
- const walking=direct*1.3;
- return {km:walking,minutes:Math.max(1,Math.round(walking/4.5*60))};
-}
-
-/* Fiche détaillée */
-function showRestaurant(id) {
- const r=restaurants.find(x=>x.id===id);
- if(!r) return;
- selectedRestaurant=r;
- document.getElementById("homePage").classList.add("hidden-page");
- document.getElementById("detailPage").classList.add("visible");
- document.getElementById("detailLogo").textContent=emojiFor(r);
- document.getElementById("detailName").textContent=r.nom;
- document.getElementById("detailAddress").textContent="📍 "+r.adresse;
- document.getElementById("detailTags").innerHTML=categoryHTML(r);
-
- const info=travelInfo(r);
- document.getElementById("walkTime").textContent=info.minutes===null?"À calculer":info.minutes+" min";
- document.getElementById("distance").textContent=info.km===null?"—":info.km.toFixed(1)+" km";
- document.getElementById("routeButton").href=Number.isFinite(r.lat)
-  ?`https://www.google.com/maps/dir/?api=1&origin=${LYCEE.lat},${LYCEE.lng}&destination=${r.lat},${r.lng}&travelmode=walking`
-  :`https://www.google.com/maps/dir/?api=1&origin=${LYCEE.lat},${LYCEE.lng}&destination=${encodeURIComponent(r.adresse)}&travelmode=walking`;
-
- document.getElementById("mapButton").onclick=()=>{
-  showHome();
-  setTimeout(()=>{
-   if(Number.isFinite(r.lat)) {
-    map.flyTo([r.lat,r.lng],16);
-    if(markers[r.id]) markers[r.id].openPopup();
-   }
-   document.querySelector(".map-container").scrollIntoView({behavior:"smooth",block:"center"});
-  },100);
- };
- buildCriteriaInputs();
- renderReviews();
- window.scrollTo({top:0,behavior:"smooth"});
-}
-function showHome(notes=false) {
- document.getElementById("detailPage").classList.remove("visible");
- document.getElementById("homePage").classList.remove("hidden-page");
- if(notes) {
-  document.getElementById("searchInput").focus();
- }
- setTimeout(()=>map.invalidateSize(),200);
- if(!notes) window.scrollTo({top:0,behavior:"smooth"});
-}
-function buildCriteriaInputs() {
- const container=document.getElementById("criteriaInputs");
- selectedRatings={};
- container.innerHTML=criteria.map(([key,label])=>`
-  <div><label>${label}</label><div class="star-picker" data-key="${key}" aria-label="${label}, note sur cinq">
-   ${[1,2,3,4,5].map(n=>`<button class="star" type="button" data-value="${n}" aria-label="${n} sur 5">★</button>`).join("")}
-  </div></div>`).join("");
- container.querySelectorAll(".star-picker").forEach(picker=>{
-  picker.querySelectorAll(".star").forEach(star=>star.addEventListener("click",()=>{
-   const value=Number(star.dataset.value);
-   selectedRatings[picker.dataset.key]=value;
-   picker.querySelectorAll(".star").forEach(s=>s.classList.toggle("selected",Number(s.dataset.value)<=value));
-  }));
- });
-}
-function renderReviews() {
- const r=selectedRestaurant;
- const reviews=reviewsFor(r.id);
- const avg=average(reviews);
- document.getElementById("averageRating").textContent=avg===null?"Aucun avis":"★ "+avg.toFixed(1)+"/5";
- const summary=document.getElementById("criteriaSummary");
- if(!reviews.length) {
-  summary.innerHTML='<p class="empty">Pas encore de notes. Sois le premier à donner ton avis !</p>';
- } else {
-  summary.innerHTML=criteria.map(([key,label],index)=>{
-   const vals=reviews.map(rev=>rev.ratings[index]).filter(Number.isFinite);
-   const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-   return `<p>${label} <strong class="gold">${mean.toFixed(1)}/5</strong> <span class="muted">(${vals.length} note${vals.length>1?"s":""})</span></p>`;
-  }).join("");
- }
- const list=document.getElementById("reviewsList");
- if(!reviews.length) {
-  list.innerHTML='<div class="empty">Aucun commentaire pour le moment.</div>';
-  return;
- }
- list.innerHTML=[...reviews].reverse().map(rev=>`
-  <article class="review-card">
-   <div class="review-top"><span class="review-title">${escapeHTML(rev.name)}</span><span class="gold">★ ${ (rev.ratings.reduce((a,b)=>a+b,0)/rev.ratings.length).toFixed(1)}/5</span></div>
-   <p class="muted">${escapeHTML(rev.date)}</p>
-   <p class="review-text">${escapeHTML(rev.comment)}</p>
-   <div class="tags">${criteria.map(([key,label],i)=>`<span class="tag">${label} : ${rev.ratings[i]}/5</span>`).join("")}</div>
-  </article>`).join("");
-}
-document.getElementById("reviewForm").addEventListener("submit",e=>{
- e.preventDefault();
- if(!selectedRestaurant) return;
- const ratings=criteria.map(([key])=>selectedRatings[key]||0);
- if(ratings.some(n=>n<1||n>5)) {
-  alert("Choisis une note sur 5 pour chacun des six critères.");
-  return;
- }
- const name=document.getElementById("reviewName").value.trim();
- const comment=document.getElementById("reviewComment").value.trim();
- if(!name||!comment) return;
- const all=(()=>{
-  try{return JSON.parse(localStorage.getItem("qr-reviews")||"{}");}
-  catch{return {};}
- })();
- if(!Array.isArray(all[selectedRestaurant.id])) all[selectedRestaurant.id]=[];
- all[selectedRestaurant.id].push({
-  name,comment,ratings,
-  date:new Date().toLocaleDateString("fr-FR")
- });
- try {
-  localStorage.setItem("qr-reviews",JSON.stringify(all));
- } catch {
-  alert("Impossible d'enregistrer l'avis sur cet appareil.");
-  return;
- }
- document.getElementById("reviewComment").value="";
- selectedRatings={};
- buildCriteriaInputs();
- renderReviews();
- renderRestaurants();
+document.getElementById("searchInput").addEventListener("input",event => {
+    searchText = event.target.value.trim().toLocaleLowerCase("fr");
+    updateFilters();
 });
 
-/* Initialisation */
-renderRestaurants();
-geocodeRestaurants();
-window.addEventListener("load",()=>setTimeout(()=>map.invalidateSize(),300));
+/* MARQUEURS ET ITINÉRAIRES */
+
+function addMarker(resto) {
+    if (!Number.isFinite(resto.lat) || !Number.isFinite(resto.lng) || markers[resto.id]) return;
+
+    const icon = L.divIcon({
+        className:"",
+        html:`<div class="custom-marker">${escapeHTML(resto.nom)}</div>`,
+        iconSize:null,
+        iconAnchor:[8,18],
+        popupAnchor:[0,-18]
+    });
+
+    const marker = L.marker([resto.lat,resto.lng],{icon});
+
+    marker.bindPopup(() => {
+        const average = averageRestaurant(resto.id);
+        const rating = average === null ? "Pas encore noté" : `${average.toFixed(1)}/5 (${reviewCount(resto.id)} avis)`;
+        const destination = encodeURIComponent(`${resto.lat},${resto.lng}`);
+
+        return `
+            <strong>${escapeHTML(resto.nom)}</strong><br>
+            ${escapeHTML(resto.adresse)}<br>
+            ⭐ ${rating}<br>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=${destination}">Ouvrir l'itinéraire ↗</a>
+        `;
+    });
+
+    markers[resto.id] = marker;
+    marker.addTo(map);
+}
+
+function focusRestaurant(id) {
+    const resto = restaurants.find(r => r.id === id);
+    if (!resto) return;
+
+    if (!Number.isFinite(resto.lat) || !Number.isFinite(resto.lng)) {
+        setMapStatus(`Position non trouvée pour ${resto.nom}. L'adresse reste disponible dans sa fiche.`);
+        return;
+    }
+
+    map.flyTo([resto.lat,resto.lng],17,{duration:.8});
+
+    if (markers[id]) {
+        setTimeout(() => markers[id].openPopup(),350);
+    }
+}
+
+function updateMapBounds() {
+    const visible = restaurants.filter(r =>
+        markers[r.id] && map.hasLayer(markers[r.id])
+    );
+
+    if (!visible.length) return;
+
+    const bounds = L.latLngBounds(visible.map(r => [r.lat,r.lng]));
+    map.fitBounds(bounds,{padding:[30,30],maxZoom:15});
+}
+
+/* DÉLÉGATION DES CLICS */
+
+document.getElementById("restaurantsList").addEventListener("click",event => {
+    const actionButton = event.target.closest("[data-action]");
+    const card = event.target.closest(".restaurant-card");
+    if (!card) return;
+
+    if (actionButton) {
+        event.stopPropagation();
+        const id = actionButton.dataset.id;
+
+        if (actionButton.dataset.action === "review") {
+            document.getElementById("restaurantSelect").value = id;
+            loadReviewForm();
+            showPage("notes");
+        } else if (actionButton.dataset.action === "route") {
+            openDirections(id);
+        }
+        return;
+    }
+
+    focusRestaurant(card.dataset.id);
+});
+
+function openDirections(id) {
+    const resto = restaurants.find(r => r.id === id);
+    if (!resto) return;
+
+    if (Number.isFinite(resto.lat) && Number.isFinite(resto.lng)) {
+        const destination = `${resto.lat},${resto.lng}`;
+        window.open(
+            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    } else {
+        window.open(
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(resto.nom+" "+resto.adresse)}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    }
+}
+
+/* GÉOCODAGE : CACHE ET REQUÊTES ESPACÉES */
+
+const wait = ms => new Promise(resolve => setTimeout(resolve,ms));
+
+async function geocodeAllRestaurants() {
+    if (geocodingStarted) return;
+    geocodingStarted = true;
+
+    let cache = readStorage(STORAGE_COORDS,{});
+    if (!cache || typeof cache !== "object" || Array.isArray(cache)) cache = {};
+
+    let done = 0;
+    const total = restaurants.length;
+
+    for (const resto of restaurants) {
+        const cached = cache[resto.id];
+
+        if (cached && Number.isFinite(cached.lat) && Number.isFinite(cached.lng)) {
+            resto.lat = cached.lat;
+            resto.lng = cached.lng;
+            addMarker(resto);
+            done++;
+            setMapStatus(`Carte : ${done}/${total} positions chargées.`);
+            continue;
+        }
+
+        try {
+            const query = new URLSearchParams({
+                q:resto.adresse,
+                format:"jsonv2",
+                limit:"1",
+                countrycodes:"fr"
+            });
+
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?${query}`,
+                {headers:{"Accept":"application/json"}}
+            );
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+
+            if (Array.isArray(data) && data.length && Number.isFinite(Number(data[0].lat)) && Number.isFinite(Number(data[0].lon))) {
+                resto.lat = Number(data[0].lat);
+                resto.lng = Number(data[0].lon);
+                cache[resto.id] = {lat:resto.lat,lng:resto.lng};
+                addMarker(resto);
+                writeStorage(STORAGE_COORDS,cache);
+            } else {
+                resto.geoError = true;
+            }
+        } catch (error) {
+            console.warn(`Géolocalisation indisponible : ${resto.nom}`,error);
+            resto.geoError = true;
+        }
+
+        done++;
+        setMapStatus(`Carte : ${done}/${total} recherches terminées. Les adresses introuvables restent dans la liste.`);
+
+        // Limite volontairement les requêtes au service public.
+        await wait(1100);
+    }
+
+    geocodingFinished = true;
+    updateFilters();
+
+    const located = restaurants.filter(r => Number.isFinite(r.lat) && Number.isFinite(r.lng));
+
+    if (located.length) {
+        updateMapBounds();
+        setMapStatus(`${located.length}/${total} positions chargées. Les marqueurs correspondent aux résultats OpenStreetMap ; vérifie les adresses avant publication.`);
+    } else {
+        setMapStatus("Les positions n'ont pas pu être chargées. Vérifie ta connexion internet et réessaie plus tard.");
+    }
+}
+
+/* NAVIGATION */
+
+function showPage(page) {
+    const home = document.getElementById("homePage");
+    const notes = document.getElementById("notesPage");
+
+    home.hidden = page !== "home";
+    notes.hidden = page !== "notes";
+
+    window.scrollTo({top:0,behavior:"smooth"});
+
+    if (page === "home" && map) {
+        setTimeout(() => map.invalidateSize(),100);
+    }
+
+    if (page === "notes") {
+        renderSavedReviews();
+    }
+}
+
+/* NOTES : 6 CRITÈRES, 1 À 5 ÉTOILES */
+
+function populateRestaurantSelect() {
+    const select = document.getElementById("restaurantSelect");
+
+    select.innerHTML = restaurants.map(r =>
+        `<option value="${r.id}">${escapeHTML(r.nom)}</option>`
+    ).join("");
+}
+
+function renderCriteria() {
+    const grid = document.getElementById("criteriaGrid");
+
+    grid.innerHTML = criteria.map(c => `
+        <div class="criteria-card">
+            <h3>${c.icon} ${c.name}</h3>
+            <p>${c.description}</p>
+            <div class="stars" data-criterion="${c.id}" role="group" aria-label="${c.name} : note sur 5">
+                ${[1,2,3,4,5].map(n => `
+                    <button type="button" class="star" data-score="${n}" aria-label="${n} sur 5" aria-pressed="false">★</button>
+                `).join("")}
+            </div>
+        </div>
+    `).join("");
+}
+
+function setCriterionScore(id,score) {
+    selectedScores[id] = score;
+
+    const group = document.querySelector(`[data-criterion="${id}"]`);
+    if (!group) return;
+
+    group.querySelectorAll(".star").forEach(button => {
+        const active = Number(button.dataset.score) <= score;
+        button.classList.toggle("active",active);
+        button.setAttribute("aria-pressed",String(active));
+    });
+}
+
+document.getElementById("criteriaGrid").addEventListener("click",event => {
+    const button = event.target.closest("[data-score]");
+    if (!button) return;
+
+    const group = button.closest("[data-criterion]");
+    setCriterionScore(group.dataset.criterion,Number(button.dataset.score));
+});
+
+function loadReviewForm() {
+    const id = document.getElementById("restaurantSelect").value;
+    const reviews = getRestaurantReviews(id);
+    const latest = reviews.length ? reviews[reviews.length-1] : null;
+
+    selectedScores = {};
+    criteria.forEach(c => setCriterionScore(c.id,Number(latest?.scores?.[c.id]) || 0));
+
+    document.getElementById("reviewComment").value = latest?.comment || "";
+    document.getElementById("saveStatus").textContent =
+        latest ? "Dernière évaluation chargée. Enregistre pour la mettre à jour." : "";
+}
+
+document.getElementById("restaurantSelect").addEventListener("change",loadReviewForm);
+
+document.getElementById("clearReview").addEventListener("click",() => {
+    selectedScores = {};
+    criteria.forEach(c => setCriterionScore(c.id,0));
+    document.getElementById("reviewComment").value = "";
+    document.getElementById("saveStatus").textContent = "Étoiles effacées du formulaire.";
+});
+
+document.getElementById("saveReview").addEventListener("click",() => {
+    const id = document.getElementById("restaurantSelect").value;
+    const filled = criteria.filter(c => Number(selectedScores[c.id]) >= 1 && Number(selectedScores[c.id]) <= 5);
+
+    if (filled.length !== criteria.length) {
+        document.getElementById("saveStatus").textContent =
+            "Choisis une note de 1 à 5 pour chacun des 6 critères.";
+        return;
+    }
+
+    const reviews = getReviews();
+    if (!Array.isArray(reviews[id])) reviews[id] = [];
+
+    const review = {
+        scores:Object.fromEntries(criteria.map(c => [c.id,Number(selectedScores[c.id])])),
+        comment:document.getElementById("reviewComment").value.trim(),
+        date:new Date().toISOString()
+    };
+
+    // Une évaluation par appareil et par restaurant : on met à jour la précédente.
+    reviews[id] = [review];
+
+    if (!writeStorage(STORAGE_REVIEWS,reviews)) {
+        document.getElementById("saveStatus").textContent =
+            "Impossible de sauvegarder. Vérifie les paramètres de stockage de ton navigateur.";
+        return;
+    }
+
+    document.getElementById("saveStatus").textContent =
+        `Note enregistrée : ${averageReview(review).toFixed(1)}/5.`;
+
+    updateRestaurantRatings();
+    renderSavedReviews();
+});
+
+function renderSavedReviews() {
+    const container = document.getElementById("savedReviews");
+    const reviews = getReviews();
+
+    const entries = restaurants
+        .filter(r => Array.isArray(reviews[r.id]) && reviews[r.id].length)
+        .map(r => ({restaurant:r,review:reviews[r.id][reviews[r.id].length-1]}));
+
+    if (!entries.length) {
+        container.innerHTML = '<p class="notice">Aucune évaluation pour le moment. Choisis un restaurant et attribue tes étoiles.</p>';
+        return;
+    }
+
+    container.innerHTML = entries.map(({restaurant,review}) => {
+        const avg = averageReview(review);
+
+        return `
+            <div class="saved-item">
+                <strong>${escapeHTML(restaurant.nom)}</strong>
+                <div class="muted">⭐ ${avg === null ? "—" : avg.toFixed(1)+"/5"} · ${new Date(review.date).toLocaleDateString("fr-FR")}</div>
+                ${review.comment ? `<p>${escapeHTML(review.comment)}</p>` : ""}
+                <div class="saved-actions">
+                    <button class="small-button" data-edit-review="${restaurant.id}">Modifier</button>
+                    <button class="small-button" data-delete-review="${restaurant.id}">Supprimer</button>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+document.getElementById("savedReviews").addEventListener("click",event => {
+    const edit = event.target.closest("[data-edit-review]");
+    const remove = event.target.closest("[data-delete-review]");
+
+    if (edit) {
+        document.getElementById("restaurantSelect").value = edit.dataset.editReview;
+        loadReviewForm();
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    if (remove) {
+        const id = remove.dataset.deleteReview;
+        if (!confirm("Supprimer l'évaluation de ce restaurant ?")) return;
+
+        const reviews = getReviews();
+        delete reviews[id];
+
+        if (!writeStorage(STORAGE_REVIEWS,reviews)) {
+            alert("La suppression n'a pas pu être enregistrée.");
+            return;
+        }
+
+        updateRestaurantRatings();
+        renderSavedReviews();
+        loadReviewForm();
+    }
+});
+
+/* LANCEMENT */
+
+initMap();
+populateRestaurantSelect();
+renderCriteria();
+renderRestaurantList();
+loadReviewForm();
+renderSavedReviews();
+
+geocodeAllRestaurants();
 </script>
+
 </body>
 </html>
