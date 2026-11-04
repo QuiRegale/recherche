@@ -47,26 +47,29 @@ padding:9px 24px;
 display:flex;
 align-items:center;
 gap:18px;
-background:#090c14f5;
+background:#090c14;
 border-bottom:1px solid var(--border);
 backdrop-filter:blur(16px);
 }
 
-/* LOGO CORRIGÉ */
+/* LOGO VISIBLE ET CORRIGÉ */
 
 .logo{
-display:inline-flex;
+display:flex !important;
 align-items:center;
 justify-content:center;
-gap:8px;
+gap:9px;
+flex-shrink:0;
+text-decoration:none !important;
+visibility:visible !important;
+opacity:1 !important;
+color:var(--gold) !important;
+font-family:Arial,Helvetica,sans-serif;
 font-size:29px;
 font-weight:900;
-font-family:Arial,Helvetica,sans-serif;
-color:var(--gold);
 white-space:nowrap;
-border:none;
-outline:none;
-background:transparent;
+background:transparent !important;
+border:0 !important;
 padding:8px 0;
 margin:0;
 cursor:pointer;
@@ -74,12 +77,27 @@ letter-spacing:-1px;
 line-height:1.2;
 appearance:none;
 -webkit-appearance:none;
-transition:color .25s,transform .25s;
+transition:transform .25s,color .25s;
 }
 
 .logo:hover{
-color:var(--light);
-transform:scale(1.04);
+transform:scale(1.05);
+color:var(--light) !important;
+}
+
+.logo-icon{
+display:inline-block;
+font-size:31px;
+line-height:1;
+}
+
+.logo-text{
+color:#e9b65e !important;
+display:inline-block;
+}
+
+.logo-question{
+color:#ffdc99 !important;
 }
 
 .logo:focus-visible{
@@ -106,10 +124,7 @@ background:#ffffff09;
 color:white;
 }
 
-.search input:focus{
-border-color:var(--gold);
-}
-
+.search input:focus{border-color:var(--gold)}
 .search input::placeholder{color:#aab3c2}
 .search-icon{position:absolute;left:15px;top:12px}
 
@@ -498,9 +513,12 @@ min-height:auto;
 
 .logo{
 font-size:23px;
+gap:5px;
 padding:5px 0;
 letter-spacing:-.7px;
 }
+
+.logo-icon{font-size:25px}
 
 .search{
 grid-column:1/-1;
@@ -514,13 +532,9 @@ font-size:12px;
 }
 
 .page{padding:20px 13px}
-
 .page-toolbar{top:100px}
-
 .restaurant-name{font-size:16px}
-
 .rating{min-width:65px}
-
 .criteria-grid{grid-template-columns:1fr}
 
 .map-container{
@@ -535,9 +549,10 @@ min-height:350px;
 
 <header class="topbar">
 
-<button class="logo" onclick="showPage('home')" aria-label="Retour à l'accueil">
-🍔 QuiRégale ?
-</button>
+<a href="#" class="logo" onclick="showPage('home');return false;" aria-label="QuiRégale, accueil">
+<span class="logo-icon">🍔</span>
+<span class="logo-text">QuiRégale<span class="logo-question"> ?</span></span>
+</a>
 
 <div class="search">
 <span class="search-icon">🔎</span>
@@ -639,7 +654,6 @@ min-height:350px;
 </div>
 
 <div id="saveStatus" class="status"></div>
-
 <p class="notice">Une évaluation par restaurant et par navigateur. Tu peux la modifier ou la supprimer.</p>
 
 </section>
@@ -842,8 +856,7 @@ popupAnchor:[0,-18]
 
 const marker=L.marker([r.lat,r.lng],{icon}).addTo(homeMap);
 
-marker.bindPopup(`<b>${esc(r.nom)}</b><br>${esc(r.adresse)}<br>
-<a href="#" data-detail="${r.id}">Voir la fiche</a>`);
+marker.bindPopup(`<b>${esc(r.nom)}</b><br>${esc(r.adresse)}<br><a href="#" data-detail="${r.id}">Voir la fiche</a>`);
 
 marker.on("popupopen",e=>{
 const a=e.popup.getElement().querySelector("[data-detail]");
@@ -932,29 +945,23 @@ const rev=review(r.id);
 const avg=average(rev?.scores);
 
 return `<article class="restaurant-card" data-id="${r.id}">
-
 <div class="restaurant-top">
-
 <div>
 <div class="restaurant-name">${isFavorite(r.id)?"❤️ ":""}${esc(r.nom)}</div>
 <div class="address">📍 ${esc(r.adresse)}</div>
 <div class="tags">${tagsHTML(r.categories)}</div>
 </div>
-
 <div class="rating">
 <div class="rating-number">${avg===null?"⭐ —":"⭐ "+avg.toFixed(1)+"/5"}</div>
 <div class="rating-label">${rev?"Note personnelle":"Pas encore noté"}</div>
 </div>
-
 </div>
-
 <div class="card-actions">
 <button class="favorite-btn ${isFavorite(r.id)?"selected":""}" data-action="favorite" data-id="${r.id}">${isFavorite(r.id)?"❤️ Favori":"♡ Favoris"}</button>
 <button class="small-btn" data-action="open" data-id="${r.id}">📖 Fiche</button>
 <button class="small-btn" data-action="review" data-id="${r.id}">⭐ Noter</button>
 <button class="small-btn" data-action="route" data-id="${r.id}">📍 Itinéraire</button>
 </div>
-
 </article>`;
 
 }).join("");
@@ -1110,7 +1117,6 @@ document.getElementById("directionsButton").onclick=()=>directions(r.id);
 function renderForm(){
 
 document.getElementById("criteriaForm").innerHTML=criteria.map(c=>`
-
 <div class="criteria-card">
 <b>${c.icon} ${c.name}</b>
 <p>${c.description}</p>
@@ -1118,7 +1124,6 @@ document.getElementById("criteriaForm").innerHTML=criteria.map(c=>`
 ${[1,2,3,4,5].map(n=>`<button class="star" type="button" data-score="${n}" aria-label="${n} étoiles">★</button>`).join("")}
 </div>
 </div>
-
 `).join("");
 
 }
@@ -1205,7 +1210,7 @@ renderNotes();
 
 };
 
-/* AFFICHAGE DES NOTES */
+/* NOTES */
 
 function renderDetail(){
 
@@ -1221,15 +1226,9 @@ document.getElementById("detailCriteria").innerHTML=criteria.map(c=>{
 const n=Number(rev?.scores?.[c.id])||0;
 
 return `<div class="criterion-row">
-
 <span>${c.icon} ${c.name}</span>
-
-<div class="bar">
-<div class="fill" style="width:${n*20}%"></div>
-</div>
-
+<div class="bar"><div class="fill" style="width:${n*20}%"></div></div>
 <b>${n?n+"/5":"—"}</b>
-
 </div>`;
 
 }).join("");
@@ -1244,15 +1243,12 @@ return;
 }
 
 container.innerHTML=`
-
 <article class="review-item">
 <b>⭐ ${avg.toFixed(1)}/5</b>
 <div class="review-date">${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
 <p>${esc(rev.comment||"Pas de commentaire.")}</p>
 <button class="small-btn" id="deleteReview">🗑️ Supprimer mon avis</button>
-</article>
-
-`;
+</article>`;
 
 document.getElementById("deleteReview").onclick=()=>{
 
@@ -1294,20 +1290,12 @@ reviewsContainer.innerHTML=entries.map(r=>{
 const rev=all[r.id];
 
 return `
-
 <article class="review-item">
-
 <b>${esc(r.nom)}</b>
-
 <div class="review-date">⭐ ${average(rev.scores).toFixed(1)}/5 · ${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
-
 <p>${esc(rev.comment||"Sans commentaire")}</p>
-
 <button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
-
-</article>
-
-`;
+</article>`;
 
 }).join("");
 
@@ -1318,19 +1306,12 @@ const favs=restaurants.filter(r=>isFavorite(r.id));
 const favContainer=document.getElementById("allFavorites");
 
 favContainer.innerHTML=favs.length?favs.map(r=>`
-
 <article class="review-item">
-
 <b>❤️ ${esc(r.nom)}</b>
-
 <p class="notice">${esc(r.adresse)}</p>
-
 <button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
-
 <button class="small-btn" data-remove="${r.id}">Retirer des favoris</button>
-
 </article>
-
 `).join(""):'<p class="muted">Aucun favori pour le moment.</p>';
 
 }
