@@ -190,7 +190,10 @@ background:#101522;color:white;
 <body>
 
 <header class="topbar">
-<button class="logo" onclick="showPage('home')">QuiRégale ?</button>
+ <button class="logo" onclick="showPage('home')" aria-label="Retour à l'accueil">
+        <img src="Logo QuiRégale gourmand et élégant.png" alt="QuiRégale"
+             onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+        <span class="logo-fallback" hidden>QuiRégale ?</span>
 <div class="search">
 <span class="search-icon">🔎</span>
 <input id="searchInput" placeholder="Qu'est ce qu'on vas manger ?" type="search">
