@@ -3,565 +3,711 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090c14">
 <title>QuiRégale ?</title>
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 :root {
---bg:#090c14;
---panel:#141a27;
---gold:#e9b65e;
---light:#ffdc99;
---muted:#b8c0cf;
---border:rgba(233,182,94,.23);
---green:#77d6a0;
+  --bg:#090c14;
+  --panel:#141a27;
+  --gold:#e9b65e;
+  --light:#ffdc99;
+  --muted:#b8c0cf;
+  --border:rgba(233,182,94,.23);
+  --green:#77d6a0;
 }
-
 * {box-sizing:border-box}
-
 body {
-margin:0;
-min-height:100vh;
-color:#fff9ed;
-font-family:Arial,Helvetica,sans-serif;
-background:
-radial-gradient(ellipse at 5% 0%,#e9b65e20,transparent 35%),
-radial-gradient(ellipse at 100% 100%,#2d437740,transparent 40%),
-var(--bg);
+  margin:0;
+  min-height:100vh;
+  color:#fff9ed;
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(ellipse at 5% 0%,#e9b65e20,transparent 35%),
+    radial-gradient(ellipse at 100% 100%,#2d437740,transparent 40%),
+    var(--bg);
 }
-
 button,input,textarea {font:inherit}
 button {cursor:pointer}
 [hidden] {display:none!important}
 
-/* HEADER */
+/* DISPOSITION PRINCIPALE */
 
-.topbar {
-position:sticky;
-top:0;
-z-index:1000;
-min-height:105px;
-padding:10px 24px;
-display:flex;
-align-items:center;
-gap:22px;
-background:#090c14f5;
-border-bottom:1px solid var(--border);
-backdrop-filter:blur(16px);
+.app {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 270px;
+  min-height:100vh;
+}
+
+/* LOGO À GAUCHE */
+
+.main {
+  min-width:0;
+  padding:30px;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-bottom:35px;
 }
 
 .logo {
-border:0;
-padding:0;
-background:none;
-display:flex;
-align-items:center;
-flex-shrink:0;
+  display:block;
+  width:340px;
+  max-width:75%;
+  height:auto;
+  object-fit:contain;
+  object-position:left center;
 }
 
-.logo-image {
-width:340px;
-height:90px;
-object-fit:contain;
-display:block;
-transition:transform .25s ease;
+/* BARRE LATÉRALE À DROITE */
+
+.sidebar {
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:27px 19px;
+  background:rgba(9,12,20,.97);
+  border-left:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  z-index:1000;
 }
 
-.logo:hover .logo-image {
-transform:scale(1.04);
+.side-title {
+  font-size:12px;
+  letter-spacing:2px;
+  color:var(--gold);
+  font-weight:bold;
+  margin:10px 5px;
 }
 
-.search {
-position:relative;
-margin-left:auto;
-width:min(420px,42%);
+.side-search {
+  position:relative;
 }
 
-.search input {
-width:100%;
-padding:13px 16px 13px 42px;
-border:1px solid var(--border);
-border-radius:30px;
-outline:none;
-background:#ffffff09;
-color:white;
+.side-search input {
+  width:100%;
+  padding:14px 12px 14px 38px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#ffffff09;
+  color:white;
+  outline:none;
 }
 
-.search input::placeholder {color:#aab3c2}
-.search-icon {
-position:absolute;
-left:15px;
-top:12px;
+.side-search input:focus {
+  border-color:var(--gold);
 }
 
-.gold-btn {
-padding:12px 16px;
-border:0;
-border-radius:12px;
-background:linear-gradient(135deg,var(--light),#b7802e);
-color:#171108;
-font-weight:800;
+.side-search span {
+  position:absolute;
+  left:12px;
+  top:13px;
 }
 
-.secondary {
-padding:10px 13px;
-border:1px solid var(--border);
-border-radius:10px;
-background:#ffffff09;
-color:white;
+.side-btn {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:#fff9ed;
+  text-align:left;
+  transition:.2s;
 }
 
-.page {
-width:min(1550px,100%);
-margin:auto;
-padding:28px;
+.side-btn:hover,.side-btn.active {
+  background:#e9b65e17;
+  border-color:var(--border);
+  color:var(--light);
 }
 
-.page-toolbar {
-position:sticky;
-top:105px;
-z-index:900;
-display:flex;
-align-items:center;
-gap:12px;
-padding:10px 0;
-background:#090c14ed;
-backdrop-filter:blur(12px);
+.side-btn .ico {
+  font-size:20px;
+  width:25px;
+  text-align:center;
 }
 
-h1 {font-size:clamp(30px,4vw,48px);margin:8px 0}
+.side-divider {
+  height:1px;
+  background:var(--border);
+  margin:8px 0;
+}
+
+.sidebar-bottom {
+  margin-top:auto;
+  padding:14px;
+  background:#e9b65e0c;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* CONTENU */
+
+h1 {
+  font-size:clamp(30px,4vw,48px);
+  margin:8px 0;
+}
 h2 {font-size:22px}
 .muted {color:var(--muted)}
 .welcome p {color:var(--muted)}
 
 .categories {
-display:flex;
-gap:10px;
-overflow-x:auto;
-padding:18px 0;
-scrollbar-width:none;
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:20px 0;
+  scrollbar-width:none;
 }
+.categories::-webkit-scrollbar {display:none}
 
 .category {
-flex-shrink:0;
-padding:12px 16px;
-border-radius:13px;
-border:1px solid var(--border);
-background:#ffffff08;
-color:white;
+  flex-shrink:0;
+  padding:12px 16px;
+  border-radius:13px;
+  border:1px solid var(--border);
+  background:#ffffff08;
+  color:white;
 }
-
 .category.active {
-background:linear-gradient(135deg,var(--light),#b7802e);
-color:#171108;
-font-weight:bold;
+  background:linear-gradient(135deg,var(--light),#b7802e);
+  color:#171108;
+  font-weight:bold;
 }
 
 .layout {
-display:grid;
-grid-template-columns:minmax(0,1fr) minmax(340px,44%);
-gap:24px;
-align-items:start;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(320px,43%);
+  gap:24px;
+  align-items:start;
 }
 
 .section-title {
-display:flex;
-justify-content:space-between;
-align-items:center;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.count {color:var(--muted);font-size:13px}
+.count {
+  color:var(--muted);
+  font-size:13px;
+}
 
 .restaurant-card {
-padding:19px;
-margin-bottom:13px;
-border:1px solid var(--border);
-border-radius:17px;
-background:linear-gradient(145deg,#ffffff0d,#ffffff04);
-cursor:pointer;
-transition:.2s;
+  padding:19px;
+  margin-bottom:13px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:linear-gradient(145deg,#ffffff0d,#ffffff04);
+  cursor:pointer;
+  transition:.2s;
 }
-
 .restaurant-card:hover {
-transform:translateY(-3px);
-border-color:var(--gold);
+  transform:translateY(-3px);
+  border-color:var(--gold);
 }
-
 .restaurant-card.hidden {display:none}
 
 .restaurant-top {
-display:flex;
-justify-content:space-between;
-gap:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
 }
-
 .restaurant-name {
-font-size:18px;
-font-weight:800;
-margin-bottom:7px;
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:7px;
 }
-
 .address {
-font-size:13px;
-color:var(--muted);
-line-height:1.5;
-margin-bottom:10px;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:10px;
 }
-
-.tags {display:flex;flex-wrap:wrap;gap:6px}
-
+.tags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
 .tag {
-padding:5px 8px;
-background:#e9b65e12;
-color:var(--light);
-border:1px solid #e9b65e22;
-border-radius:8px;
-font-size:11px;
+  padding:5px 8px;
+  background:#e9b65e12;
+  color:var(--light);
+  border:1px solid #e9b65e22;
+  border-radius:8px;
+  font-size:11px;
 }
-
 .rating {
-text-align:right;
-flex-shrink:0;
-min-width:70px;
+  text-align:right;
+  flex-shrink:0;
+  min-width:70px;
 }
-
-.rating-number {color:var(--light);font-weight:bold}
-.rating-label {font-size:11px;color:var(--muted);margin-top:5px}
-
+.rating-number {
+  color:var(--light);
+  font-weight:bold;
+}
+.rating-label {
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+}
 .card-actions {
-display:flex;
-gap:7px;
-flex-wrap:wrap;
-margin-top:14px;
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:14px;
 }
-
-.small-btn {
-padding:9px 11px;
-border:1px solid var(--border);
-border-radius:9px;
-background:#ffffff08;
-color:white;
-font-size:12px;
+.small-btn,.secondary {
+  padding:9px 11px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:#ffffff08;
+  color:white;
+  font-size:12px;
 }
-
-.small-btn:hover {border-color:var(--gold)}
-
+.small-btn:hover,.secondary:hover {
+  border-color:var(--gold);
+}
 .favorite-btn {
-border:1px solid var(--border);
-background:#ffffff08;
-color:var(--gold);
-border-radius:10px;
-padding:9px 12px;
-font-weight:bold;
+  border:1px solid var(--border);
+  background:#ffffff08;
+  color:var(--gold);
+  border-radius:10px;
+  padding:9px 12px;
+  font-weight:bold;
+}
+.favorite-btn.selected {
+  background:#e9b65e20;
+  color:#ffd477;
 }
 
-.favorite-btn.selected {
-background:#e9b65e20;
-color:#ffd477;
+.gold-btn {
+  padding:12px 16px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--light),#b7802e);
+  color:#171108;
+  font-weight:800;
 }
+
+/* CARTE */
 
 .map-container {
-position:sticky;
-top:120px;
-height:calc(100vh - 140px);
-min-height:430px;
-border:1px solid var(--border);
-border-radius:20px;
-overflow:hidden;
-background:#ddd;
+  position:sticky;
+  top:20px;
+  height:calc(100vh - 40px);
+  min-height:430px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+  background:#ddd;
 }
-
 #map {width:100%;height:100%}
-
 .map-status {
-position:absolute;
-bottom:10px;
-left:10px;
-right:10px;
-z-index:500;
-padding:10px;
-border-radius:10px;
-background:#090c14ed;
-font-size:12px;
-color:white;
-pointer-events:none;
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  right:10px;
+  z-index:500;
+  padding:10px;
+  border-radius:10px;
+  background:#090c14ed;
+  font-size:12px;
+  color:white;
+  pointer-events:none;
+}
+.custom-marker {
+  padding:7px 9px;
+  border:2px solid white;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--light),#b7802e);
+  color:#171108;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+  box-shadow:0 3px 12px #0007;
 }
 
-.custom-marker {
-padding:7px 9px;
-border:2px solid white;
-border-radius:10px;
-background:linear-gradient(135deg,var(--light),#b7802e);
-color:#171108;
-font-size:10px;
-font-weight:900;
-white-space:nowrap;
-box-shadow:0 3px 12px #0007;
-}
+/* FICHES */
 
 .panel {
-padding:22px;
-border:1px solid var(--border);
-border-radius:18px;
-background:linear-gradient(145deg,#ffffff0d,#ffffff04);
-margin-bottom:18px;
+  padding:22px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:linear-gradient(145deg,#ffffff0d,#ffffff04);
+  margin-bottom:18px;
 }
-
 .detail-grid {
-display:grid;
-grid-template-columns:1fr .85fr;
-gap:20px;
-align-items:start;
+  display:grid;
+  grid-template-columns:1fr .85fr;
+  gap:20px;
+  align-items:start;
 }
-
 .detail-title {font-size:clamp(28px,4vw,42px)}
 .detail-address {color:var(--muted);line-height:1.6}
-
 .score-box {
-padding:16px;
-background:#e9b65e10;
-border:1px solid var(--border);
-border-radius:13px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin:15px 0;
+  padding:16px;
+  background:#e9b65e10;
+  border:1px solid var(--border);
+  border-radius:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:15px 0;
 }
-
 .big-score {
-font-size:30px;
-color:var(--light);
-font-weight:900;
+  font-size:30px;
+  color:var(--light);
+  font-weight:900;
 }
-
 .criterion-row {
-display:grid;
-grid-template-columns:105px 1fr 38px;
-gap:8px;
-align-items:center;
-font-size:13px;
-margin:12px 0;
+  display:grid;
+  grid-template-columns:105px 1fr 38px;
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+  margin:12px 0;
 }
-
-.bar {height:8px;background:#ffffff16;border-radius:20px;overflow:hidden}
-.fill {height:100%;background:linear-gradient(90deg,#b7802e,var(--light))}
-.criteria-grid {display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
+.bar {
+  height:8px;
+  background:#ffffff16;
+  border-radius:20px;
+  overflow:hidden;
+}
+.fill {
+  height:100%;
+  background:linear-gradient(90deg,#b7802e,var(--light));
+}
+.criteria-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
 .criteria-card {
-padding:13px;
-border:1px solid #ffffff15;
-border-radius:12px;
+  padding:13px;
+  border:1px solid #ffffff15;
+  border-radius:12px;
 }
-
-.criteria-card p {font-size:12px;color:var(--muted)}
-
+.criteria-card p {
+  font-size:12px;
+  color:var(--muted);
+}
 .stars {display:flex;gap:5px}
 .star {
-border:0;
-background:none;
-color:#606776;
-font-size:26px;
-padding:0;
+  border:0;
+  background:none;
+  color:#606776;
+  font-size:26px;
+  padding:0;
 }
 .star.active {color:var(--gold)}
-
 .field-label {
-display:block;
-margin:18px 0 8px;
-font-weight:bold;
-font-size:14px;
+  display:block;
+  margin:18px 0 8px;
+  font-weight:bold;
+  font-size:14px;
 }
-
 textarea {
-width:100%;
-min-height:100px;
-resize:vertical;
-padding:12px;
-border:1px solid var(--border);
-border-radius:11px;
-background:#101522;
-color:white;
+  width:100%;
+  min-height:100px;
+  resize:vertical;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:#101522;
+  color:white;
 }
-
-.detail-map {height:260px;border-radius:13px;overflow:hidden}
+.detail-map {
+  height:260px;
+  border-radius:13px;
+  overflow:hidden;
+}
 #detailMap {height:100%;width:100%}
-.notice {font-size:12px;color:var(--muted);line-height:1.6}
-.review-item {padding:14px 0;border-bottom:1px solid #ffffff16}
-.review-date {font-size:12px;color:var(--muted)}
-.status {color:var(--green);font-size:13px;margin-top:12px}
-
-@media(max-width:950px) {
-.layout,.detail-grid {grid-template-columns:1fr}
-.map-container {position:relative;top:auto;height:400px}
+.notice {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.review-item {
+  padding:14px 0;
+  border-bottom:1px solid #ffffff16;
+}
+.review-date {
+  font-size:12px;
+  color:var(--muted);
+}
+.status {
+  color:var(--green);
+  font-size:13px;
+  margin-top:12px;
 }
 
+/* PARAMÈTRES */
+
+.setting-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 0;
+  border-bottom:1px solid #ffffff16;
+  gap:15px;
+}
+.setting-row p {
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+.setting-row input {accent-color:var(--gold)}
+
+/* MOBILE */
+
+@media(max-width:1100px) {
+  .app {grid-template-columns:1fr}
+  .sidebar {
+    position:relative;
+    height:auto;
+    order:2;
+    border-left:0;
+    border-top:1px solid var(--border);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .side-title,.side-search,.side-divider,.sidebar-bottom {
+    grid-column:1/-1;
+  }
+  .side-btn {justify-content:center}
+  .layout,.detail-grid {grid-template-columns:1fr}
+  .map-container {
+    position:relative;
+    top:auto;
+    height:400px;
+  }
+}
 @media(max-width:600px) {
-.topbar {
-padding:9px 12px;
-display:grid;
-grid-template-columns:1fr auto;
-gap:9px;
-}
-
-.logo-image {
-width:220px;
-height:70px;
-}
-
-.gold-btn {padding:10px}
-.search {grid-column:1/-1;width:100%;margin:0}
-.page {padding:20px 13px}
-.page-toolbar {top:100px}
-.restaurant-name {font-size:16px}
-.rating {min-width:65px}
-.criteria-grid {grid-template-columns:1fr}
-.map-container {height:350px;min-height:350px}
+  .main {padding:17px 13px}
+  .brand {margin-bottom:20px}
+  .logo {width:270px;max-width:90%}
+  .restaurant-name {font-size:16px}
+  .rating {min-width:65px}
+  .criteria-grid {grid-template-columns:1fr}
+  .map-container {height:350px;min-height:350px}
+  .sidebar {padding:16px 12px}
 }
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
+<div class="app">
 
-<button class="logo" onclick="showPage('home')" aria-label="Accueil QuiRégale">
-<img
-class="logo-image"
-src="Logo QuiRégale gourmand et élégant.png"
-alt="QuiRégale ?"
->
-</button>
+<main class="main">
 
-<div class="search">
-<span class="search-icon">🔎</span>
-<input id="searchInput" placeholder="Qu'est-ce qu'on va manger ?" type="search">
-</div>
+  <!-- LOGO À GAUCHE -->
+  <div class="brand">
+    <img
+      class="logo"
+      src="Logo QuiRégale gourmand et élégant.png"
+      alt="QuiRégale ?"
+    >
+  </div>
 
-<button class="gold-btn" onclick="showPage('notes')">⭐ Mes notes</button>
+  <!-- ACCUEIL -->
+  <main id="homePage">
+    <section class="welcome">
+      <h1>Où est-ce qu'on mange ?</h1>
+      <p class="muted">Trouve ton prochain repas autour du lycée.</p>
+    </section>
 
-</header>
+    <nav class="categories">
+      <button class="category active" data-category="tout">🍽️ Tout</button>
+      <button class="category" data-category="favoris">❤️ Favoris</button>
+      <button class="category" data-category="tacos">🌯 Tacos</button>
+      <button class="category" data-category="burger">🍔 Burger</button>
+      <button class="category" data-category="pizza">🍕 Pizza</button>
+      <button class="category" data-category="sushi">🍣 Sushi</button>
+      <button class="category" data-category="kebab">🥙 Kebab</button>
+      <button class="category" data-category="poulet">🍗 Poulet</button>
+      <button class="category" data-category="equilibre">🥗 Équilibré</button>
+      <button class="category" data-category="budget">💰 Petit budget</button>
+    </nav>
 
-<main id="homePage" class="page">
+    <div class="layout">
+      <section>
+        <div class="section-title">
+          <h2>🔥 Restaurants</h2>
+          <span id="count" class="count"></span>
+        </div>
+        <div id="restaurantsList"></div>
+      </section>
 
-<section class="welcome">
-<h1>Où est-ce qu'on mange ?</h1>
-<p class="muted">Trouve ton prochain repas autour du lycée.</p>
-</section>
+      <aside class="map-container">
+        <div id="map"></div>
+        <div id="mapStatus" class="map-status">Chargement de la carte…</div>
+      </aside>
+    </div>
+  </main>
 
-<nav class="categories">
-<button class="category active" data-category="tout">🍽️ Tout</button>
-<button class="category" data-category="favoris">❤️ Favoris</button>
-<button class="category" data-category="tacos">🌯 Tacos</button>
-<button class="category" data-category="burger">🍔 Burger</button>
-<button class="category" data-category="pizza">🍕 Pizza</button>
-<button class="category" data-category="sushi">🍣 Sushi</button>
-<button class="category" data-category="kebab">🥙 Kebab</button>
-<button class="category" data-category="poulet">🍗 Poulet</button>
-<button class="category" data-category="equilibre">🥗 Équilibré</button>
-<button class="category" data-category="budget">💰 Petit budget</button>
-</nav>
+  <!-- FICHE RESTAURANT -->
+  <main id="detailPage" hidden>
+    <button class="secondary" onclick="showPage('home')">← Retour</button>
+    <h1 class="detail-title" id="detailName"></h1>
+    <p class="detail-address" id="detailAddress"></p>
+    <div id="detailTags" class="tags"></div>
 
-<div class="layout">
+    <div class="detail-grid" style="margin-top:22px">
+      <section class="panel">
+        <h2>⭐ Notes du restaurant</h2>
+        <div class="score-box">
+          <div>
+            <div class="big-score" id="detailAverage">— / 5</div>
+            <div class="notice" id="detailCount">Pas encore noté</div>
+          </div>
+          <span style="font-size:25px;color:var(--gold)">★★★★★</span>
+        </div>
+        <h3>Moyenne par critère</h3>
+        <div id="detailCriteria"></div>
+        <h2>📍 Emplacement</h2>
+        <div class="detail-map"><div id="detailMap"></div></div>
+        <p class="notice" id="locationStatus"></p>
+        <button class="gold-btn" id="directionsButton">📍 Itinéraire</button>
+        <h2>💬 Avis</h2>
+        <div id="detailReviews"></div>
+      </section>
 
-<section>
-<div class="section-title">
-<h2>🔥 Restaurants</h2>
-<span id="count" class="count"></span>
-</div>
-<div id="restaurantsList"></div>
-</section>
+      <section class="panel">
+        <h2>Donne ta note</h2>
+        <p class="notice">Attribue de 1 à 5 étoiles à chacun des six critères.</p>
+        <div id="criteriaForm" class="criteria-grid"></div>
+        <label class="field-label" for="comment">Ton commentaire</label>
+        <textarea id="comment" maxlength="500" placeholder="Raconte ton expérience…"></textarea>
+        <div class="card-actions">
+          <button class="gold-btn" id="saveReview">💾 Enregistrer</button>
+          <button class="secondary" id="clearForm">Effacer</button>
+        </div>
+        <div id="saveStatus" class="status"></div>
+      </section>
+    </div>
+  </main>
 
-<aside class="map-container">
-<div id="map"></div>
-<div id="mapStatus" class="map-status">Chargement de la carte…</div>
+  <!-- MES NOTES -->
+  <main id="notesPage" hidden>
+    <h1>⭐ Mes notes</h1>
+    <p class="muted">Retrouve tes évaluations et tes restaurants favoris.</p>
+    <section class="panel">
+      <h2>Mes évaluations</h2>
+      <div id="allReviews"></div>
+    </section>
+    <section class="panel">
+      <h2>❤️ Mes favoris</h2>
+      <div id="allFavorites"></div>
+    </section>
+  </main>
+
+  <!-- PARAMÈTRES -->
+  <main id="settingsPage" hidden>
+    <h1>⚙️ Paramètres</h1>
+    <p class="muted">Personnalise ton expérience QuiRégale.</p>
+    <section class="panel">
+      <h2>Préférences</h2>
+
+      <div class="setting-row">
+        <div>
+          <b>Animations</b>
+          <p>Activer les animations de l'interface.</p>
+        </div>
+        <input type="checkbox" id="animationsSetting" checked>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <b>Confirmation avant suppression</b>
+          <p>Demander confirmation avant de supprimer un avis.</p>
+        </div>
+        <input type="checkbox" id="confirmSetting" checked>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <b>Effacer mes favoris</b>
+          <p>Supprimer tous les favoris enregistrés sur cet appareil.</p>
+        </div>
+        <button class="secondary" id="clearFavorites">Effacer</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <b>Effacer mes notes</b>
+          <p>Supprimer toutes les évaluations locales.</p>
+        </div>
+        <button class="secondary" id="clearReviews">Effacer</button>
+      </div>
+    </section>
+    <p class="notice">QuiRégale ? · Version web</p>
+  </main>
+
+</main>
+
+<!-- BARRE LATÉRALE À DROITE -->
+<aside class="sidebar">
+
+  <div class="side-title">NAVIGATION</div>
+
+  <div class="side-search">
+    <span>🔎</span>
+    <input id="searchInput" placeholder="Rechercher...">
+  </div>
+
+  <button class="side-btn active" data-page="home">
+    <span class="ico">🏠</span> Accueil
+  </button>
+
+  <button class="side-btn" data-page="notes">
+    <span class="ico">⭐</span> Mes notes
+  </button>
+
+  <button class="side-btn" data-page="settings">
+    <span class="ico">⚙️</span> Paramètres
+  </button>
+
+  <div class="side-divider"></div>
+
+  <div class="side-title">MES RACCOURCIS</div>
+
+  <button class="side-btn" id="favoritesShortcut">
+    <span class="ico">❤️</span> Mes favoris
+  </button>
+
+  <button class="side-btn" id="allShortcut">
+    <span class="ico">🍽️</span> Tous les restaurants
+  </button>
+
+  <div class="sidebar-bottom">
+    <div style="color:var(--gold);font-weight:bold;font-size:14px;margin-bottom:6px">
+      🍔 QuiRégale ?
+    </div>
+    Trouve ton bonheur, une bouchée à la fois.
+  </div>
+
 </aside>
 
 </div>
-</main>
-
-<main id="detailPage" class="page" hidden>
-
-<div class="page-toolbar">
-<button class="secondary" onclick="showPage('home')">← Retour aux restaurants</button>
-</div>
-
-<h1 class="detail-title" id="detailName"></h1>
-<p class="detail-address" id="detailAddress"></p>
-<div id="detailTags" class="tags"></div>
-
-<div class="detail-grid" style="margin-top:22px">
-
-<section class="panel">
-<h2>⭐ Notes du restaurant</h2>
-
-<div class="score-box">
-<div>
-<div class="big-score" id="detailAverage">— / 5</div>
-<div class="notice" id="detailCount">Pas encore noté</div>
-</div>
-<span style="font-size:25px;color:var(--gold)">★★★★★</span>
-</div>
-
-<h3>Moyenne par critère</h3>
-<div id="detailCriteria"></div>
-
-<h2 style="margin-top:28px">📍 Emplacement</h2>
-<div class="detail-map"><div id="detailMap"></div></div>
-<p class="notice" id="locationStatus">Position en cours de recherche.</p>
-<button class="gold-btn" id="directionsButton">📍 Itinéraire</button>
-
-<h2 style="margin-top:30px">💬 Avis</h2>
-<div id="detailReviews"></div>
-</section>
-
-<section class="panel">
-<h2>Donne ta note</h2>
-<p class="notice">Attribue de 1 à 5 étoiles à chacun des six critères.</p>
-<div id="criteriaForm" class="criteria-grid"></div>
-
-<label class="field-label" for="comment">Ton commentaire (facultatif)</label>
-<textarea id="comment" maxlength="500" placeholder="Raconte ton expérience…"></textarea>
-
-<div class="card-actions">
-<button class="gold-btn" id="saveReview">💾 Enregistrer</button>
-<button class="secondary" id="clearForm">Effacer</button>
-</div>
-
-<div id="saveStatus" class="status"></div>
-<p class="notice">Une évaluation par restaurant et par navigateur. Tu peux la modifier ou la supprimer.</p>
-</section>
-
-</div>
-</main>
-
-<main id="notesPage" class="page" hidden>
-
-<div class="page-toolbar">
-<button class="secondary" onclick="showPage('home')">← Retour aux restaurants</button>
-</div>
-
-<h1>⭐ Mes notes</h1>
-<p class="muted">Retrouve tes évaluations et tes restaurants favoris.</p>
-
-<section class="panel">
-<h2>Mes évaluations</h2>
-<div id="allReviews"></div>
-</section>
-
-<section class="panel">
-<h2>❤️ Mes favoris</h2>
-<div id="allFavorites"></div>
-</section>
-
-</main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 "use strict";
+
+/* RESTAURANTS */
 
 const restaurants = [
 {id:"castel",nom:"Le Castel",adresse:"164 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","budget"]},
@@ -621,16 +767,8 @@ const restaurants = [
 {id:"les-glaciers",nom:"Les Glaciers Français",adresse:"Centre Commercial La Galerie, Route de la Sablière, 13011 Marseille",categories:["budget"]}
 ];
 
-const names={
-tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",
-kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget"
-};
-
-const icons={
-tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",
-kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰"
-};
-
+const names={tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget"};
+const icons={tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰"};
 const criteria=[
 {id:"gout",name:"Goût",icon:"🍔",description:"Saveur et qualité du repas"},
 {id:"prix",name:"Prix",icon:"💰",description:"Rapport qualité-prix"},
@@ -640,7 +778,7 @@ const criteria=[
 {id:"proprete",name:"Propreté",icon:"🧼",description:"Propreté des lieux"}
 ];
 
-const REVIEW_KEY="quiregale-reviews-v4";
+const REVIEW_KEY="quiregale-reviews-v5";
 const FAVORITE_KEY="quiregale-favorites-v1";
 const COORD_KEY="quiregale-coordinates-v1";
 
@@ -653,534 +791,384 @@ let markers={};
 let homeMap=null;
 let detailMap=null;
 let detailMarker=null;
-let geocoding=false;
 
-function read(key,fallback){
-try{return JSON.parse(localStorage.getItem(key))??fallback}
-catch(e){return fallback}
+function read(key,fallback) {
+  try {return JSON.parse(localStorage.getItem(key))??fallback}
+  catch(e) {return fallback}
 }
-
-function save(key,value){
-try{localStorage.setItem(key,JSON.stringify(value));return true}
-catch(e){return false}
+function save(key,value) {
+  try {localStorage.setItem(key,JSON.stringify(value));return true}
+  catch(e) {return false}
 }
-
-function reviews(){return read(REVIEW_KEY,{})}
-function review(id){return reviews()[id]||null}
-
-function average(scores){
-if(!scores)return null;
-let values=criteria.map(c=>Number(scores[c.id])).filter(n=>n>=1&&n<=5);
-return values.length?values.reduce((a,b)=>a+b,0)/values.length:null;
+function reviews() {return read(REVIEW_KEY,{})}
+function review(id) {return reviews()[id]||null}
+function average(scores) {
+  if(!scores)return null;
+  let values=criteria.map(c=>Number(scores[c.id])).filter(n=>n>=1&&n<=5);
+  return values.length?values.reduce((a,b)=>a+b,0)/values.length:null;
 }
-
-function esc(s){
-return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function esc(s) {
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
-
-function tagsHTML(list){
-return list.map(c=>`<span class="tag">${icons[c]} ${names[c]}</span>`).join("");
+function tagsHTML(list) {
+  return list.map(c=>`<span class="tag">${icons[c]} ${names[c]}</span>`).join("");
 }
 
 /* NAVIGATION */
-
-function showPage(page){
-document.getElementById("homePage").hidden=page!=="home";
-document.getElementById("detailPage").hidden=page!=="detail";
-document.getElementById("notesPage").hidden=page!=="notes";
-window.scrollTo({top:0,behavior:"smooth"});
-if(page==="home")setTimeout(()=>homeMap?.invalidateSize(),150);
-if(page==="detail")setTimeout(()=>detailMap?.invalidateSize(),150);
-if(page==="notes")renderNotes();
+function showPage(page) {
+  ["home","detail","notes","settings"].forEach(p=>{
+    document.getElementById(p+"Page").hidden=p!==page;
+  });
+  document.querySelectorAll(".side-btn[data-page]").forEach(b=>{
+    b.classList.toggle("active",b.dataset.page===page);
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(page==="home")setTimeout(()=>homeMap?.invalidateSize(),150);
+  if(page==="detail")setTimeout(()=>detailMap?.invalidateSize(),150);
+  if(page==="notes")renderNotes();
 }
+document.querySelectorAll("[data-page]").forEach(b=>{
+  b.addEventListener("click",()=>showPage(b.dataset.page));
+});
 
 /* FAVORIS */
-
-function isFavorite(id){return favorites.includes(id)}
-
-function toggleFavorite(id){
-if(isFavorite(id))favorites=favorites.filter(x=>x!==id);
-else favorites.push(id);
-if(!save(FAVORITE_KEY,favorites))alert("Impossible de sauvegarder les favoris.");
-renderList();
-renderNotes();
+function isFavorite(id) {return favorites.includes(id)}
+function toggleFavorite(id) {
+  if(isFavorite(id))favorites=favorites.filter(x=>x!==id);
+  else favorites.push(id);
+  save(FAVORITE_KEY,favorites);
+  renderList();
+  renderNotes();
 }
 
 /* CARTE */
-
-function initMap(){
-homeMap=L.map("map").setView([43.295,5.475],13);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-maxZoom:19,
-attribution:'&copy; OpenStreetMap contributors'
-}).addTo(homeMap);
+function initMap() {
+  homeMap=L.map("map").setView([43.295,5.475],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,
+    attribution:'&copy; OpenStreetMap contributors'
+  }).addTo(homeMap);
 }
-
-function setMapStatus(t){
-document.getElementById("mapStatus").textContent=t;
+function setMapStatus(t) {
+  document.getElementById("mapStatus").textContent=t;
 }
-
-function addMarker(r){
-if(!Number.isFinite(r.lat)||!Number.isFinite(r.lng)||markers[r.id])return;
-
-const icon=L.divIcon({
-className:"",
-html:`<div class="custom-marker">${esc(r.nom)}</div>`,
-iconSize:null,
-iconAnchor:[8,18],
-popupAnchor:[0,-18]
-});
-
-const marker=L.marker([r.lat,r.lng],{icon}).addTo(homeMap);
-
-marker.bindPopup(`<b>${esc(r.nom)}</b><br>${esc(r.adresse)}<br>
-<a href="#" data-detail="${r.id}">Voir la fiche</a>`);
-
-marker.on("popupopen",e=>{
-const a=e.popup.getElement().querySelector("[data-detail]");
-if(a)a.onclick=event=>{
-event.preventDefault();
-openRestaurant(r.id);
-};
-});
-
-markers[r.id]=marker;
+function addMarker(r) {
+  if(!Number.isFinite(r.lat)||!Number.isFinite(r.lng)||markers[r.id])return;
+  const icon=L.divIcon({
+    className:"",
+    html:`<div class="custom-marker">${esc(r.nom)}</div>`,
+    iconSize:null,
+    iconAnchor:[8,18],
+    popupAnchor:[0,-18]
+  });
+  const marker=L.marker([r.lat,r.lng],{icon}).addTo(homeMap);
+  marker.bindPopup(`<b>${esc(r.nom)}</b><br>${esc(r.adresse)}<br><a href="#" data-detail="${r.id}">Voir la fiche</a>`);
+  marker.on("popupopen",e=>{
+    const a=e.popup.getElement().querySelector("[data-detail]");
+    if(a)a.onclick=event=>{event.preventDefault();openRestaurant(r.id)};
+  });
+  markers[r.id]=marker;
 }
-
-function refreshBounds(){
-const visible=restaurants.filter(r=>markers[r.id]&&homeMap.hasLayer(markers[r.id]));
-if(visible.length)homeMap.fitBounds(L.latLngBounds(visible.map(r=>[r.lat,r.lng])),{padding:[25,25],maxZoom:15});
+function refreshBounds() {
+  const visible=restaurants.filter(r=>markers[r.id]&&homeMap.hasLayer(markers[r.id]));
+  if(visible.length)homeMap.fitBounds(L.latLngBounds(visible.map(r=>[r.lat,r.lng])),{padding:[25,25],maxZoom:15});
 }
-
-/* GÉOCODAGE */
-
-async function geocode(){
-if(geocoding)return;
-geocoding=true;
-
-const cache=read(COORD_KEY,{});
-let done=0;
-
-for(const r of restaurants){
-
-if(cache[r.id]){
-r.lat=cache[r.id].lat;
-r.lng=cache[r.id].lng;
-addMarker(r);
-done++;
-continue;
-}
-
-try{
-const q=new URLSearchParams({
-q:r.adresse,
-format:"jsonv2",
-limit:"1",
-countrycodes:"fr"
-});
-
-const response=await fetch("https://nominatim.openstreetmap.org/search?"+q);
-
-if(!response.ok)throw new Error("Erreur de géocodage");
-
-const data=await response.json();
-
-if(data.length){
-r.lat=Number(data[0].lat);
-r.lng=Number(data[0].lon);
-cache[r.id]={lat:r.lat,lng:r.lng};
-addMarker(r);
-save(COORD_KEY,cache);
-}
-
-}catch(e){
-console.warn("Position non trouvée :",r.nom);
-}
-
-done++;
-setMapStatus(`Recherche des positions : ${done}/${restaurants.length}`);
-
-await new Promise(resolve=>setTimeout(resolve,1100));
-}
-
-refreshBounds();
-setMapStatus("Carte chargée. Les adresses restent à vérifier.");
-applyFilters();
+async function geocode() {
+  const cache=read(COORD_KEY,{});
+  let done=0;
+  for(const r of restaurants) {
+    if(cache[r.id]) {
+      r.lat=cache[r.id].lat;
+      r.lng=cache[r.id].lng;
+      addMarker(r);
+      done++;
+      continue;
+    }
+    try {
+      const q=new URLSearchParams({q:r.adresse,format:"jsonv2",limit:"1",countrycodes:"fr"});
+      const response=await fetch("https://nominatim.openstreetmap.org/search?"+q);
+      if(!response.ok)throw new Error("Erreur");
+      const data=await response.json();
+      if(data.length) {
+        r.lat=Number(data[0].lat);
+        r.lng=Number(data[0].lon);
+        cache[r.id]={lat:r.lat,lng:r.lng};
+        addMarker(r);
+        save(COORD_KEY,cache);
+      }
+    } catch(e) {
+      console.warn("Position non trouvée :",r.nom);
+    }
+    done++;
+    setMapStatus(`Recherche des positions : ${done}/${restaurants.length}`);
+    await new Promise(resolve=>setTimeout(resolve,1100));
+  }
+  refreshBounds();
+  setMapStatus("Carte chargée. Les adresses restent à vérifier.");
+  applyFilters();
 }
 
 /* LISTE */
-
-function renderList(){
-
-const sorted=[...restaurants].sort((a,b)=>{
-const fav=Number(isFavorite(b.id))-Number(isFavorite(a.id));
-return fav||a.nom.localeCompare(b.nom,"fr");
-});
-
-document.getElementById("restaurantsList").innerHTML=sorted.map(r=>{
-
-const rev=review(r.id);
-const avg=average(rev?.scores);
-
-return `<article class="restaurant-card" data-id="${r.id}">
-
-<div class="restaurant-top">
-<div>
-<div class="restaurant-name">${isFavorite(r.id)?"❤️ ":""}${esc(r.nom)}</div>
-<div class="address">📍 ${esc(r.adresse)}</div>
-<div class="tags">${tagsHTML(r.categories)}</div>
-</div>
-
-<div class="rating">
-<div class="rating-number">${avg===null?"⭐ —":"⭐ "+avg.toFixed(1)+"/5"}</div>
-<div class="rating-label">${rev?"Note personnelle":"Pas encore noté"}</div>
-</div>
-</div>
-
-<div class="card-actions">
-<button class="favorite-btn ${isFavorite(r.id)?"selected":""}" data-action="favorite" data-id="${r.id}">${isFavorite(r.id)?"❤️ Favori":"♡ Favoris"}</button>
-<button class="small-btn" data-action="open" data-id="${r.id}">📖 Fiche</button>
-<button class="small-btn" data-action="review" data-id="${r.id}">⭐ Noter</button>
-<button class="small-btn" data-action="route" data-id="${r.id}">📍 Itinéraire</button>
-</div>
-
-</article>`;
-}).join("");
-
-applyFilters();
+function renderList() {
+  const sorted=[...restaurants].sort((a,b)=>{
+    const fav=Number(isFavorite(b.id))-Number(isFavorite(a.id));
+    return fav||a.nom.localeCompare(b.nom,"fr");
+  });
+  document.getElementById("restaurantsList").innerHTML=sorted.map(r=>{
+    const rev=review(r.id);
+    const avg=average(rev?.scores);
+    return `<article class="restaurant-card" data-id="${r.id}">
+      <div class="restaurant-top">
+        <div>
+          <div class="restaurant-name">${isFavorite(r.id)?"❤️ ":""}${esc(r.nom)}</div>
+          <div class="address">📍 ${esc(r.adresse)}</div>
+          <div class="tags">${tagsHTML(r.categories)}</div>
+        </div>
+        <div class="rating">
+          <div class="rating-number">${avg===null?"⭐ —":"⭐ "+avg.toFixed(1)+"/5"}</div>
+          <div class="rating-label">${rev?"Note personnelle":"Pas encore noté"}</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="favorite-btn ${isFavorite(r.id)?"selected":""}" data-action="favorite" data-id="${r.id}">${isFavorite(r.id)?"❤️ Favori":"♡ Favoris"}</button>
+        <button class="small-btn" data-action="open" data-id="${r.id}">📖 Fiche</button>
+        <button class="small-btn" data-action="review" data-id="${r.id}">⭐ Noter</button>
+        <button class="small-btn" data-action="route" data-id="${r.id}">📍 Itinéraire</button>
+      </div>
+    </article>`;
+  }).join("");
+  applyFilters();
 }
-
-/* FILTRES */
-
-function applyFilters(){
-
-let count=0;
-
-document.querySelectorAll(".restaurant-card").forEach(card=>{
-
-const r=restaurants.find(x=>x.id===card.dataset.id);
-
-const catOK=activeCategory==="tout"||
-(activeCategory==="favoris"?isFavorite(r.id):r.categories.includes(activeCategory));
-
-const text=(r.nom+" "+r.adresse+" "+r.categories.join(" ")).toLowerCase();
-
-const visible=catOK&&text.includes(searchText);
-
-card.classList.toggle("hidden",!visible);
-
-if(visible)count++;
-
-const marker=markers[r.id];
-
-if(marker){
-if(visible&&!homeMap.hasLayer(marker))marker.addTo(homeMap);
-if(!visible&&homeMap.hasLayer(marker))homeMap.removeLayer(marker);
+function applyFilters() {
+  let count=0;
+  document.querySelectorAll(".restaurant-card").forEach(card=>{
+    const r=restaurants.find(x=>x.id===card.dataset.id);
+    const catOK=activeCategory==="tout"||
+      (activeCategory==="favoris"?isFavorite(r.id):r.categories.includes(activeCategory));
+    const text=(r.nom+" "+r.adresse+" "+r.categories.join(" ")).toLowerCase();
+    const visible=catOK&&text.includes(searchText);
+    card.classList.toggle("hidden",!visible);
+    if(visible)count++;
+    const marker=markers[r.id];
+    if(marker) {
+      if(visible&&!homeMap.hasLayer(marker))marker.addTo(homeMap);
+      if(!visible&&homeMap.hasLayer(marker))homeMap.removeLayer(marker);
+    }
+  });
+  document.getElementById("count").textContent=count+" restaurant"+(count>1?"s":"");
 }
-});
-
-document.getElementById("count").textContent=count+" restaurant"+(count>1?"s":"");
-}
-
 document.querySelector(".categories").addEventListener("click",e=>{
-const b=e.target.closest("[data-category]");
-if(!b)return;
-
-activeCategory=b.dataset.category;
-
-document.querySelectorAll(".category").forEach(x=>x.classList.toggle("active",x===b));
-
-applyFilters();
+  const b=e.target.closest("[data-category]");
+  if(!b)return;
+  activeCategory=b.dataset.category;
+  document.querySelectorAll(".category").forEach(x=>x.classList.toggle("active",x===b));
+  applyFilters();
 });
-
 document.getElementById("searchInput").addEventListener("input",e=>{
-searchText=e.target.value.trim().toLowerCase();
-applyFilters();
+  searchText=e.target.value.trim().toLowerCase();
+  applyFilters();
 });
-
 document.getElementById("restaurantsList").addEventListener("click",e=>{
-
-const b=e.target.closest("[data-action]");
-const card=e.target.closest(".restaurant-card");
-
-if(!card)return;
-
-const id=b?.dataset.id||card.dataset.id;
-
-if(!b){
-openRestaurant(id);
-return;
-}
-
-e.stopPropagation();
-
-if(b.dataset.action==="favorite")toggleFavorite(id);
-if(b.dataset.action==="open"||b.dataset.action==="review")openRestaurant(id);
-if(b.dataset.action==="route")directions(id);
+  const b=e.target.closest("[data-action]");
+  const card=e.target.closest(".restaurant-card");
+  if(!card)return;
+  const id=b?.dataset.id||card.dataset.id;
+  if(!b){openRestaurant(id);return}
+  e.stopPropagation();
+  if(b.dataset.action==="favorite")toggleFavorite(id);
+  if(b.dataset.action==="open"||b.dataset.action==="review")openRestaurant(id);
+  if(b.dataset.action==="route")directions(id);
 });
 
-/* ITINÉRAIRE */
+/* RACCOURCIS */
+document.getElementById("favoritesShortcut").onclick=()=>{
+  showPage("home");
+  activeCategory="favoris";
+  document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b.dataset.category==="favoris"));
+  applyFilters();
+};
+document.getElementById("allShortcut").onclick=()=>{
+  showPage("home");
+  activeCategory="tout";
+  document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b.dataset.category==="tout"));
+  applyFilters();
+};
 
-function directions(id){
-const r=restaurants.find(x=>x.id===id);
-if(!r)return;
-
-const dest=Number.isFinite(r.lat)&&Number.isFinite(r.lng)
-?r.lat+","+r.lng:r.nom+" "+r.adresse;
-
-window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(dest),"_blank","noopener,noreferrer");
+/* ITINÉRAIRES */
+function directions(id) {
+  const r=restaurants.find(x=>x.id===id);
+  if(!r)return;
+  const dest=Number.isFinite(r.lat)&&Number.isFinite(r.lng)?r.lat+","+r.lng:r.nom+" "+r.adresse;
+  window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(dest),"_blank","noopener,noreferrer");
 }
 
 /* FICHE */
-
-function openRestaurant(id){
-
-const r=restaurants.find(x=>x.id===id);
-if(!r)return;
-
-currentId=id;
-
-document.getElementById("detailName").textContent=r.nom;
-document.getElementById("detailAddress").textContent="📍 "+r.adresse;
-document.getElementById("detailTags").innerHTML=tagsHTML(r.categories);
-
-renderForm();
-loadForm();
-renderDetail();
-
-showPage("detail");
-initDetailMap(r);
+function openRestaurant(id) {
+  const r=restaurants.find(x=>x.id===id);
+  if(!r)return;
+  currentId=id;
+  document.getElementById("detailName").textContent=r.nom;
+  document.getElementById("detailAddress").textContent="📍 "+r.adresse;
+  document.getElementById("detailTags").innerHTML=tagsHTML(r.categories);
+  renderForm();
+  loadForm();
+  renderDetail();
+  showPage("detail");
+  initDetailMap(r);
 }
-
-function initDetailMap(r){
-
-if(!detailMap){
-detailMap=L.map("detailMap").setView([43.295,5.475],13);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-maxZoom:19,
-attribution:"© OpenStreetMap"
-}).addTo(detailMap);
-}
-
-if(detailMarker){
-detailMap.removeLayer(detailMarker);
-detailMarker=null;
-}
-
-if(Number.isFinite(r.lat)&&Number.isFinite(r.lng)){
-detailMap.setView([r.lat,r.lng],16);
-detailMarker=L.marker([r.lat,r.lng]).addTo(detailMap);
-document.getElementById("locationStatus").textContent="Position issue du géocodage OpenStreetMap : à vérifier.";
-}else{
-detailMap.setView([43.295,5.475],12);
-document.getElementById("locationStatus").textContent="Position non disponible. Utilise l'adresse dans l'itinéraire.";
-}
-
-setTimeout(()=>detailMap.invalidateSize(),200);
-
-document.getElementById("directionsButton").onclick=()=>directions(r.id);
+function initDetailMap(r) {
+  if(!detailMap) {
+    detailMap=L.map("detailMap").setView([43.295,5.475],13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:19,attribution:"© OpenStreetMap"
+    }).addTo(detailMap);
+  }
+  if(detailMarker){detailMap.removeLayer(detailMarker);detailMarker=null}
+  if(Number.isFinite(r.lat)&&Number.isFinite(r.lng)) {
+    detailMap.setView([r.lat,r.lng],16);
+    detailMarker=L.marker([r.lat,r.lng]).addTo(detailMap);
+    document.getElementById("locationStatus").textContent="Position issue du géocodage OpenStreetMap : à vérifier.";
+  } else {
+    detailMap.setView([43.295,5.475],12);
+    document.getElementById("locationStatus").textContent="Position non disponible.";
+  }
+  setTimeout(()=>detailMap.invalidateSize(),200);
+  document.getElementById("directionsButton").onclick=()=>directions(r.id);
 }
 
 /* NOTES */
-
-function renderForm(){
-
-document.getElementById("criteriaForm").innerHTML=criteria.map(c=>`
-<div class="criteria-card">
-<b>${c.icon} ${c.name}</b>
-<p>${c.description}</p>
-<div class="stars" data-criterion="${c.id}">
-${[1,2,3,4,5].map(n=>`<button class="star" type="button" data-score="${n}" aria-label="${n} étoiles">★</button>`).join("")}
-</div>
-</div>`).join("");
+function renderForm() {
+  document.getElementById("criteriaForm").innerHTML=criteria.map(c=>`
+    <div class="criteria-card">
+      <b>${c.icon} ${c.name}</b>
+      <p>${c.description}</p>
+      <div class="stars" data-criterion="${c.id}">
+        ${[1,2,3,4,5].map(n=>`<button class="star" type="button" data-score="${n}">★</button>`).join("")}
+      </div>
+    </div>`).join("");
 }
-
-function setScore(id,n){
-
-selectedScores[id]=n;
-
-const group=document.querySelector(`[data-criterion="${id}"]`);
-if(!group)return;
-
-group.querySelectorAll(".star").forEach(b=>{
-b.classList.toggle("active",Number(b.dataset.score)<=n);
-});
+function setScore(id,n) {
+  selectedScores[id]=n;
+  const group=document.querySelector(`[data-criterion="${id}"]`);
+  if(!group)return;
+  group.querySelectorAll(".star").forEach(b=>b.classList.toggle("active",Number(b.dataset.score)<=n));
 }
-
 document.getElementById("criteriaForm").addEventListener("click",e=>{
-const b=e.target.closest("[data-score]");
-if(b)setScore(b.closest("[data-criterion]").dataset.criterion,Number(b.dataset.score));
+  const b=e.target.closest("[data-score]");
+  if(b)setScore(b.closest("[data-criterion]").dataset.criterion,Number(b.dataset.score));
 });
-
-function loadForm(){
-
-selectedScores={};
-
-const rev=review(currentId);
-
-criteria.forEach(c=>setScore(c.id,Number(rev?.scores?.[c.id])||0));
-
-document.getElementById("comment").value=rev?.comment||"";
-
-document.getElementById("saveStatus").textContent=rev?"Ta dernière note est chargée.":"";
+function loadForm() {
+  selectedScores={};
+  const rev=review(currentId);
+  criteria.forEach(c=>setScore(c.id,Number(rev?.scores?.[c.id])||0));
+  document.getElementById("comment").value=rev?.comment||"";
+  document.getElementById("saveStatus").textContent=rev?"Ta dernière note est chargée.":"";
 }
-
 document.getElementById("clearForm").onclick=()=>{
-
-selectedScores={};
-
-criteria.forEach(c=>setScore(c.id,0));
-
-document.getElementById("comment").value="";
-
-document.getElementById("saveStatus").textContent="Formulaire effacé.";
+  selectedScores={};
+  criteria.forEach(c=>setScore(c.id,0));
+  document.getElementById("comment").value="";
+  document.getElementById("saveStatus").textContent="Formulaire effacé.";
 };
-
 document.getElementById("saveReview").onclick=()=>{
-
-const missing=criteria.filter(c=>!(selectedScores[c.id]>=1&&selectedScores[c.id]<=5));
-
-if(missing.length){
-document.getElementById("saveStatus").textContent="Note les six critères avant d'enregistrer.";
-return;
-}
-
-const all=reviews();
-
-all[currentId]={
-scores:{...selectedScores},
-comment:document.getElementById("comment").value.trim(),
-date:new Date().toISOString()
+  const missing=criteria.filter(c=>!(selectedScores[c.id]>=1&&selectedScores[c.id]<=5));
+  if(missing.length) {
+    document.getElementById("saveStatus").textContent="Note les six critères avant d'enregistrer.";
+    return;
+  }
+  const all=reviews();
+  all[currentId]={scores:{...selectedScores},comment:document.getElementById("comment").value.trim(),date:new Date().toISOString()};
+  if(!save(REVIEW_KEY,all)) {
+    document.getElementById("saveStatus").textContent="Erreur de sauvegarde.";
+    return;
+  }
+  document.getElementById("saveStatus").textContent="✅ Note enregistrée !";
+  renderDetail();renderList();renderNotes();
 };
-
-if(!save(REVIEW_KEY,all)){
-document.getElementById("saveStatus").textContent="Erreur de sauvegarde.";
-return;
+function renderDetail() {
+  const rev=review(currentId);
+  const avg=average(rev?.scores);
+  document.getElementById("detailAverage").textContent=avg===null?"— / 5":avg.toFixed(1)+" / 5";
+  document.getElementById("detailCount").textContent=rev?"1 évaluation enregistrée":"Aucune évaluation";
+  document.getElementById("detailCriteria").innerHTML=criteria.map(c=>{
+    const n=Number(rev?.scores?.[c.id])||0;
+    return `<div class="criterion-row">
+      <span>${c.icon} ${c.name}</span>
+      <div class="bar"><div class="fill" style="width:${n*20}%"></div></div>
+      <b>${n?n+"/5":"—"}</b>
+    </div>`;
+  }).join("");
+  const container=document.getElementById("detailReviews");
+  if(!rev) {
+    container.innerHTML='<p class="muted">Aucun avis pour le moment.</p>';
+    return;
+  }
+  container.innerHTML=`<article class="review-item">
+    <b>⭐ ${avg.toFixed(1)}/5</b>
+    <div class="review-date">${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
+    <p>${esc(rev.comment||"Pas de commentaire.")}</p>
+    <button class="small-btn" id="deleteReview">🗑️ Supprimer mon avis</button>
+  </article>`;
+  document.getElementById("deleteReview").onclick=()=>{
+    if(document.getElementById("confirmSetting").checked&&!confirm("Supprimer cette évaluation ?"))return;
+    const all=reviews();delete all[currentId];save(REVIEW_KEY,all);
+    loadForm();renderDetail();renderList();renderNotes();
+  };
 }
 
-document.getElementById("saveStatus").textContent="✅ Note enregistrée !";
+/* PAGE MES NOTES */
+function renderNotes() {
+  const all=reviews();
+  const entries=restaurants.filter(r=>all[r.id]);
+  const reviewsContainer=document.getElementById("allReviews");
+  reviewsContainer.innerHTML=entries.length?entries.map(r=>{
+    const rev=all[r.id];
+    return `<article class="review-item">
+      <b>${esc(r.nom)}</b>
+      <div class="review-date">⭐ ${average(rev.scores).toFixed(1)}/5 · ${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
+      <p>${esc(rev.comment||"Sans commentaire")}</p>
+      <button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
+    </article>`;
+  }).join(""):'<p class="muted">Tu n’as encore donné aucune note.</p>';
 
-renderDetail();
-renderList();
-renderNotes();
-};
-
-/* AFFICHAGE DES NOTES */
-
-function renderDetail(){
-
-const rev=review(currentId);
-const avg=average(rev?.scores);
-
-document.getElementById("detailAverage").textContent=avg===null?"— / 5":avg.toFixed(1)+" / 5";
-
-document.getElementById("detailCount").textContent=rev?"1 évaluation enregistrée":"Aucune évaluation";
-
-document.getElementById("detailCriteria").innerHTML=criteria.map(c=>{
-
-const n=Number(rev?.scores?.[c.id])||0;
-
-return `<div class="criterion-row">
-<span>${c.icon} ${c.name}</span>
-<div class="bar"><div class="fill" style="width:${n*20}%"></div></div>
-<b>${n?n+"/5":"—"}</b>
-</div>`;
-
-}).join("");
-
-const container=document.getElementById("detailReviews");
-
-if(!rev){
-container.innerHTML='<p class="muted">Aucun avis pour le moment. Sois le premier !</p>';
-return;
+  const favs=restaurants.filter(r=>isFavorite(r.id));
+  document.getElementById("allFavorites").innerHTML=favs.length?favs.map(r=>`
+    <article class="review-item">
+      <b>❤️ ${esc(r.nom)}</b>
+      <p class="notice">${esc(r.adresse)}</p>
+      <button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
+      <button class="small-btn" data-remove="${r.id}">Retirer des favoris</button>
+    </article>`).join(""):'<p class="muted">Aucun favori pour le moment.</p>';
 }
-
-container.innerHTML=`<article class="review-item">
-<b>⭐ ${avg.toFixed(1)}/5</b>
-<div class="review-date">${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
-<p>${esc(rev.comment||"Pas de commentaire.")}</p>
-<button class="small-btn" id="deleteReview">🗑️ Supprimer mon avis</button>
-</article>`;
-
-document.getElementById("deleteReview").onclick=()=>{
-
-if(!confirm("Supprimer cette évaluation ?"))return;
-
-const all=reviews();
-delete all[currentId];
-
-save(REVIEW_KEY,all);
-
-loadForm();
-renderDetail();
-renderList();
-renderNotes();
-};
-}
-
-/* MES NOTES */
-
-function renderNotes(){
-
-const all=reviews();
-
-const entries=restaurants.filter(r=>all[r.id]);
-
-const reviewsContainer=document.getElementById("allReviews");
-
-if(!entries.length){
-
-reviewsContainer.innerHTML='<p class="muted">Tu n’as encore donné aucune note.</p>';
-
-}else{
-
-reviewsContainer.innerHTML=entries.map(r=>{
-
-const rev=all[r.id];
-
-return `<article class="review-item">
-<b>${esc(r.nom)}</b>
-<div class="review-date">⭐ ${average(rev.scores).toFixed(1)}/5 · ${new Date(rev.date).toLocaleDateString("fr-FR")}</div>
-<p>${esc(rev.comment||"Sans commentaire")}</p>
-<button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
-</article>`;
-
-}).join("");
-}
-
-const favs=restaurants.filter(r=>isFavorite(r.id));
-
-const favContainer=document.getElementById("allFavorites");
-
-favContainer.innerHTML=favs.length?favs.map(r=>`
-<article class="review-item">
-<b>❤️ ${esc(r.nom)}</b>
-<p class="notice">${esc(r.adresse)}</p>
-<button class="small-btn" data-open="${r.id}">Ouvrir la fiche</button>
-<button class="small-btn" data-remove="${r.id}">Retirer des favoris</button>
-</article>`).join(""):'<p class="muted">Aucun favori pour le moment.</p>';
-}
-
 document.getElementById("allReviews").addEventListener("click",e=>{
-const b=e.target.closest("[data-open]");
-if(b)openRestaurant(b.dataset.open);
+  const b=e.target.closest("[data-open]");
+  if(b)openRestaurant(b.dataset.open);
 });
-
 document.getElementById("allFavorites").addEventListener("click",e=>{
-
-const open=e.target.closest("[data-open]");
-const remove=e.target.closest("[data-remove]");
-
-if(open)openRestaurant(open.dataset.open);
-
-if(remove){
-toggleFavorite(remove.dataset.remove);
-renderNotes();
-}
+  const open=e.target.closest("[data-open]");
+  const remove=e.target.closest("[data-remove]");
+  if(open)openRestaurant(open.dataset.open);
+  if(remove)toggleFavorite(remove.dataset.remove);
 });
+
+/* PARAMÈTRES */
+document.getElementById("clearFavorites").onclick=()=>{
+  if(!confirm("Effacer tous tes favoris ?"))return;
+  favorites=[];
+  save(FAVORITE_KEY,favorites);
+  renderList();renderNotes();
+};
+document.getElementById("clearReviews").onclick=()=>{
+  if(!confirm("Effacer toutes tes notes ?"))return;
+  save(REVIEW_KEY,{});
+  renderList();renderNotes();
+  if(currentId){loadForm();renderDetail()}
+};
+document.getElementById("animationsSetting").onchange=e=>{
+  document.documentElement.style.setProperty("--animation-duration",e.target.checked?"0.2s":"0s");
+};
 
 /* DÉMARRAGE */
-
 initMap();
 renderForm();
 renderList();
@@ -1188,11 +1176,8 @@ renderNotes();
 geocode();
 
 window.addEventListener("resize",()=>{
-homeMap?.invalidateSize();
-
-if(detailMap&&!document.getElementById("detailPage").hidden){
-detailMap.invalidateSize();
-}
+  homeMap?.invalidateSize();
+  if(detailMap&&!document.getElementById("detailPage").hidden)detailMap.invalidateSize();
 });
 </script>
 
