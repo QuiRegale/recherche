@@ -160,6 +160,18 @@ html.light .map-status{background:#fffe;color:#2a2417}
 html.light .bar,html.light .progress{background:#00000014}
 html.light .review-item,html.light .record,html.light .podium-row,html.light .setting-row,html.light table.cmp th,html.light table.cmp td{border-color:#0002}
 html.light .criteria-card{border-color:#0002}
+.main{position:relative}
+.hero-widget{position:absolute;top:30px;right:30px;width:min(430px,36%);padding:20px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);box-shadow:0 8px 30px #0004}
+.hw-label{font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:bold;margin:0 0 8px}
+.hw-greet{font-size:14px;color:var(--muted);margin:0 0 16px}
+.daily-top{display:flex;gap:12px;align-items:flex-start}
+.hero-widget .restaurant-name{font-size:20px}
+.hero-widget .address{margin:0 0 6px}
+.hero-widget .tags{margin:10px 0 4px}
+.hero-widget .card-actions{margin:12px 0 18px}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:1300px){.hero-widget{position:static;width:auto;margin:20px 0 0}}
+html.light .hero-widget{background:#fff;box-shadow:0 8px 30px #0001}
 </style>
 </head>
 <body>
@@ -176,6 +188,7 @@ html.light .criteria-card{border-color:#0002}
       <p>Trouve ton prochain repas autour du lycée.</p>
       <div class="stats" id="stats"></div>
     </div>
+    <aside class="hero-widget" id="heroWidget"></aside>
     <nav class="categories">
       <div class="filter-group"><span class="filter-label">Lieux</span><div class="chips"><button class="category active" data-category="tout">🍽️ Tout</button><button class="category" data-category="resto">🍴 Restaurant</button><button class="category" data-category="boulangerie">🥖 Boulangerie</button><button class="category" data-category="magasin">🛒 Magasin</button></div></div>
       <div class="filter-group"><span class="filter-label">Cuisine</span><div class="chips"><button class="category" data-category="tacos">🌯 Tacos</button><button class="category" data-category="burger">🍔 Burger</button><button class="category" data-category="pizza">🍕 Pizza</button><button class="category" data-category="asiatique">🥢 Asiatique (sushi…)</button><button class="category" data-category="kebab">🥙 Kebab</button><button class="category" data-category="poulet">🍗 Poulet</button><button class="category" data-category="equilibre">🥗 Sain</button></div></div>
@@ -623,6 +636,7 @@ function renderList(){
   }).join("");
   applyFilters();
   renderStats();
+  renderHero();
 }
 function applyFilters(){
   let count=0;
@@ -952,6 +966,66 @@ themeBox.onchange=()=>{
   save("quiregale-light",themeBox.checked);
   document.documentElement.classList.toggle("light",themeBox.checked);
 };
+
+/* WIDGET D'ACCUEIL */
+let dailyShift=0;
+function dailyPick(){
+  const pool=restaurants.filter(r=>!r.categories.includes("magasin")&&!r.categories.includes("boulangerie"));
+  const fresh=pool.filter(r=>!review(r.id));
+  const list=fresh.length?fresh:pool;
+  return list[(Math.floor(Date.now()/864e5)+dailyShift)%list.length];
+}
+function renderHero(){
+  const h=new Date().getHours();
+  const greet=h<11?"Un petit creux ? Une boulangerie, ça dépanne 🥖":h<14?"C'est l'heure de manger 😋":h<18?"Un petit goûter ? 🍪":"Qu'est-ce qu'on mange ce soir ? 🌙";
+  const r=dailyPick();
+  const a=average(review(r.id)?.scores);
+  $("heroWidget").innerHTML=`
+    <div class="hw-label">✨ SUGGESTION DU JOUR</div>
+    <p class="hw-greet">${greet}</p>
+    <div class="daily-top">
+      <div class="avatar">${icons[r.categories[0]]}</div>
+      <div>
+        <div class="restaurant-name">${esc(r.nom)}${badges(r)}</div>
+        <div class="address">📍 ${esc(r.adresse)}</div>
+        ${distTxt(r)}
+      </div>
+    </div>
+    <div class="tags">${tagsHTML(r.categories)}</div>
+    <div class="card-actions">
+      <button class="gold-btn" data-hero="open" type="button">📖 Voir la fiche</button>
+      <button class="small-btn" data-hero="route" type="button">📍 Itinéraire</button>
+      <button class="small-btn" data-hero="next" type="button">🔄 Autre idée</button>
+    </div>
+    <div class="hw-label">⚡ J'AI ENVIE DE…</div>
+    <div class="quick">
+      <button class="chip" data-quick="budget" type="button">💰 Pas cher</button>
+      <button class="chip" data-quick="equilibre" type="button">🥗 Sain</button>
+      <button class="chip" data-quick="atester" type="button">🆕 Du neuf</button>
+      <button class="chip" data-quick="favoris" type="button">❤️ Mes favoris</button>
+      <button class="chip" data-quick="proche" type="button">📍 Près de moi</button>
+      <button class="chip" data-quick="hasard" type="button">🎲 Hasard</button>
+    </div>`;
+}
+function quick(k){
+  if(k==="hasard"){$("surpriseBtn").click();return}
+  if(k==="proche"){$("sortSelect").value="proche";$("sortSelect").dispatchEvent(new Event("change"))}
+  else{
+    activeCategory=k;
+    document.querySelectorAll(".category").forEach(x=>x.classList.toggle("active",x.dataset.category===k));
+    applyFilters();
+  }
+  $("restaurantsList").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("heroWidget").addEventListener("click",e=>{
+  const b=e.target.closest("[data-hero],[data-quick]");
+  if(!b)return;
+  const r=dailyPick();
+  if(b.dataset.hero==="open")openRestaurant(r.id);
+  if(b.dataset.hero==="route")directions(r.id);
+  if(b.dataset.hero==="next"){dailyShift++;renderHero()}
+  if(b.dataset.quick)quick(b.dataset.quick);
+});
 
 /* PARAMÈTRES */
 $("clearFavorites").onclick=()=>{
