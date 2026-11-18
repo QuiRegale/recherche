@@ -117,6 +117,14 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 .dist{font-size:12px;color:var(--green);margin:-4px 0 10px}
 .podium-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff16;font-size:16px}
 .podium-row em{margin-left:auto;font-style:normal;color:var(--light);font-weight:bold}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);padding:12px 18px;border-radius:12px;background:#141a27;border:1px solid var(--gold);color:var(--light);font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:3000}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.progress{height:12px;border-radius:20px;background:#ffffff16;overflow:hidden;margin:10px 0}
+.progress>div{height:100%;background:linear-gradient(90deg,#b7802e,var(--light))}
+.level-title{font-size:22px;font-weight:900;color:var(--light)}
+.record{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #ffffff16;font-size:14px}
+.record em{font-style:normal;color:var(--light);font-weight:bold;white-space:nowrap}
+.compact .restaurant-card .address,.compact .restaurant-card .tags{display:none}
 </style>
 </head>
 <body>
@@ -144,11 +152,16 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
       <button class="category" data-category="equilibre">🥗 Équilibré</button>
       <button class="category" data-category="budget">💰 Petit budget</button>
       <button class="category" data-category="atester">🆕 À tester</button>
+      <button class="category" data-category="asiatique">🥢 Asiatique</button>
+      <button class="category" data-category="resto">🍴 Restaurant</button>
+      <button class="category" data-category="boulangerie">🥖 Boulangerie</button>
+      <button class="category" data-category="magasin">🛒 Magasin</button>
+      <button class="category" data-category="top">⭐ 4+</button>
     </nav>
     <div class="layout">
       <section>
         <div class="section-title">
-          <h2>🔥 Restaurants</h2>
+          <h2>🔥 Les adresses</h2>
           <span id="count" class="count"></span>
         </div>
         <div class="toolbar">
@@ -211,9 +224,12 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
   <section id="notesPage" hidden>
     <h1>⭐ Mes notes</h1>
     <p class="muted">Retrouve tes évaluations et tes restaurants favoris.</p>
+    <div class="panel"><h2>🎖️ Mon niveau</h2><div id="level"></div></div>
     <div class="panel"><h2>🏆 Mon podium</h2><div id="podium"></div></div>
+    <div class="panel"><h2>📊 Mes moyennes par critère</h2><div id="myCriteria"></div></div>
+    <div class="panel"><h2>🏅 Mes records</h2><div id="records"></div></div>
     <div class="panel"><h2>Mes évaluations</h2><div id="allReviews"></div></div>
-    <div class="panel"><h2>❤️ Mes favoris</h2><div id="allFavorites"></div></div>
+    <div class="panel"><h2>❤️ Mes favoris</h2><div id="allFavorites"></div><div class="card-actions"><button class="secondary" id="shareFavs" type="button">🔗 Partager mes favoris</button></div></div>
   </section>
 
   <section id="settingsPage" hidden>
@@ -224,6 +240,10 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
       <div class="setting-row">
         <div><b>Confirmation avant suppression</b><p>Demander confirmation avant de supprimer un avis.</p></div>
         <input type="checkbox" id="confirmSetting" checked>
+      </div>
+      <div class="setting-row">
+        <div><b>Affichage compact</b><p>Masque adresses et catégories dans la liste.</p></div>
+        <input type="checkbox" id="compactSetting">
       </div>
       <div class="setting-row">
         <div><b>Sauvegarde</b><p>Exporter ou importer tes notes et favoris (fichier .json).</p></div>
@@ -249,7 +269,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 
 <aside class="sidebar">
   <div class="side-title">NAVIGATION</div>
-  <div class="side-search"><span>🔎</span><input id="searchInput" placeholder="Rechercher..."></div>
+  <div class="side-search"><span>🔎</span><input id="searchInput" placeholder="Rechercher... ( / )"></div>
   <button class="side-btn active" data-page="home"><span class="ico">🏠</span> Accueil</button>
   <button class="side-btn" data-page="notes"><span class="ico">⭐</span> Mes notes</button>
   <button class="side-btn" data-page="settings"><span class="ico">⚙️</span> Paramètres</button>
@@ -264,6 +284,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 </aside>
 </div>
 
+<div id="toast" class="toast" role="status"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 "use strict";
@@ -323,11 +344,44 @@ const restaurants = [
 {id:"dar-janis",nom:"Dar Janis",adresse:"80 Bd de Saint-Loup, 13010 Marseille",categories:["budget"]},
 {id:"g-la-dalle",nom:"G LA DALLE Saint-Loup",adresse:"123 Bd de Saint-Loup, 13010 Marseille",categories:["burger","poulet"]},
 {id:"casa-mexicana",nom:"Casa Mexicana",adresse:"90 Bd de Saint-Loup, 13010 Marseille",categories:["budget"]},
-{id:"les-glaciers",nom:"Les Glaciers Français",adresse:"Centre Commercial La Galerie, Route de la Sablière, 13011 Marseille",categories:["budget"]}
+{id:"les-glaciers",nom:"Les Glaciers Français",adresse:"Centre Commercial La Galerie, Route de la Sablière, 13011 Marseille",categories:["budget"]},
+{id:"passe-temps",nom:"Au Passe Temps",adresse:"20 Traverse de la Montre, 13011 Marseille",categories:["burger","budget"]},
+{id:"kasbar",nom:"Kasbar",adresse:"20 Traverse de la Montre, 13011 Marseille",categories:["resto"]},
+{id:"canard-laque",nom:"Canard Laqué",adresse:"67 Rue de l'Audience, 13011 Marseille",categories:["asiatique"]},
+{id:"bonne-heure",nom:"À la Bonne Heure",adresse:"36 Route de la Valentine, 13011 Marseille",categories:["pizza","resto"]},
+{id:"columbus",nom:"Columbus Café & Co",adresse:"Centre Commercial Géant Casino, Route de la Sablière, 13011 Marseille",categories:["budget"]},
+{id:"le-loft",nom:"Le Loft",adresse:"117 Traverse de la Montre, 13011 Marseille",categories:["resto"]},
+{id:"vangelis",nom:"Vangelis Alter Bistro",adresse:"50 Avenue César Boy, 13011 Marseille",categories:["resto"]},
+{id:"brasserie-valentine",nom:"La Brasserie de la Valentine",adresse:"12 Route de la Valentine, 13011 Marseille",categories:["resto"]},
+{id:"carpe-diem",nom:"Carpe Diem",adresse:"2 Rue Léon Bancal, 13011 Marseille",categories:["resto"]},
+{id:"b-banette",nom:"Boulangerie Banette",adresse:"104 Bd de Saint-Marcel, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-fournil-sm",nom:"Fournil de Saint-Marcel",adresse:"165 Bd de Saint-Marcel, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-daniel",nom:"Maison Daniel",adresse:"73 Bd de Saint-Marcel, 13011 Marseille",categories:["boulangerie","burger"]},
+{id:"b-allam",nom:"Maison Allam",adresse:"92 Bd de la Barasse, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-atelier-antik",nom:"L'Atelier Antik",adresse:"98 Bd de Saint-Marcel, 13011 Marseille",categories:["boulangerie"]},
+{id:"b-marie-blachere",nom:"Marie Blachère",adresse:"6 Route de la Sablière, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-paul",nom:"Boulangerie Paul - La Valentine",adresse:"184 Route des Trois Lucs à la Valentine, 13012 Marseille",categories:["boulangerie"]},
+{id:"b-moulin",nom:"Le Moulin de la Galette",adresse:"Centre Commercial La Valentine, Route de la Sablière, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-bec-fin",nom:"Au Bec Fin",adresse:"281 Route des Trois Lucs à la Valentine, 13011 Marseille",categories:["boulangerie"]},
+{id:"b-ange",nom:"Boulangerie Ange",adresse:"256 Route des Trois Lucs, 13011 Marseille",categories:["boulangerie","budget"]},
+{id:"b-camoins",nom:"Le Fournil des Camoins",adresse:"111 Route des Camoins, 13011 Marseille",categories:["boulangerie"]},
+{id:"b-vincent-andreu",nom:"Artisan Boulanger Banette (Vincent Andreu)",adresse:"12 Avenue Vincent Andreu, 13011 Marseille",categories:["boulangerie"]},
+{id:"m-auchan",nom:"Auchan La Valentine",adresse:"Route de la Sablière, 13011 Marseille",categories:["magasin"]},
+{id:"m-carrefour",nom:"Carrefour Contact",adresse:"73 Route des Camoins, 13011 Marseille",categories:["magasin"]},
+{id:"m-vival-sm",nom:"Vival Saint-Marcel",adresse:"176 Bd de Saint-Marcel, 13011 Marseille",categories:["magasin"]},
+{id:"m-vival-pomme",nom:"Vival La Pomme",adresse:"41 Avenue Emmanuel Allard, 13011 Marseille",categories:["magasin"]},
+{id:"m-intermarche",nom:"Intermarché Contact",adresse:"15 Bd de la Cartonnerie, 13011 Marseille",categories:["magasin"]},
+{id:"m-grand-frais",nom:"Grand Frais La Valentine",adresse:"6 Route de la Sablière, 13011 Marseille",categories:["magasin"]},
+{id:"m-lidl",nom:"Lidl",adresse:"148 Av. des Peintres Roux, 13012 Marseille",categories:["magasin"]},
+{id:"m-aldi",nom:"Aldi Saint-Marcel",adresse:"Chemin de la Valbarelle, 13011 Marseille",categories:["magasin"]},
+{id:"m-biocoop",nom:"Biocoop",adresse:"203 Route des Camoins, 13011 Marseille",categories:["magasin","equilibre"]},
+{id:"m-picard",nom:"Picard",adresse:"32 Bd de la Pomme, 13011 Marseille",categories:["magasin"]},
+{id:"m-decathlon",nom:"Decathlon",adresse:"7 Avenue de Saint-Menet, 13011 Marseille",categories:["magasin"]},
+{id:"m-kiabi",nom:"Kiabi La Valentine",adresse:"252 Route des Trois Lucs, 13011 Marseille",categories:["magasin"]}
 ];
 
-const names={tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget"};
-const icons={tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰"};
+const names={tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget",asiatique:"Asiatique",resto:"Restaurant",boulangerie:"Boulangerie",magasin:"Magasin"};
+const icons={tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰",asiatique:"🥢",resto:"🍴",boulangerie:"🥖",magasin:"🛒"};
 const criteria=[
 {id:"gout",name:"Goût",icon:"🍔",description:"Saveur et qualité du repas"},
 {id:"prix",name:"Prix",icon:"💰",description:"Rapport qualité-prix"},
@@ -362,8 +416,26 @@ function badges(r){
   const a=average(review(r.id)?.scores);
   return a===null?'<span class="badge new">🆕 À tester</span>':a>=4.5?'<span class="badge">🏆 Top</span>':"";
 }
+function toast(t){
+  const e=$("toast");e.textContent=t;e.classList.add("show");
+  clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200);
+}
+function renderProfile(all){
+  const done=restaurants.filter(r=>all[r.id]);
+  const n=done.length;
+  const lv=n>=40?"👑 Légende du 11ᵉ":n>=25?"🍽️ Critique gastronomique":n>=10?"😋 Gourmet":n>=3?"🧭 Explorateur":"🌱 Débutant";
+  $("level").innerHTML=`<div class="level-title">${lv}</div><div class="progress"><div style="width:${Math.round(n/restaurants.length*100)}%"></div></div><p class="notice">${n} / ${restaurants.length} adresses testées</p>`;
+  $("myCriteria").innerHTML=n?criteria.map(c=>{
+    const m=done.reduce((a,r)=>a+Number(all[r.id].scores[c.id]||0),0)/n;
+    return `<div class="criterion-row"><span>${c.icon} ${c.name}</span><div class="bar"><div class="fill" style="width:${m*20}%"></div></div><b>${m.toFixed(1)}</b></div>`;
+  }).join(""):'<p class="muted">Pas encore de données.</p>';
+  $("records").innerHTML=n?criteria.map(c=>{
+    const b=[...done].sort((x,y)=>all[y.id].scores[c.id]-all[x.id].scores[c.id])[0];
+    return `<div class="record"><span>${c.icon} Top ${c.name.toLowerCase()}</span><span>${esc(b.nom)} <em>${all[b.id].scores[c.id]}/5</em></span></div>`;
+  }).join(""):'<p class="muted">Note des restaurants pour voir tes records.</p>';
+}
 function renderStats(){
-  $("stats").innerHTML=[[restaurants.length,"restaurants"],[Object.keys(reviews()).length,"notés"],[favorites.length,"favoris"]]
+  $("stats").innerHTML=[[restaurants.length,"adresses"],[Object.keys(reviews()).length,"notés"],[favorites.length,"favoris"]]
     .map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
 }
 
@@ -402,7 +474,9 @@ document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",(
 /* FAVORIS */
 function isFavorite(id){return favorites.includes(id)}
 function toggleFavorite(id){
-  favorites=isFavorite(id)?favorites.filter(x=>x!==id):[...favorites,id];
+  const was=isFavorite(id);
+  favorites=was?favorites.filter(x=>x!==id):[...favorites,id];
+  toast(was?"Retiré des favoris":"❤️ Ajouté aux favoris");
   save(FAVORITE_KEY,favorites);
   renderList();renderNotes();
 }
@@ -498,7 +572,7 @@ function applyFilters(){
   let count=0;
   document.querySelectorAll(".restaurant-card").forEach(card=>{
     const r=restaurants.find(x=>x.id===card.dataset.id);
-    const catOK=activeCategory==="tout"||(activeCategory==="favoris"?isFavorite(r.id):activeCategory==="atester"?!review(r.id):r.categories.includes(activeCategory));
+    const catOK=activeCategory==="tout"||(activeCategory==="favoris"?isFavorite(r.id):activeCategory==="atester"?!review(r.id):activeCategory==="top"?(average(review(r.id)?.scores)||0)>=4:r.categories.includes(activeCategory));
     const text=(r.nom+" "+r.adresse+" "+r.categories.join(" ")).toLowerCase();
     const visible=catOK&&text.includes(searchText);
     card.classList.toggle("hidden",!visible);
@@ -509,7 +583,7 @@ function applyFilters(){
       if(!visible&&homeMap.hasLayer(marker))homeMap.removeLayer(marker);
     }
   });
-  $("count").textContent=count+" restaurant"+(count>1?"s":"");
+  $("count").textContent=count+" adresse"+(count>1?"s":"");
 }
 document.querySelector(".categories").addEventListener("click",e=>{
   const b=e.target.closest("[data-category]");
@@ -531,8 +605,15 @@ $("sortSelect").addEventListener("change",()=>{
   }else renderList();
 });
 $("surpriseBtn").onclick=()=>{
-  const cards=[...document.querySelectorAll(".restaurant-card:not(.hidden)")];
-  if(cards.length)openRestaurant(cards[Math.floor(Math.random()*cards.length)].dataset.id);
+  const ids=[...document.querySelectorAll(".restaurant-card:not(.hidden)")].map(c=>c.dataset.id);
+  if(!ids.length)return toast("Aucun restaurant avec ces filtres");
+  const pick=ids[Math.floor(Math.random()*ids.length)];
+  let i=0;
+  const t=setInterval(()=>{
+    const r=restaurants.find(x=>x.id===(i<10?ids[Math.floor(Math.random()*ids.length)]:pick));
+    toast("🎲 "+r.nom);
+    if(++i>10){clearInterval(t);setTimeout(()=>openRestaurant(pick),500)}
+  },110);
 };
 $("restaurantsList").addEventListener("click",e=>{
   const b=e.target.closest("[data-action]");
@@ -595,7 +676,7 @@ function initDetailMap(r){
   $("shareButton").onclick=()=>{
     const t=r.nom+" — "+r.adresse;
     if(navigator.share)navigator.share({title:r.nom,text:t}).catch(()=>{});
-    else navigator.clipboard?.writeText(t).then(()=>alert("Copié !"));
+    else navigator.clipboard?.writeText(t).then(()=>toast("Copié ✅"));
   };
 }
 
@@ -642,6 +723,7 @@ $("saveReview").onclick=()=>{
   all[currentId]={scores:{...selectedScores},comment:$("comment").value.trim(),date:new Date().toISOString()};
   if(!save(REVIEW_KEY,all)){$("saveStatus").textContent="Erreur de sauvegarde.";return}
   $("saveStatus").textContent="✅ Note enregistrée !";
+  toast("⭐ Note enregistrée !");
   renderDetail();renderList();renderNotes();
 };
 function renderDetail(){
@@ -675,6 +757,7 @@ function renderDetail(){
 /* PAGE MES NOTES */
 function renderNotes(){
   const all=reviews();
+  renderProfile(all);
   const entries=restaurants.filter(r=>all[r.id]);
   const top=[...entries].sort((a,b)=>average(all[b.id].scores)-average(all[a.id].scores)).slice(0,3);
   $("podium").innerHTML=top.length?top.map((r,i)=>`<div class="podium-row"><span>${["🥇","🥈","🥉"][i]}</span><b>${esc(r.nom)}</b><em>${average(all[r.id].scores).toFixed(1)}/5</em></div>`).join(""):'<p class="muted">Note des restaurants pour voir ton podium.</p>';
@@ -706,6 +789,22 @@ $("allFavorites").addEventListener("click",e=>{
   if(rm)toggleFavorite(rm.dataset.remove);
 });
 
+$("shareFavs").onclick=()=>{
+  if(!favorites.length)return toast("Aucun favori à partager");
+  const t="Mes favoris QuiRégale :\n"+restaurants.filter(r=>isFavorite(r.id)).map(r=>"• "+r.nom).join("\n");
+  if(navigator.share)navigator.share({text:t}).catch(()=>{});
+  else navigator.clipboard?.writeText(t).then(()=>toast("Liste copiée ✅"));
+};
+document.addEventListener("keydown",e=>{
+  if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
+    e.preventDefault();showPage("home");$("searchInput").focus();
+  }
+});
+const compact=$("compactSetting");
+compact.checked=read("quiregale-compact",false);
+document.body.classList.toggle("compact",compact.checked);
+compact.onchange=()=>{save("quiregale-compact",compact.checked);document.body.classList.toggle("compact",compact.checked)};
+
 /* PARAMÈTRES */
 $("clearFavorites").onclick=()=>{
   if(!confirm("Effacer tous tes favoris ?"))return;
@@ -735,7 +834,7 @@ $("importFile").onchange=async e=>{
     favorites=Array.isArray(data.favorites)?data.favorites:[];
     save(FAVORITE_KEY,favorites);
     renderList();renderNotes();
-    alert("Sauvegarde importée ✅");
+    toast("Sauvegarde importée ✅");
   }catch(err){alert("Fichier invalide.")}
   e.target.value="";
 };
