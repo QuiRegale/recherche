@@ -132,6 +132,34 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 .category{padding:8px 13px;font-size:13px;border-radius:999px}
 .category:hover{border-color:var(--gold)}
 @media(max-width:600px){.filter-group{flex-direction:column;gap:4px}.filter-label{padding-top:0}}
+.toast{bottom:84px}
+.input{padding:11px;border:1px solid var(--border);border-radius:11px;background:#101522;color:#fff;width:150px}
+.recent{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.recent:empty{display:none}
+.chip{padding:7px 12px;border:1px solid var(--border);border-radius:999px;background:#ffffff08;color:#fff;font-size:12px}
+.chip:hover{border-color:var(--gold)}
+.small-btn.on{border-color:var(--gold);color:var(--light);background:#e9b65e20}
+.compare-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:16px;background:#141a27;border:1px solid var(--gold);z-index:2500}
+.compare-bar button:disabled{opacity:.4;cursor:default}
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:16px;z-index:4000}
+.modal-card{max-width:760px;width:100%;max-height:90vh;overflow:auto;padding:22px;border-radius:18px;background:#141a27;border:1px solid var(--border)}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px}
+table.cmp th,table.cmp td{padding:10px;border-bottom:1px solid #ffffff16;text-align:left;vertical-align:top}
+table.cmp th{color:var(--muted);font-weight:normal;width:26%}
+.win{color:var(--green);font-weight:bold}
+html.light{--bg:#f6f1e7;--muted:#5d6577;--border:rgba(150,100,20,.3);--light:#7a4f08;--gold:#b7802e}
+html.light body{color:#2a2417;background:radial-gradient(ellipse at 5% 0%,#e9b65e30,transparent 35%),var(--bg)}
+html.light .welcome h1{background:linear-gradient(90deg,#2a2417,#b7802e);-webkit-background-clip:text;background-clip:text}
+html.light .sidebar{background:rgba(255,252,245,.97)}
+html.light .side-btn{color:#2a2417}
+html.light .side-search input,html.light textarea,html.light .toolbar select,html.light .input{background:#fff;color:#2a2417}
+html.light .restaurant-card,html.light .panel,html.light .modal-card,html.light .compare-bar,html.light .toast{background:#fff;color:#2a2417}
+html.light .category,html.light .small-btn,html.light .secondary,html.light .chip,html.light .favorite-btn{background:#fff;color:#2a2417}
+html.light .category.active{color:#171108}
+html.light .map-status{background:#fffe;color:#2a2417}
+html.light .bar,html.light .progress{background:#00000014}
+html.light .review-item,html.light .record,html.light .podium-row,html.light .setting-row,html.light table.cmp th,html.light table.cmp td{border-color:#0002}
+html.light .criteria-card{border-color:#0002}
 </style>
 </head>
 <body>
@@ -159,6 +187,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
           <h2>🔥 Les adresses</h2>
           <span id="count" class="count"></span>
         </div>
+        <div id="recent" class="recent"></div>
         <div class="toolbar">
           <select id="sortSelect" aria-label="Trier">
             <option value="defaut">Trier : mes préférés d'abord</option>
@@ -212,6 +241,12 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
           <button class="secondary" id="clearForm">Effacer</button>
         </div>
         <div id="saveStatus" class="status"></div>
+        <h2 style="margin-top:26px">🧾 Journal de visites</h2>
+        <div class="card-actions" style="margin:0 0 10px">
+          <input type="number" id="visitPrice" class="input" min="0" step="0.5" placeholder="Prix payé (€)">
+          <button class="gold-btn" id="addVisit" type="button">+ J'y suis allé</button>
+        </div>
+        <div id="visitList"></div>
       </section>
     </div>
   </section>
@@ -220,6 +255,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
     <h1>⭐ Mes notes</h1>
     <p class="muted">Retrouve tes évaluations et tes restaurants favoris.</p>
     <div class="panel"><h2>🎖️ Mon niveau</h2><div id="level"></div></div>
+    <div class="panel"><h2>🧾 Mes sorties</h2><div id="visitStats"></div></div>
     <div class="panel"><h2>🏆 Mon podium</h2><div id="podium"></div></div>
     <div class="panel"><h2>📊 Mes moyennes par critère</h2><div id="myCriteria"></div></div>
     <div class="panel"><h2>🏅 Mes records</h2><div id="records"></div></div>
@@ -237,6 +273,10 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
         <input type="checkbox" id="confirmSetting" checked>
       </div>
       <div class="setting-row">
+        <div><b>Mode clair</b><p>Passer l'interface en thème clair.</p></div>
+        <input type="checkbox" id="themeSetting">
+      </div>
+      <div class="setting-row">
         <div><b>Affichage compact</b><p>Masque adresses et catégories dans la liste.</p></div>
         <input type="checkbox" id="compactSetting">
       </div>
@@ -251,6 +291,10 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
       <div class="setting-row">
         <div><b>Effacer mes favoris</b><p>Supprimer tous les favoris enregistrés sur cet appareil.</p></div>
         <button class="secondary" id="clearFavorites">Effacer</button>
+      </div>
+      <div class="setting-row">
+        <div><b>Effacer mes visites</b><p>Supprimer le journal de visites et les dépenses.</p></div>
+        <button class="secondary" id="clearVisits">Effacer</button>
       </div>
       <div class="setting-row">
         <div><b>Effacer mes notes</b><p>Supprimer toutes les évaluations locales.</p></div>
@@ -279,6 +323,8 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 </aside>
 </div>
 
+<div id="compareBar" class="compare-bar" hidden></div>
+<div id="compareModal" class="modal" hidden></div>
 <div id="toast" class="toast" role="status"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -403,6 +449,7 @@ let homeMap=null;
 let detailMap=null;
 let detailMarker=null;
 let userPos=null;
+let cmp=[];
 function km(a,b,c,d){const t=x=>x*Math.PI/180,h=Math.sin(t(c-a)/2)**2+Math.cos(t(a))*Math.cos(t(c))*Math.sin(t(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(h))}
 function dist(r){return userPos&&Number.isFinite(r.lat)?km(userPos.lat,userPos.lng,r.lat,r.lng):Infinity}
 function distTxt(r){
@@ -431,6 +478,16 @@ function renderProfile(all){
     const b=[...done].sort((x,y)=>all[y.id].scores[c.id]-all[x.id].scores[c.id])[0];
     return `<div class="record"><span>${c.icon} Top ${c.name.toLowerCase()}</span><span>${esc(b.nom)} <em>${all[b.id].scores[c.id]}/5</em></span></div>`;
   }).join(""):'<p class="muted">Note des restaurants pour voir tes records.</p>';
+  const vs=visits(),withP=vs.filter(v=>v.prix>0),counts={};
+  vs.forEach(v=>counts[v.id]=(counts[v.id]||0)+1);
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  const topR=top&&restaurants.find(r=>r.id===top[0]);
+  $("visitStats").innerHTML=vs.length?
+    `<div class="record"><span>Sorties</span><em>${vs.length}</em></div>
+     <div class="record"><span>Total dépensé</span><em>${fmt(vs.reduce((a,v)=>a+(v.prix||0),0))}</em></div>
+     <div class="record"><span>Prix moyen</span><em>${withP.length?fmt(withP.reduce((a,v)=>a+v.prix,0)/withP.length):"—"}</em></div>
+     <div class="record"><span>Ton QG</span><span>${topR?esc(topR.nom):"—"} <em>${top[1]}×</em></span></div>`
+    :'<p class="muted">Ajoute une visite depuis une fiche pour suivre tes sorties et ton budget.</p>';
 }
 function renderStats(){
   $("stats").innerHTML=[[restaurants.length,"adresses"],[Object.keys(reviews()).length,"notés"],[favorites.length,"favoris"]]
@@ -560,6 +617,7 @@ function renderList(){
         <button class="small-btn" data-action="open" data-id="${r.id}">📖 Fiche</button>
         <button class="small-btn" data-action="review" data-id="${r.id}">⭐ Noter</button>
         <button class="small-btn" data-action="route" data-id="${r.id}">📍 Itinéraire</button>
+        <button class="small-btn${cmp.includes(r.id)?" on":""}" data-action="compare" data-id="${r.id}">⚖️ ${cmp.includes(r.id)?"Sélectionné":"Comparer"}</button>
       </div>
     </article>`;
   }).join("");
@@ -623,6 +681,7 @@ $("restaurantsList").addEventListener("click",e=>{
   if(b.dataset.action==="favorite")toggleFavorite(id);
   if(b.dataset.action==="open"||b.dataset.action==="review")openRestaurant(id);
   if(b.dataset.action==="route")directions(id);
+  if(b.dataset.action==="compare")toggleCompare(id);
 });
 
 /* RACCOURCIS */
@@ -651,7 +710,7 @@ function openRestaurant(id){
   $("detailName").textContent=r.nom;
   $("detailAddress").textContent="📍 "+r.adresse;
   $("detailTags").innerHTML=tagsHTML(r.categories);
-  renderForm();loadForm();renderDetail();
+  renderForm();loadForm();renderDetail();renderVisits();pushRecent(id);
   showPage("detail");
   initDetailMap(r);
 }
@@ -803,6 +862,97 @@ compact.checked=read("quiregale-compact",false);
 document.body.classList.toggle("compact",compact.checked);
 compact.onchange=()=>{save("quiregale-compact",compact.checked);document.body.classList.toggle("compact",compact.checked)};
 
+/* VISITES, RÉCENTS, COMPARATEUR, THÈME */
+const VISIT_KEY="quiregale-visits-v1",RECENT_KEY="quiregale-recent-v1";
+function visits(){return read(VISIT_KEY,[])}
+function fmt(n){return n.toFixed(2).replace(".",",")+" €"}
+function renderVisits(){
+  const list=visits().filter(v=>v.id===currentId).reverse();
+  const tot=list.reduce((a,v)=>a+(v.prix||0),0);
+  $("visitList").innerHTML=list.length
+    ?`<p class="notice">${list.length} visite${list.length>1?"s":""}${tot?" · "+fmt(tot)+" dépensés":""}</p>`
+      +list.slice(0,5).map(v=>`<div class="record"><span>${new Date(v.date).toLocaleDateString("fr-FR")}</span><em>${v.prix?fmt(v.prix):"—"}</em></div>`).join("")
+      +'<button class="small-btn" id="undoVisit" type="button" style="margin-top:10px">↩︎ Annuler la dernière</button>'
+    :'<p class="muted">Aucune visite enregistrée.</p>';
+  if($("undoVisit"))$("undoVisit").onclick=()=>{
+    const all=visits();
+    for(let i=all.length-1;i>=0;i--)if(all[i].id===currentId){all.splice(i,1);break}
+    save(VISIT_KEY,all);renderVisits();renderNotes();
+  };
+}
+$("addVisit").onclick=()=>{
+  const prix=parseFloat($("visitPrice").value.replace(",","."));
+  const all=visits();
+  all.push({id:currentId,date:new Date().toISOString(),prix:Number.isFinite(prix)&&prix>=0?prix:0});
+  save(VISIT_KEY,all);
+  $("visitPrice").value="";
+  renderVisits();renderNotes();toast("🧾 Visite ajoutée");
+};
+$("clearVisits").onclick=()=>{
+  if(!confirm("Effacer tout ton journal de visites ?"))return;
+  save(VISIT_KEY,[]);renderNotes();if(currentId)renderVisits();
+};
+
+function pushRecent(id){
+  save(RECENT_KEY,[id,...read(RECENT_KEY,[]).filter(x=>x!==id)].slice(0,6));
+  renderRecent();
+}
+function renderRecent(){
+  const l=read(RECENT_KEY,[]).map(id=>restaurants.find(r=>r.id===id)).filter(Boolean);
+  $("recent").innerHTML=l.length
+    ?'<span class="filter-label" style="flex:none;padding:0">Récents</span>'+l.map(r=>`<button class="chip" data-recent="${r.id}">${icons[r.categories[0]]} ${esc(r.nom)}</button>`).join("")
+    :"";
+}
+$("recent").addEventListener("click",e=>{
+  const b=e.target.closest("[data-recent]");
+  if(b)openRestaurant(b.dataset.recent);
+});
+
+function toggleCompare(id){
+  cmp=cmp.includes(id)?cmp.filter(x=>x!==id):[...cmp.slice(-1),id];
+  renderList();renderCompareBar();
+}
+function renderCompareBar(){
+  const b=$("compareBar");
+  b.hidden=!cmp.length;
+  b.innerHTML=`<span>⚖️ ${cmp.length}/2</span><button class="gold-btn" id="doCompare"${cmp.length<2?" disabled":""}>Comparer</button><button class="secondary" id="clearCompare">✕</button>`;
+}
+$("compareBar").addEventListener("click",e=>{
+  if(e.target.id==="clearCompare"){cmp=[];renderList();renderCompareBar()}
+  if(e.target.id==="doCompare"&&cmp.length===2)showCompare();
+});
+function showCompare(){
+  const [a,b]=cmp.map(id=>restaurants.find(r=>r.id===id));
+  const av=r=>average(review(r.id)?.scores);
+  const dtxt=r=>{const d=dist(r);return d===Infinity?"—":d<1?Math.round(d*1000)+" m":d.toFixed(1)+" km"};
+  const row=(label,x,y,f)=>{
+    const w=x!=null&&y!=null&&x!==y?(x>y?0:1):-1;
+    return `<tr><th>${label}</th><td class="${w===0?"win":""}">${x==null?"—":f(x)}</td><td class="${w===1?"win":""}">${y==null?"—":f(y)}</td></tr>`;
+  };
+  const sa=review(a.id)?.scores||{},sb=review(b.id)?.scores||{};
+  let rows=`<tr><th></th><th>${esc(a.nom)}</th><th>${esc(b.nom)}</th></tr>
+    <tr><th>Adresse</th><td>${esc(a.adresse)}</td><td>${esc(b.adresse)}</td></tr>
+    <tr><th>Catégories</th><td><div class="tags">${tagsHTML(a.categories)}</div></td><td><div class="tags">${tagsHTML(b.categories)}</div></td></tr>
+    <tr><th>Distance</th><td>${dtxt(a)}</td><td>${dtxt(b)}</td></tr>`;
+  rows+=row("⭐ Note",av(a),av(b),v=>v.toFixed(1)+"/5");
+  criteria.forEach(c=>{rows+=row(c.icon+" "+c.name,Number(sa[c.id])||null,Number(sb[c.id])||null,v=>v+"/5")});
+  const nv=r=>visits().filter(v=>v.id===r.id).length;
+  rows+=row("🧾 Visites",nv(a)||null,nv(b)||null,v=>String(v));
+  $("compareModal").innerHTML=`<div class="modal-card"><button class="secondary" id="closeCompare">✕ Fermer</button><h2>⚖️ Comparateur</h2><div style="overflow-x:auto"><table class="cmp">${rows}</table></div><p class="notice">En vert : le meilleur des deux. Les notes viennent de tes évaluations.</p></div>`;
+  $("compareModal").hidden=false;
+}
+$("compareModal").addEventListener("click",e=>{
+  if(e.target.id==="compareModal"||e.target.id==="closeCompare")$("compareModal").hidden=true;
+});
+
+const themeBox=$("themeSetting");
+themeBox.checked=read("quiregale-light",false);
+document.documentElement.classList.toggle("light",themeBox.checked);
+themeBox.onchange=()=>{
+  save("quiregale-light",themeBox.checked);
+  document.documentElement.classList.toggle("light",themeBox.checked);
+};
+
 /* PARAMÈTRES */
 $("clearFavorites").onclick=()=>{
   if(!confirm("Effacer tous tes favoris ?"))return;
@@ -816,7 +966,7 @@ $("clearReviews").onclick=()=>{
   if(currentId){loadForm();renderDetail()}
 };
 $("exportData").onclick=()=>{
-  const blob=new Blob([JSON.stringify({reviews:reviews(),favorites},null,2)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify({reviews:reviews(),favorites,visits:visits()},null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
   a.download="quiregale-sauvegarde.json";
@@ -829,6 +979,7 @@ $("importFile").onchange=async e=>{
     const data=JSON.parse(await e.target.files[0].text());
     if(!confirm("Remplacer tes notes et favoris actuels par ceux du fichier ?"))return;
     save(REVIEW_KEY,data.reviews||{});
+    save(VISIT_KEY,Array.isArray(data.visits)?data.visits:[]);
     favorites=Array.isArray(data.favorites)?data.favorites:[];
     save(FAVORITE_KEY,favorites);
     renderList();renderNotes();
@@ -842,6 +993,7 @@ initMap();
 renderForm();
 renderList();
 renderNotes();
+renderRecent();
 geocode();
 window.addEventListener("resize",()=>{
   homeMap?.invalidateSize();
