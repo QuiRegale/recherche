@@ -105,6 +105,18 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 .criteria-grid{grid-template-columns:1fr}
 .map-container{height:350px;min-height:350px}
 .sidebar{padding:16px 12px}}
+.welcome h1{background:linear-gradient(90deg,#fff9ed,var(--light));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.stat{padding:10px 16px;border:1px solid var(--border);border-radius:14px;background:#e9b65e0c;display:flex;flex-direction:column;align-items:center;min-width:90px}
+.stat b{font-size:22px;color:var(--light)}
+.stat span{font-size:11px;color:var(--muted)}
+.restaurant-top>div:nth-child(2){flex:1;min-width:0}
+.avatar{width:46px;height:46px;flex-shrink:0;border-radius:14px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,#e9b65e30,#e9b65e08);border:1px solid var(--border)}
+.badge{margin-left:8px;padding:3px 7px;border-radius:7px;font-size:11px;font-weight:700;background:#e9b65e25;color:var(--light);vertical-align:middle}
+.badge.new{background:#77d6a025;color:var(--green)}
+.dist{font-size:12px;color:var(--green);margin:-4px 0 10px}
+.podium-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff16;font-size:16px}
+.podium-row em{margin-left:auto;font-style:normal;color:var(--light);font-weight:bold}
 </style>
 </head>
 <body>
@@ -119,6 +131,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
     <div class="welcome">
       <h1>Où est-ce qu'on mange ?</h1>
       <p>Trouve ton prochain repas autour du lycée.</p>
+      <div class="stats" id="stats"></div>
     </div>
     <nav class="categories">
       <button class="category active" data-category="tout">🍽️ Tout</button>
@@ -130,6 +143,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
       <button class="category" data-category="poulet">🍗 Poulet</button>
       <button class="category" data-category="equilibre">🥗 Équilibré</button>
       <button class="category" data-category="budget">💰 Petit budget</button>
+      <button class="category" data-category="atester">🆕 À tester</button>
     </nav>
     <div class="layout">
       <section>
@@ -139,8 +153,9 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
         </div>
         <div class="toolbar">
           <select id="sortSelect" aria-label="Trier">
-            <option value="nom">Trier : A → Z</option>
-            <option value="note">Trier : mieux notés</option>
+            <option value="defaut">Trier : mes préférés d'abord</option>
+            <option value="note">⭐ Mieux notés</option>
+            <option value="proche">📍 Plus proches de moi</option>
           </select>
           <button class="gold-btn" id="surpriseBtn" type="button">🎲 Surprends-moi</button>
         </div>
@@ -174,6 +189,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
         <div class="detail-map"><div id="detailMap"></div></div>
         <p class="notice" id="locationStatus"></p>
         <button class="gold-btn" id="directionsButton">📍 Itinéraire</button>
+        <button class="secondary" id="shareButton" type="button">🔗 Partager</button>
         <h2>💬 Avis</h2>
         <div id="detailReviews"></div>
       </section>
@@ -195,6 +211,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
   <section id="notesPage" hidden>
     <h1>⭐ Mes notes</h1>
     <p class="muted">Retrouve tes évaluations et tes restaurants favoris.</p>
+    <div class="panel"><h2>🏆 Mon podium</h2><div id="podium"></div></div>
     <div class="panel"><h2>Mes évaluations</h2><div id="allReviews"></div></div>
     <div class="panel"><h2>❤️ Mes favoris</h2><div id="allFavorites"></div></div>
   </section>
@@ -333,6 +350,22 @@ let markers={};
 let homeMap=null;
 let detailMap=null;
 let detailMarker=null;
+let userPos=null;
+function km(a,b,c,d){const t=x=>x*Math.PI/180,h=Math.sin(t(c-a)/2)**2+Math.cos(t(a))*Math.cos(t(c))*Math.sin(t(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(h))}
+function dist(r){return userPos&&Number.isFinite(r.lat)?km(userPos.lat,userPos.lng,r.lat,r.lng):Infinity}
+function distTxt(r){
+  const d=dist(r);
+  if(d===Infinity)return "";
+  return `<div class="dist">📍 à ${d<1?Math.round(d*1000)+" m":d.toFixed(1)+" km"} · 🚶 ${Math.max(1,Math.round(d*12))} min</div>`;
+}
+function badges(r){
+  const a=average(review(r.id)?.scores);
+  return a===null?'<span class="badge new">🆕 À tester</span>':a>=4.5?'<span class="badge">🏆 Top</span>':"";
+}
+function renderStats(){
+  $("stats").innerHTML=[[restaurants.length,"restaurants"],[Object.keys(reviews()).length,"notés"],[favorites.length,"favoris"]]
+    .map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+}
 
 function read(key,fallback){
   try{return JSON.parse(localStorage.getItem(key))??fallback}catch(e){return fallback}
@@ -420,28 +453,29 @@ async function geocode(){
   }
   refreshBounds();
   setMapStatus("Carte chargée. Les adresses restent à vérifier.");
-  applyFilters();
+  renderList();
 }
 
 /* LISTE */
 function renderList(){
-  const byNote=$("sortSelect").value==="note";
+  const mode=$("sortSelect").value;
+  const score=r=>average(review(r.id)?.scores)||0;
   const sorted=[...restaurants].sort((a,b)=>{
-    if(byNote){
-      const d=(average(review(b.id)?.scores)||0)-(average(review(a.id)?.scores)||0);
-      if(d)return d;
-    }
+    if(mode==="proche"){const d=dist(a)-dist(b);if(d)return d}
+    if(mode==="note"){const d=score(b)-score(a);if(d)return d}
     const fav=Number(isFavorite(b.id))-Number(isFavorite(a.id));
-    return fav||a.nom.localeCompare(b.nom,"fr");
+    return fav||score(b)-score(a)||a.nom.localeCompare(b.nom,"fr");
   });
   $("restaurantsList").innerHTML=sorted.map(r=>{
     const rev=review(r.id);
     const avg=average(rev?.scores);
     return `<article class="restaurant-card" data-id="${r.id}">
       <div class="restaurant-top">
+        <div class="avatar">${icons[r.categories[0]]}</div>
         <div>
-          <div class="restaurant-name">${isFavorite(r.id)?"❤️ ":""}${esc(r.nom)}</div>
+          <div class="restaurant-name">${isFavorite(r.id)?"❤️ ":""}${esc(r.nom)}${badges(r)}</div>
           <div class="address">📍 ${esc(r.adresse)}</div>
+          ${distTxt(r)}
           <div class="tags">${tagsHTML(r.categories)}</div>
         </div>
         <div class="rating">
@@ -458,12 +492,13 @@ function renderList(){
     </article>`;
   }).join("");
   applyFilters();
+  renderStats();
 }
 function applyFilters(){
   let count=0;
   document.querySelectorAll(".restaurant-card").forEach(card=>{
     const r=restaurants.find(x=>x.id===card.dataset.id);
-    const catOK=activeCategory==="tout"||(activeCategory==="favoris"?isFavorite(r.id):r.categories.includes(activeCategory));
+    const catOK=activeCategory==="tout"||(activeCategory==="favoris"?isFavorite(r.id):activeCategory==="atester"?!review(r.id):r.categories.includes(activeCategory));
     const text=(r.nom+" "+r.adresse+" "+r.categories.join(" ")).toLowerCase();
     const visible=catOK&&text.includes(searchText);
     card.classList.toggle("hidden",!visible);
@@ -487,7 +522,14 @@ $("searchInput").addEventListener("input",e=>{
   searchText=e.target.value.trim().toLowerCase();
   applyFilters();
 });
-$("sortSelect").addEventListener("change",renderList);
+$("sortSelect").addEventListener("change",()=>{
+  if($("sortSelect").value==="proche"&&!userPos){
+    if(!navigator.geolocation){alert("Géolocalisation indisponible.");$("sortSelect").value="defaut";return}
+    navigator.geolocation.getCurrentPosition(
+      p=>{userPos={lat:p.coords.latitude,lng:p.coords.longitude};renderList()},
+      ()=>{alert("Position refusée : impossible de trier par distance.");$("sortSelect").value="defaut"});
+  }else renderList();
+});
 $("surpriseBtn").onclick=()=>{
   const cards=[...document.querySelectorAll(".restaurant-card:not(.hidden)")];
   if(cards.length)openRestaurant(cards[Math.floor(Math.random()*cards.length)].dataset.id);
@@ -550,6 +592,11 @@ function initDetailMap(r){
   }
   setTimeout(()=>detailMap.invalidateSize(),200);
   $("directionsButton").onclick=()=>directions(r.id);
+  $("shareButton").onclick=()=>{
+    const t=r.nom+" — "+r.adresse;
+    if(navigator.share)navigator.share({title:r.nom,text:t}).catch(()=>{});
+    else navigator.clipboard?.writeText(t).then(()=>alert("Copié !"));
+  };
 }
 
 /* NOTES */
@@ -629,6 +676,8 @@ function renderDetail(){
 function renderNotes(){
   const all=reviews();
   const entries=restaurants.filter(r=>all[r.id]);
+  const top=[...entries].sort((a,b)=>average(all[b.id].scores)-average(all[a.id].scores)).slice(0,3);
+  $("podium").innerHTML=top.length?top.map((r,i)=>`<div class="podium-row"><span>${["🥇","🥈","🥉"][i]}</span><b>${esc(r.nom)}</b><em>${average(all[r.id].scores).toFixed(1)}/5</em></div>`).join(""):'<p class="muted">Note des restaurants pour voir ton podium.</p>';
   $("allReviews").innerHTML=entries.length?entries.map(r=>{
     const rev=all[r.id];
     return `<article class="review-item">
