@@ -125,6 +125,13 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 .record{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #ffffff16;font-size:14px}
 .record em{font-style:normal;color:var(--light);font-weight:bold;white-space:nowrap}
 .compact .restaurant-card .address,.compact .restaurant-card .tags{display:none}
+.categories{display:block;overflow:visible;padding:14px 0 6px}
+.filter-group{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.filter-label{flex:0 0 62px;padding-top:9px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:bold}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.category{padding:8px 13px;font-size:13px;border-radius:999px}
+.category:hover{border-color:var(--gold)}
+@media(max-width:600px){.filter-group{flex-direction:column;gap:4px}.filter-label{padding-top:0}}
 </style>
 </head>
 <body>
@@ -142,21 +149,9 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
       <div class="stats" id="stats"></div>
     </div>
     <nav class="categories">
-      <button class="category active" data-category="tout">🍽️ Tout</button>
-      <button class="category" data-category="tacos">🌯 Tacos</button>
-      <button class="category" data-category="burger">🍔 Burger</button>
-      <button class="category" data-category="pizza">🍕 Pizza</button>
-      <button class="category" data-category="sushi">🍣 Sushi</button>
-      <button class="category" data-category="kebab">🥙 Kebab</button>
-      <button class="category" data-category="poulet">🍗 Poulet</button>
-      <button class="category" data-category="equilibre">🥗 Équilibré</button>
-      <button class="category" data-category="budget">💰 Petit budget</button>
-      <button class="category" data-category="atester">🆕 À tester</button>
-      <button class="category" data-category="asiatique">🥢 Asiatique</button>
-      <button class="category" data-category="resto">🍴 Restaurant</button>
-      <button class="category" data-category="boulangerie">🥖 Boulangerie</button>
-      <button class="category" data-category="magasin">🛒 Magasin</button>
-      <button class="category" data-category="top">⭐ 4+</button>
+      <div class="filter-group"><span class="filter-label">Lieux</span><div class="chips"><button class="category active" data-category="tout">🍽️ Tout</button><button class="category" data-category="resto">🍴 Restaurant</button><button class="category" data-category="boulangerie">🥖 Boulangerie</button><button class="category" data-category="magasin">🛒 Magasin</button></div></div>
+      <div class="filter-group"><span class="filter-label">Cuisine</span><div class="chips"><button class="category" data-category="tacos">🌯 Tacos</button><button class="category" data-category="burger">🍔 Burger</button><button class="category" data-category="pizza">🍕 Pizza</button><button class="category" data-category="asiatique">🥢 Asiatique (sushi…)</button><button class="category" data-category="kebab">🥙 Kebab</button><button class="category" data-category="poulet">🍗 Poulet</button><button class="category" data-category="equilibre">🥗 Sain</button></div></div>
+      <div class="filter-group"><span class="filter-label">Filtres</span><div class="chips"><button class="category" data-category="budget">💰 Petit budget</button><button class="category" data-category="atester">🆕 À tester</button><button class="category" data-category="top">⭐ 4+</button><button class="category" data-category="favoris">❤️ Favoris</button></div></div>
     </nav>
     <div class="layout">
       <section>
@@ -293,7 +288,7 @@ const restaurants = [
 {id:"castel",nom:"Le Castel",adresse:"164 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","budget"]},
 {id:"darko",nom:"Chez Darko",adresse:"175 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger"]},
 {id:"pasta-time",nom:"PASTA TIME",adresse:"183 Bd de Saint-Marcel, 13011 Marseille",categories:["pizza","budget"]},
-{id:"kyodai",nom:"Kyodai Sushi",adresse:"114 Bd de Saint-Marcel, 13011 Marseille",categories:["sushi","equilibre"]},
+{id:"kyodai",nom:"Kyodai Sushi",adresse:"114 Bd de Saint-Marcel, 13011 Marseille",categories:["asiatique","equilibre"]},
 {id:"mplaisir",nom:"M.Plaisir",adresse:"110 Bd de Saint-Marcel, 13011 Marseille",categories:["tacos","burger","pizza","budget"]},
 {id:"nath",nom:"Le petit creux de Nath",adresse:"271 Bd de Saint-Marcel, 13011 Marseille",categories:["budget"]},
 {id:"mckaren",nom:"Snack McKaren",adresse:"68 Bd de Saint-Marcel, 13011 Marseille",categories:["burger","tacos","kebab","budget"]},
@@ -312,20 +307,20 @@ const restaurants = [
 {id:"burger-king-2",nom:"Burger King - La Valentine",adresse:"10 Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
 {id:"mcdonalds",nom:"McDonald's La Valentine",adresse:"ZAC de La Valentine, Av. François Chardigny, 13011 Marseille",categories:["burger","poulet","budget"]},
 {id:"quick",nom:"Quick - La Valentine",adresse:"Centre Commercial La Valentine, Traverse de la Sablière, 13011 Marseille",categories:["burger","budget"]},
-{id:"pitaya",nom:"Pitaya Thaï Street Food",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["equilibre"]},
+{id:"pitaya",nom:"Pitaya Thaï Street Food",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["asiatique","equilibre"]},
 {id:"waffle",nom:"Waffle Factory",adresse:"La Galerie - Géant, Route de la Sablière, 13011 Marseille",categories:["budget"]},
 {id:"storia",nom:"Storia Pizza",adresse:"9 Route d'Allauch, 13011 Marseille",categories:["pizza"]},
 {id:"intemporel",nom:"L'Intemporel Pizzeria Restaurant",adresse:"1 Av. de Vienne, 13011 Marseille",categories:["pizza"]},
 {id:"everest",nom:"L'Everest Pizza",adresse:"33 Av. de la Gare, 13011 Marseille",categories:["pizza","budget"]},
 {id:"snack-pomme",nom:"Snack de la Pomme",adresse:"63 Av. Emmanuel Allard, 13011 Marseille",categories:["burger","tacos","kebab"]},
 {id:"fit-bar",nom:"Fit Bar",adresse:"133 Route des Camoins, 13011 Marseille",categories:["equilibre"]},
-{id:"2j-sushi",nom:"2J Sushi",adresse:"5 Route des Trois Lucs à la Valentine, 13012 Marseille",categories:["sushi","equilibre"]},
+{id:"2j-sushi",nom:"2J Sushi",adresse:"5 Route des Trois Lucs à la Valentine, 13012 Marseille",categories:["asiatique","equilibre"]},
 {id:"envie-burger",nom:"L'Envie du Burger",adresse:"1 Av. Jean Lombard, 13011 Marseille",categories:["burger"]},
 {id:"jawna",nom:"JAWNA Restaurant Libanais",adresse:"156 Bd de la Barasse, 13011 Marseille",categories:["equilibre"]},
 {id:"ogrills",nom:"O'GRILL'S LOMBARD",adresse:"20 Av. Jean Lombard, 13011 Marseille",categories:["tacos","burger","kebab"]},
 {id:"bagel-corner",nom:"Bagel Corner",adresse:"Route des Trois Lucs à la Valentine, 13011 Marseille",categories:["equilibre","budget"]},
 {id:"subway",nom:"Subway La Valentine",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["burger","equilibre"]},
-{id:"mi-sushi",nom:"Mi Sushi La Valentine",adresse:"54 Rue de l'Audience, 13011 Marseille",categories:["sushi","equilibre"]},
+{id:"mi-sushi",nom:"Mi Sushi La Valentine",adresse:"54 Rue de l'Audience, 13011 Marseille",categories:["asiatique","equilibre"]},
 {id:"pokawa",nom:"POKAWA",adresse:"8 Route de la Sablière, 13011 Marseille",categories:["equilibre"]},
 {id:"mezzo",nom:"Mezzo Di Pasta",adresse:"Centre Commercial La Valentine, 13011 Marseille",categories:["pizza","budget"]},
 {id:"babbo",nom:"Babbo Ristorante",adresse:"207 Route des Trois Lucs, 13011 Marseille",categories:["pizza"]},
@@ -377,11 +372,14 @@ const restaurants = [
 {id:"m-biocoop",nom:"Biocoop",adresse:"203 Route des Camoins, 13011 Marseille",categories:["magasin","equilibre"]},
 {id:"m-picard",nom:"Picard",adresse:"32 Bd de la Pomme, 13011 Marseille",categories:["magasin"]},
 {id:"m-decathlon",nom:"Decathlon",adresse:"7 Avenue de Saint-Menet, 13011 Marseille",categories:["magasin"]},
-{id:"m-kiabi",nom:"Kiabi La Valentine",adresse:"252 Route des Trois Lucs, 13011 Marseille",categories:["magasin"]}
+{id:"m-kiabi",nom:"Kiabi La Valentine",adresse:"252 Route des Trois Lucs, 13011 Marseille",categories:["magasin"]},
+{id:"insalata",nom:"In'Salata Bar",adresse:"Route de la Sablière, 13011 Marseille",categories:["equilibre","budget"]},
+{id:"su-and-shi",nom:"Su and Shi",adresse:"2 Montée de Saint-Menet, 13011 Marseille",categories:["asiatique","equilibre"]},
+{id:"jardin-clue",nom:"Au Jardin de la Clue",adresse:"62 Chemin de la Clue, 13011 Marseille",categories:["resto","equilibre"]}
 ];
 
-const names={tacos:"Tacos",burger:"Burger",pizza:"Pizza",sushi:"Sushi",kebab:"Kebab",poulet:"Poulet",equilibre:"Équilibré",budget:"Petit budget",asiatique:"Asiatique",resto:"Restaurant",boulangerie:"Boulangerie",magasin:"Magasin"};
-const icons={tacos:"🌯",burger:"🍔",pizza:"🍕",sushi:"🍣",kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰",asiatique:"🥢",resto:"🍴",boulangerie:"🥖",magasin:"🛒"};
+const names={tacos:"Tacos",burger:"Burger",pizza:"Pizza",kebab:"Kebab",poulet:"Poulet",equilibre:"Sain",budget:"Petit budget",asiatique:"Asiatique",resto:"Restaurant",boulangerie:"Boulangerie",magasin:"Magasin"};
+const icons={tacos:"🌯",burger:"🍔",pizza:"🍕",kebab:"🥙",poulet:"🍗",equilibre:"🥗",budget:"💰",asiatique:"🥢",resto:"🍴",boulangerie:"🥖",magasin:"🛒"};
 const criteria=[
 {id:"gout",name:"Goût",icon:"🍔",description:"Saveur et qualité du repas"},
 {id:"prix",name:"Prix",icon:"💰",description:"Rapport qualité-prix"},
