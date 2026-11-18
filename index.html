@@ -24,7 +24,7 @@ button{cursor:pointer}
 .side-search input{width:100%;padding:14px 12px 14px 38px;border:1px solid var(--border);border-radius:12px;background:#ffffff09;color:white;outline:none}
 .side-search input:focus{border-color:var(--gold)}
 .side-search span{position:absolute;left:12px;top:13px}
-.side-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:1px solid transparent;border-radius:12px;background:transparent;color:#fff9ed;text-align:left;transition:.2s}
+.side-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:1px solid transparent;border-radius:12px;background:transparent;color:#fff9ed;text-align:left;transition:.35s}
 .side-btn:hover,.side-btn.active{background:#e9b65e17;border-color:var(--border);color:var(--light)}
 .side-btn .ico{font-size:20px;width:25px;text-align:center}
 .side-divider{height:1px;background:var(--border);margin:8px 0}
@@ -42,7 +42,7 @@ h2{font-size:22px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
 .toolbar select{padding:10px;border:1px solid var(--border);border-radius:10px;background:#101522;color:#fff}
 #restaurantsList{display:flex;flex-direction:column}
-.restaurant-card{padding:19px;margin-bottom:13px;border:1px solid var(--border);border-radius:17px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);cursor:pointer;transition:.2s}
+.restaurant-card{padding:19px;margin-bottom:13px;border:1px solid var(--border);border-radius:17px;background:linear-gradient(145deg,#ffffff0d,#ffffff04);cursor:pointer;transition:.35s}
 .restaurant-card:hover{transform:translateY(-3px);border-color:var(--gold)}
 .restaurant-card.hidden{display:none}
 .restaurant-top{display:flex;justify-content:space-between;gap:12px}
@@ -117,7 +117,7 @@ textarea{width:100%;min-height:100px;resize:vertical;padding:12px;border:1px sol
 .dist{font-size:12px;color:var(--green);margin:-4px 0 10px}
 .podium-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff16;font-size:16px}
 .podium-row em{margin-left:auto;font-style:normal;color:var(--light);font-weight:bold}
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);padding:12px 18px;border-radius:12px;background:#141a27;border:1px solid var(--gold);color:var(--light);font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:3000}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);padding:12px 18px;border-radius:12px;background:#141a27;border:1px solid var(--gold);color:var(--light);font-size:14px;opacity:0;pointer-events:none;transition:.5s;z-index:3000}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .progress{height:12px;border-radius:20px;background:#ffffff16;overflow:hidden;margin:10px 0}
 .progress>div{height:100%;background:linear-gradient(90deg,#b7802e,var(--light))}
@@ -147,10 +147,10 @@ table.cmp{width:100%;border-collapse:collapse;font-size:14px}
 table.cmp th,table.cmp td{padding:10px;border-bottom:1px solid #ffffff16;text-align:left;vertical-align:top}
 table.cmp th{color:var(--muted);font-weight:normal;width:26%}
 .win{color:var(--green);font-weight:bold}
-html.light{--bg:#f6f1e7;--muted:#5d6577;--border:rgba(150,100,20,.3);--light:#7a4f08;--gold:#b7802e}
-html.light body{color:#2a2417;background:radial-gradient(ellipse at 5% 0%,#e9b65e30,transparent 35%),var(--bg)}
+html.light{--bg:#ffffff;--muted:#5d6577;--border:rgba(150,100,20,.25);--light:#7a4f08;--gold:#b7802e}
+html.light body{color:#2a2417;background:#ffffff}
 html.light .welcome h1{background:linear-gradient(90deg,#2a2417,#b7802e);-webkit-background-clip:text;background-clip:text}
-html.light .sidebar{background:rgba(255,252,245,.97)}
+html.light .sidebar{background:#ffffff}
 html.light .side-btn{color:#2a2417}
 html.light .side-search input,html.light textarea,html.light .toolbar select,html.light .input{background:#fff;color:#2a2417}
 html.light .restaurant-card,html.light .panel,html.light .modal-card,html.light .compare-bar,html.light .toast{background:#fff;color:#2a2417}
@@ -177,20 +177,47 @@ html.light .hero-widget{background:#fff;box-shadow:0 8px 30px #0001}
 .surprise{text-align:center;max-width:460px}
 .surprise .big{font-size:70px}
 .surprise h1{margin:6px 0 10px;color:var(--light)}
+.back-btn{padding:16px 26px;font-size:18px;font-weight:bold;border-radius:16px;border-color:var(--gold);color:var(--light);background:#e9b65e18;position:sticky;top:12px;z-index:900;box-shadow:0 6px 20px #0005;margin-bottom:10px}
+.back-btn:hover{background:#e9b65e30;transform:translateX(-3px)}
+html.light .back-btn{background:#fff;color:#7a4f08}
+.food-marquee{overflow:hidden;white-space:nowrap;margin:-6px 0 18px;padding:6px 0;font-size:26px;border:1px solid var(--border);border-radius:14px;background:#e9b65e0a}
+.food-marquee .track{display:inline-block;letter-spacing:16px;animation:marquee 150s linear infinite}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.floaty{position:fixed;bottom:-70px;z-index:-1;pointer-events:none;opacity:.16;animation:floatUp linear infinite}
+@keyframes floatUp{to{transform:translateY(-118vh) rotate(360deg)}}
+.foodpop{position:fixed;z-index:5000;pointer-events:none;font-size:22px;animation:foodpop 1.9s ease-out forwards}
+@keyframes foodpop{to{transform:translate(var(--dx),-80px) scale(.6) rotate(40deg);opacity:0}}
+.nofood .food-marquee,.nofood .floaty{display:none}
+.flash{position:fixed;inset:0;z-index:6000;display:grid;place-items:center;pointer-events:none;animation:flashbg 1s ease-in-out 2}
+@keyframes flashbg{0%,100%{background:#fffffff2}50%{background:#ffd54af2}}
+.flash span{font-size:clamp(44px,12vw,150px);font-weight:900;color:#171108;text-align:center;text-shadow:0 0 30px #fff}
+@media(prefers-reduced-motion:reduce){.flash{animation:none;background:#ffd54af2}.food-marquee .track,.floaty{animation:none}}
+.brand{gap:28px}
+.logo{flex-shrink:0}
+.brand-text h1{margin:0;background:linear-gradient(90deg,#fff9ed,var(--light));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-text p{margin:8px 0 0;color:var(--muted)}
+html.light .brand-text h1{background:linear-gradient(90deg,#2a2417,#b7802e);-webkit-background-clip:text;background-clip:text}
+html:not(.light) .logo{background:#f6f1e7;border-radius:22px;padding:8px}
+@media(max-width:1500px){.hero-widget{position:static;width:auto;margin:20px 0 0}}
+@media(max-width:700px){.brand{flex-direction:column;align-items:flex-start;gap:14px}}
+html.light .restaurant-card,html.light .panel,html.light .hero-widget{box-shadow:0 2px 12px #0000000f}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="main">
 
+  <div class="food-marquee" aria-hidden="true"><div class="track" id="marqueeTrack"></div></div>
   <div class="brand">
     <img class="logo" src="QuiRégale.png.png" alt="QuiRégale ?" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-text',textContent:'🍔 QuiRégale ?'}))">
+    <div class="brand-text" id="brandText">
+      <h1>Où est-ce qu'on mange ?</h1>
+      <p>Trouve ton prochain repas autour du lycée.</p>
+    </div>
   </div>
 
   <section id="homePage">
     <div class="welcome">
-      <h1>Où est-ce qu'on mange ?</h1>
-      <p>Trouve ton prochain repas autour du lycée.</p>
       <div class="stats" id="stats"></div>
     </div>
     <aside class="hero-widget" id="heroWidget"></aside>
@@ -224,7 +251,7 @@ html.light .hero-widget{background:#fff;box-shadow:0 8px 30px #0001}
   </section>
 
   <section id="detailPage" hidden>
-    <button class="secondary" onclick="showPage('home')">← Retour</button>
+    <button class="secondary back-btn" onclick="showPage('home')">← Retour à la liste</button>
     <h1 class="detail-title" id="detailName"></h1>
     <p class="detail-address" id="detailAddress"></p>
     <div id="detailTags" class="tags"></div>
@@ -289,6 +316,10 @@ html.light .hero-widget{background:#fff;box-shadow:0 8px 30px #0001}
       <div class="setting-row">
         <div><b>Confirmation avant suppression</b><p>Demander confirmation avant de supprimer un avis.</p></div>
         <input type="checkbox" id="confirmSetting" checked>
+      </div>
+      <div class="setting-row">
+        <div><b>Ambiance nourriture 🍔</b><p>Bandeau défilant, emojis flottants et petites explosions au clic.</p></div>
+        <input type="checkbox" id="foodSetting" checked>
       </div>
       <div class="setting-row">
         <div><b>Mode clair</b><p>Passer l'interface en thème clair.</p></div>
@@ -482,7 +513,7 @@ function badges(r){
 }
 function toast(t){
   const e=$("toast");e.textContent=t;e.classList.add("show");
-  clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200);
+  clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),3400);
 }
 function renderProfile(all){
   const done=restaurants.filter(r=>all[r.id]);
@@ -537,6 +568,7 @@ const $=id=>document.getElementById(id);
 /* NAVIGATION */
 function showPage(page){
   ["home","detail","notes","settings"].forEach(p=>{$(p+"Page").hidden=p!==page});
+  $("brandText").hidden=page!=="home";
   document.querySelectorAll(".side-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
   window.scrollTo({top:0,behavior:"smooth"});
   if(page==="home")setTimeout(()=>homeMap?.invalidateSize(),150);
@@ -956,7 +988,7 @@ $("compareModal").addEventListener("click",e=>{
 });
 
 const themeBox=$("themeSetting");
-themeBox.checked=read("quiregale-light",false);
+themeBox.checked=read("quiregale-light",true);
 document.documentElement.classList.toggle("light",themeBox.checked);
 themeBox.onchange=()=>{
   save("quiregale-light",themeBox.checked);
@@ -964,18 +996,34 @@ themeBox.onchange=()=>{
 };
 
 /* SURPRENDS-MOI */
+const FOODS=["🍔","🍕","🌮","🌯","🥙","🍣","🍱","🍜","🍝","🍟","🌭","🥪","🥐","🥖","🧀","🍗","🍖","🥓","🥗","🍲","🍛","🥟","🍩","🍪","🍰","🧁","🍫","🍦","🥤","🍓","🍉","🍌","🍎","🥑","🌽","🥕","🍅","🍤","🍙","🧇","🥞","🍿"];
+const FACTS=[
+  "Le mot « döner » veut dire « qui tourne » en turc : le kebab tourne sur sa broche. 🥙",
+  "Le miel ne se périme pratiquement jamais. 🍯",
+  "Une tomate est botaniquement un fruit. 🍅",
+  "Une banane est une baie… mais pas une fraise ! 🍌",
+  "Le mot « sushi » désigne à l'origine le riz vinaigré, pas le poisson cru. 🍣",
+  "Le croissant doit son nom à sa forme de croissant de lune. 🥐",
+  "Une baguette « de tradition » ne contient que farine, eau, sel et levure ou levain. 🥖",
+  "Selon la légende, la pizza Margherita rend hommage à la reine Marguerite de Savoie. 🍕",
+  "Le hamburger tire son nom de la ville de Hambourg, pas du jambon. 🍔",
+  "Le wasabi servi en dehors du Japon est souvent du raifort coloré en vert. 🌿",
+  "Les frites sont d'origine belge, selon les Belges. 🍟",
+  "Le chocolat vient des fèves de cacao, qu'on récolte dans les cabosses. 🍫"
+];
+let factIdx=Math.floor(Math.random()*FACTS.length);
 const SURPRISE_MSGS=["Le destin a parlé 🔮","Ton ventre avait raison 🤤","Tadaaa ! 🎩","Ça sent bon par ici 😋","Allez, on y va ! 🚀"];
 function confetti(){
-  const em=["🎉","🍔","🍕","🌮","🥐","🍣","✨","🍟"];
+  const em=["🎉","✨",...FOODS];
   for(let i=0;i<36;i++){
     const e=document.createElement("span");
     e.className="confetti";
     e.textContent=em[Math.floor(Math.random()*em.length)];
     e.style.left=Math.random()*100+"vw";
-    e.style.animationDuration=(1.2+Math.random()*1.4)+"s";
-    e.style.animationDelay=Math.random()*0.3+"s";
+    e.style.animationDuration=(3+Math.random()*2)+"s";
+    e.style.animationDelay=Math.random()*0.8+"s";
     document.body.appendChild(e);
-    setTimeout(()=>e.remove(),3200);
+    setTimeout(()=>e.remove(),6000);
   }
 }
 function surprise(forceMorts){
@@ -986,12 +1034,26 @@ function surprise(forceMorts){
   const t=setInterval(()=>{
     const r=restaurants.find(x=>x.id===(i<10?ids[Math.floor(Math.random()*ids.length)]:pick));
     toast("🎲 "+r.nom);
-    if(++i>10){clearInterval(t);reveal(pick,forceMorts===true||Math.random()<0.001)}
-  },110);
+    if(++i>10){clearInterval(t);reveal(pick,rareKind(forceMorts))}
+  },230);
 }
-function reveal(pick,morts){
+function rareKind(f){
+  if(f===true)return "morts";
+  if(f==="flash")return "flash";
+  const x=Math.random();
+  return x<0.001?"morts":x<0.002?"flash":null;
+}
+function reveal(pick,kind){
   const r=restaurants.find(x=>x.id===pick);
-  if(morts){
+  if(kind==="flash"){
+    const f=document.createElement("div");
+    f.className="flash";
+    f.innerHTML="<span>⚡ FLASH ! ⚡</span>";
+    document.body.appendChild(f);
+    setTimeout(()=>{f.remove();confetti();toast("⚡ Restaurant éclair → "+r.nom);openRestaurant(pick)},2100);
+    return;
+  }
+  if(kind==="morts"){
     $("surpriseModal").innerHTML=`<div class="modal-card surprise"><div class="big">💀</div><h1>mange tes morts</h1><p class="notice">(1 chance sur 1000, bravo…)</p><button class="gold-btn" id="surpriseGo" type="button">Bon d'accord, ${esc(r.nom)}</button></div>`;
     $("surpriseModal").hidden=false;
     $("surpriseGo").onclick=()=>{$("surpriseModal").hidden=true;openRestaurant(pick)};
@@ -1004,7 +1066,7 @@ function reveal(pick,morts){
   }
   confetti();
   toast(msg);
-  setTimeout(()=>openRestaurant(pick),1100);
+  setTimeout(()=>openRestaurant(pick),2600);
 }
 
 /* WIDGET D'ACCUEIL */
@@ -1045,7 +1107,10 @@ function renderHero(){
       <button class="chip" data-quick="favoris" type="button">❤️ Mes favoris</button>
       <button class="chip" data-quick="proche" type="button">📍 Près de moi</button>
       <button class="chip" data-quick="hasard" type="button">🎲 Hasard</button>
-    </div>`;
+    </div>
+    <div class="hw-label" style="margin-top:18px">🍽️ LE SAVIEZ-VOUS ?</div>
+    <p class="hw-greet" style="margin:0 0 8px">${FACTS[factIdx%FACTS.length]}</p>
+    <button class="chip" data-hero="fact" type="button">🔄 Un autre fait</button>`;
 }
 function quick(k){
   if(k==="hasard"){$("surpriseBtn").click();return}
@@ -1064,7 +1129,44 @@ $("heroWidget").addEventListener("click",e=>{
   if(b.dataset.hero==="open")openRestaurant(r.id);
   if(b.dataset.hero==="route")directions(r.id);
   if(b.dataset.hero==="next"){dailyShift++;renderHero()}
+  if(b.dataset.hero==="fact"){factIdx++;renderHero()}
   if(b.dataset.quick)quick(b.dataset.quick);
+});
+
+/* AMBIANCE NOURRITURE */
+(function(){
+  const row=FOODS.join(" ");
+  $("marqueeTrack").textContent=row+"  "+row;
+  for(let i=0;i<18;i++){
+    const e=document.createElement("span");
+    e.className="floaty";
+    e.textContent=FOODS[Math.floor(Math.random()*FOODS.length)];
+    e.style.left=Math.random()*100+"vw";
+    e.style.fontSize=(28+Math.random()*34)+"px";
+    e.style.animationDuration=(50+Math.random()*40)+"s";
+    e.style.animationDelay=(-Math.random()*90)+"s";
+    document.body.appendChild(e);
+  }
+})();
+document.addEventListener("click",e=>{
+  if(document.body.classList.contains("nofood")||e.target.closest("input,textarea,select"))return;
+  for(let i=0;i<3;i++){
+    const f=document.createElement("span");
+    f.className="foodpop";
+    f.textContent=FOODS[Math.floor(Math.random()*FOODS.length)];
+    f.style.left=e.clientX+"px";
+    f.style.top=e.clientY+"px";
+    f.style.setProperty("--dx",(Math.random()*120-60)+"px");
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1950);
+  }
+});
+const foodBox=$("foodSetting");
+foodBox.checked=read("quiregale-food",true);
+document.body.classList.toggle("nofood",!foodBox.checked);
+foodBox.onchange=()=>{save("quiregale-food",foodBox.checked);document.body.classList.toggle("nofood",!foodBox.checked)};
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&!$("detailPage").hidden)showPage("home");
 });
 
 /* PARAMÈTRES */
